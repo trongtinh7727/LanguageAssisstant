@@ -22,7 +22,7 @@ class _SplashScreenState extends State<SplashScreen> {
         Navigator.pushReplacementNamed(context, RouteName.introScreen);
       } else {
         // If the user is authenticated, navigate to the home screen.
-        Navigator.pushReplacementNamed(context, RouteName.splashScreen);
+        Navigator.pushReplacementNamed(context, RouteName.homeScreen);
       }
     });
   }

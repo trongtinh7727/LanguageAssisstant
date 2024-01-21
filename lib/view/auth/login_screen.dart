@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:hexcolor/hexcolor.dart';
+import 'package:languageassistant/routes/name_routes.dart';
 import 'package:languageassistant/utils/app_color.dart';
+import 'package:languageassistant/utils/app_toast.dart';
+import 'package:languageassistant/view_model/auth_provider.dart';
+import 'package:languageassistant/widget/text_field_widget.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatelessWidget {
+  TextEditingController email = TextEditingController();
+  TextEditingController password = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthenticationProvider>(context);
+
     return Scaffold(
       body: Container(
         // decoration: BoxDecoration(
@@ -32,10 +41,16 @@ class LoginScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 48),
-                _buildTextField(hint: 'Nhập email', icon: Icons.email),
+                TextFieldWidget(
+                    hint: 'Nhập email',
+                    icon: Icons.email,
+                    textEditingController: email),
                 const SizedBox(height: 16),
-                _buildTextField(
-                    hint: 'Nhập mật khẩu', icon: Icons.lock, isPassword: true),
+                TextFieldWidget(
+                    hint: 'Nhập mật khẩu',
+                    icon: Icons.lock,
+                    isPassword: true,
+                    textEditingController: password),
                 const SizedBox(height: 8),
                 Align(
                   alignment: Alignment.center,
@@ -49,14 +64,40 @@ class LoginScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 24),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    if (email.text.isEmpty) {
+                      commonToast("Please enter email");
+                    } else if (password.text.isEmpty) {
+                      commonToast("Please enter password");
+                    } else {
+                      bool result =
+                          await authProvider.signInWithEmailAndPassword(
+                        email.text.toString(),
+                        password.text.toString(),
+                      );
+                      if (result) {
+                        Navigator.pushNamed(context, RouteName.homeScreen);
+                      } else {
+                        // Maybe show an error message
+                      }
+                    }
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blueAccent,
                     padding: const EdgeInsets.symmetric(
                         horizontal: 40, vertical: 15),
                   ),
-                  child: const Text('Đăng nhập'),
+                  child: authProvider.isLoading
+                      ? CircularProgressIndicator(
+                          color: whiteColor,
+                        )
+                      : const Text('Đăng nhập'),
                 ),
+                if (authProvider.errorMessage.isNotEmpty)
+                  Text(
+                    authProvider.errorMessage,
+                    style: const TextStyle(color: Colors.red),
+                  ),
                 Center(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment
@@ -77,37 +118,6 @@ class LoginScreen extends StatelessWidget {
                   ),
                 )
               ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTextField(
-      {required String hint, required IconData icon, bool isPassword = false}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: ConstrainedBox(
-        constraints:
-            BoxConstraints(maxWidth: 500), // Set your desired max width here
-        child: TextField(
-          maxLines: 1,
-          obscureText: isPassword,
-          style: const TextStyle(color: Colors.black),
-          decoration: InputDecoration(
-            hintText: hint,
-            hintStyle: const TextStyle(color: Color.fromARGB(179, 48, 44, 44)),
-            prefixIcon: Icon(icon, color: Colors.black54),
-            filled: true,
-            fillColor: const Color.fromARGB(60, 56, 54, 54),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: Colors.transparent),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: Colors.blueAccent),
             ),
           ),
         ),
