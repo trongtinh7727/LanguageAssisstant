@@ -4,7 +4,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:languageassistant/firebase_options.dart';
 import 'package:languageassistant/routes/name_routes.dart';
 import 'package:languageassistant/routes/routes.dart';
-import 'package:languageassistant/view/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

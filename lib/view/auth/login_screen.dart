@@ -45,18 +45,19 @@ class LoginScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(height: 24),
+                const SizedBox(height: 24),
                 ElevatedButton(
                   onPressed: () {},
-                  child: Text('Đăng nhập'),
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.blueAccent,
-                    padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                    backgroundColor: Colors.blueAccent,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 40, vertical: 15),
                   ),
+                  child: const Text('Đăng nhập'),
                 ),
                 TextButton(
                   onPressed: () {},
-                  child: Text(
+                  child: const Text(
                     'Bạn chưa có tài khoản? Đăng ký',
                     style: TextStyle(color: Colors.white70),
                   ),
