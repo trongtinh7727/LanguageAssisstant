@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hexcolor/hexcolor.dart';
+import 'package:languageassistant/utils/app_color.dart';
 
 class LoginScreen extends StatelessWidget {
   @override
@@ -20,12 +22,12 @@ class LoginScreen extends StatelessWidget {
                     height: 250,
                     width: 250,
                     child: Image.asset('assets/images/logo.png')),
-                const Text(
+                Text(
                   'Excellent Experience',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.black,
+                    fontSize: 30,
+                    color: darkBlueColor,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -36,12 +38,12 @@ class LoginScreen extends StatelessWidget {
                     hint: 'Nhập mật khẩu', icon: Icons.lock, isPassword: true),
                 const SizedBox(height: 8),
                 Align(
-                  alignment: Alignment.centerRight,
+                  alignment: Alignment.center,
                   child: TextButton(
                     onPressed: () {},
                     child: const Text(
                       'Quên mật khẩu',
-                      style: TextStyle(color: Colors.black),
+                      style: TextStyle(color: Colors.lightBlue),
                     ),
                   ),
                 ),
@@ -55,13 +57,25 @@ class LoginScreen extends StatelessWidget {
                   ),
                   child: const Text('Đăng nhập'),
                 ),
-                TextButton(
-                  onPressed: () {},
-                  child: const Text(
-                    'Bạn chưa có tài khoản? Đăng ký',
-                    style: TextStyle(color: Colors.white70),
+                Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment
+                        .center, // This centers the children horizontally
+                    children: [
+                      const Text(
+                        'Bạn chưa có tài khoản?',
+                        style: TextStyle(color: Color.fromARGB(179, 0, 0, 0)),
+                      ),
+                      TextButton(
+                        onPressed: () {},
+                        child: Text(
+                          'Đăng ký',
+                          style: TextStyle(color: lightBlueColor),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
+                )
               ],
             ),
           ),
@@ -72,22 +86,30 @@ class LoginScreen extends StatelessWidget {
 
   Widget _buildTextField(
       {required String hint, required IconData icon, bool isPassword = false}) {
-    return TextField(
-      obscureText: isPassword,
-      style: TextStyle(color: Colors.black),
-      decoration: InputDecoration(
-        hintText: hint,
-        hintStyle: TextStyle(color: const Color.fromARGB(179, 48, 44, 44)),
-        prefixIcon: Icon(icon, color: Colors.black54),
-        filled: true,
-        fillColor: Colors.white24,
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30),
-          borderSide: BorderSide(color: Colors.transparent),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30),
-          borderSide: BorderSide(color: Colors.blueAccent),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: ConstrainedBox(
+        constraints:
+            BoxConstraints(maxWidth: 500), // Set your desired max width here
+        child: TextField(
+          maxLines: 1,
+          obscureText: isPassword,
+          style: const TextStyle(color: Colors.black),
+          decoration: InputDecoration(
+            hintText: hint,
+            hintStyle: const TextStyle(color: Color.fromARGB(179, 48, 44, 44)),
+            prefixIcon: Icon(icon, color: Colors.black54),
+            filled: true,
+            fillColor: const Color.fromARGB(60, 56, 54, 54),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: const BorderSide(color: Colors.transparent),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: const BorderSide(color: Colors.blueAccent),
+            ),
+          ),
         ),
       ),
     );

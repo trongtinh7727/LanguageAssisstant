@@ -8,3 +8,6 @@ Color redColor = HexColor("#f7635b");
 
 Color whiteColor = Colors.white;
 Color blackColor = Colors.black;
+
+Color lightBlueColor = Colors.lightBlue;
+Color darkBlueColor = HexColor("#004AB9");

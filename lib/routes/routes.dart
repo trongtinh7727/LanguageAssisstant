@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:languageassistant/view/auth/intro_screen.dart';
 import 'package:languageassistant/view/auth/login_screen.dart';
 import 'package:languageassistant/view/home_screen.dart';
 import 'package:languageassistant/view/splash_screen.dart';
@@ -11,6 +12,8 @@ class Routes {
         return MaterialPageRoute(builder: (context) => const SplashScreen());
       case RouteName.homeScreen:
         return MaterialPageRoute(builder: (context) => const HomeScreen());
+      case RouteName.introScreen:
+        return MaterialPageRoute(builder: (context) => IntroScreen());
 
       case RouteName.loginScreen:
         return MaterialPageRoute(builder: (context) => LoginScreen());

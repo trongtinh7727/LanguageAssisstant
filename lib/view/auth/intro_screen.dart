@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../routes/name_routes.dart';
+
 class IntroScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -34,6 +36,7 @@ class IntroScreen extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 // Handle login
+                Navigator.pushReplacementNamed(context, RouteName.loginScreen);
               },
               child: const Text('Đăng nhập'),
             ),

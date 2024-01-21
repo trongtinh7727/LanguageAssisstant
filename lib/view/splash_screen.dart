@@ -19,7 +19,7 @@ class _SplashScreenState extends State<SplashScreen> {
     Future.delayed(const Duration(seconds: 3), () {
       if (_user == null) {
         // If the user is not authenticated, navigate to the login screen.
-        Navigator.pushReplacementNamed(context, RouteName.loginScreen);
+        Navigator.pushReplacementNamed(context, RouteName.introScreen);
       } else {
         // If the user is authenticated, navigate to the home screen.
         Navigator.pushReplacementNamed(context, RouteName.splashScreen);
