@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:languageassistant/utils/app_color.dart';
 
 class TextFieldWidget extends StatelessWidget {
   final String hint;
@@ -31,7 +32,7 @@ class TextFieldWidget extends StatelessWidget {
             hintStyle: const TextStyle(color: Color.fromARGB(179, 48, 44, 44)),
             prefixIcon: Icon(icon, color: Colors.black54),
             filled: true,
-            fillColor: const Color.fromARGB(60, 56, 54, 54),
+            fillColor: textFieldColor,
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
               borderSide: const BorderSide(color: Colors.transparent),

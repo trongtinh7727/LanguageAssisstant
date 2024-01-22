@@ -36,7 +36,7 @@ class LoginScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 30,
-                    color: darkBlueColor,
+                    color: primaryColor,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -83,7 +83,8 @@ class LoginScreen extends StatelessWidget {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blueAccent,
+                    backgroundColor: primaryColor,
+                    fixedSize: Size(295, 50),
                     padding: const EdgeInsets.symmetric(
                         horizontal: 40, vertical: 15),
                   ),
@@ -91,7 +92,7 @@ class LoginScreen extends StatelessWidget {
                       ? CircularProgressIndicator(
                           color: whiteColor,
                         )
-                      : const Text('Đăng nhập'),
+                      : Text('Đăng nhập', style: TextStyle(color: whiteColor)),
                 ),
                 if (authProvider.errorMessage.isNotEmpty)
                   Text(
