@@ -1,11 +1,15 @@
 class TopicModel {
   String id;
+  String author;
+  String? authorName;
+  String? authoravatar;
   String title;
   String? description;
+  int wordLearned;
+  int lastAccess;
   int wordCount;
   int viewCount;
   bool public;
-  String author;
   dynamic authorRef;
   int createTime;
   int updateTime;
@@ -14,6 +18,8 @@ class TopicModel {
     required this.id,
     required this.title,
     this.description,
+    this.wordLearned = 0,
+    this.lastAccess = 0,
     this.wordCount = 0,
     this.viewCount = 0,
     this.public = false,
