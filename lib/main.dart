@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:languageassistant/firebase_options.dart';
 import 'package:languageassistant/routes/name_routes.dart';
 import 'package:languageassistant/routes/routes.dart';
+import 'package:languageassistant/view_model/topic_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:languageassistant/view_model/auth_provider.dart';
 import 'package:timezone/data/latest.dart' as tz;
@@ -24,6 +25,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthenticationProvider()),
+        ChangeNotifierProvider(create: (_) => TopicViewModel()),
         // Add other providers here
       ],
       child: MaterialApp(

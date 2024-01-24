@@ -1,23 +1,23 @@
 class TopicModel {
-  String? id;
-  String? title;
+  String id;
+  String title;
   String? description;
   int wordCount;
   int viewCount;
-  bool isPublic;
-  String? author;
+  bool public;
+  String author;
   dynamic authorRef;
   int createTime;
   int updateTime;
 
   TopicModel({
-    this.id,
-    this.title,
+    required this.id,
+    required this.title,
     this.description,
     this.wordCount = 0,
     this.viewCount = 0,
-    this.isPublic = false,
-    this.author,
+    this.public = false,
+    required this.author,
     this.authorRef,
     required this.createTime,
     required this.updateTime,
@@ -29,7 +29,7 @@ class TopicModel {
       'description': description,
       'wordCount': wordCount,
       'viewCount': viewCount,
-      'isPublic': isPublic,
+      'public': public,
       'author': author,
       'authorRef': authorRef,
       'createTime': createTime,
@@ -44,7 +44,7 @@ class TopicModel {
       description: map['description'],
       wordCount: map['wordCount'],
       viewCount: map['viewCount'],
-      isPublic: map['isPublic'],
+      public: map['public'],
       author: map['author'],
       authorRef: map['authorRef'],
       createTime: map['createTime'],

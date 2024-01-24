@@ -6,11 +6,13 @@ import 'package:languageassistant/view_model/auth_provider.dart';
 import 'package:languageassistant/widget/text_field_widget.dart';
 import 'package:provider/provider.dart';
 
-class LoginScreen extends StatelessWidget {
+class RegisterScreen extends StatelessWidget {
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
+  TextEditingController fullName = TextEditingController();
+  TextEditingController passwordConfirm = TextEditingController();
 
-  LoginScreen({super.key});
+  RegisterScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -43,10 +45,21 @@ class LoginScreen extends StatelessWidget {
                     textEditingController: email),
                 const SizedBox(height: 16),
                 TextFieldWidget(
+                    hint: 'Nhập họ và tên',
+                    icon: Icons.person,
+                    textEditingController: fullName),
+                const SizedBox(height: 16),
+                TextFieldWidget(
                     hint: 'Nhập mật khẩu',
                     icon: Icons.lock,
                     isPassword: true,
                     textEditingController: password),
+                const SizedBox(height: 16),
+                TextFieldWidget(
+                    hint: 'Nhập lại mật khẩu',
+                    icon: Icons.lock,
+                    isPassword: true,
+                    textEditingController: passwordConfirm),
                 const SizedBox(height: 8),
                 Align(
                   alignment: Alignment.center,
@@ -80,7 +93,7 @@ class LoginScreen extends StatelessWidget {
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: primaryColor,
-                    fixedSize: Size(295, 50),
+                    fixedSize: const Size(295, 50),
                     padding: const EdgeInsets.symmetric(
                         horizontal: 40, vertical: 15),
                   ),
@@ -101,16 +114,15 @@ class LoginScreen extends StatelessWidget {
                         .center, // This centers the children horizontally
                     children: [
                       const Text(
-                        'Bạn chưa có tài khoản?',
+                        'Bạn đã có tài khoản?',
                         style: TextStyle(color: Color.fromARGB(179, 0, 0, 0)),
                       ),
                       TextButton(
                         onPressed: () {
-                          Navigator.pushNamed(
-                              context, RouteName.registerScreen);
+                          Navigator.pushNamed(context, RouteName.loginScreen);
                         },
                         child: Text(
-                          'Đăng ký',
+                          'Đăng nhập',
                           style: TextStyle(color: lightBlueColor),
                         ),
                       ),
