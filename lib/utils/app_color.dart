@@ -10,4 +10,6 @@ Color blackColor = Colors.black;
 
 Color lightBlueColor = Colors.lightBlue;
 Color primaryColor = HexColor("#3A94E7");
+Color buttonBackColor = HexColor('#e6edf8');
+Color buttonTextColor = HexColor('#004AB9');
 Color textFieldColor = HexColor("#D1D1D1");

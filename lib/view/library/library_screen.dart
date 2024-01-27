@@ -48,13 +48,8 @@ class _LibraryScreenState extends State<LibraryScreen> {
               itemBuilder: (context, index) {
                 final topic = topicViewModel.topics[index];
                 return TopicCard(
-                  title: topic.title ?? 'No Title',
-                  wordCount: topic.wordLearned,
-                  authorAvatar: topic.authoravatar,
-                  totalWords: topic.wordCount, // Adjust this based on your data
-                  authorName: topic.authorName ?? 'Unknown',
-                  timeAgo:
-                      '30 phút trước', // Replace with dynamic time based on topic.createTime
+                  topic:
+                      topic, // Replace with dynamic time based on topic.createTime
                   onContinue: () {
                     // Handle continue action here
                   },

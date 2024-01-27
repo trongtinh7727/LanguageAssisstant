@@ -1,57 +1,107 @@
 import 'package:flutter/material.dart';
 import 'package:languageassistant/model/models/topic_model.dart';
+import 'package:languageassistant/utils/app_color.dart';
+import 'package:languageassistant/utils/date_time_util.dart';
+import 'package:languageassistant/widget/custom_button.dart';
 
 class TopicCard extends StatelessWidget {
-  final String title;
-  final int wordCount;
-  final int totalWords;
-  final String authorName;
-  final String? authorAvatar;
-  final String timeAgo;
+  final TopicModel topic;
   final VoidCallback onContinue;
 
   const TopicCard({
     Key? key,
-    required this.title,
-    required this.wordCount,
-    required this.totalWords,
-    required this.authorName,
-    this.authorAvatar,
-    required this.timeAgo,
+    required this.topic,
     required this.onContinue,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final int wordLearned = topic.wordLearned;
+    final int wordCount = topic.wordCount;
+    final int viewCount = 122;
+    String wordProgress = "$wordCount";
+
+    if (topic.wordLearned >= 0) {
+      wordProgress = "$wordLearned/$wordCount";
+    }
+    final String word = "Chi Tiết";
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+          side: BorderSide(color: primaryColor, width: 2)),
       elevation: 4,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    topic.title,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    softWrap: false,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                Text(
+                  DateTimeUtil.getDateFromTimestamp(topic.lastAccess),
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey,
+                  ),
+                ),
+              ],
             ),
             SizedBox(height: 8),
-            Text(
-              '$wordCount/$totalWords words',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey,
-              ),
+            Row(
+              children: [
+                Text(
+                  '$wordProgress words',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey,
+                  ),
+                ),
+                SizedBox(
+                  width: 20,
+                ),
+                if (topic.wordLearned < 0)
+                  Icon(
+                    Icons.remove_red_eye_outlined,
+                    color: primaryColor,
+                    size: 16,
+                  ),
+                if (topic.wordLearned < 0)
+                  Text(
+                    '$viewCount',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey,
+                    ),
+                  ),
+              ],
             ),
             SizedBox(height: 8),
-            LinearProgressIndicator(
-              value: wordCount / totalWords,
-              backgroundColor: Colors.blue[100],
-              color: Colors.blue,
-            ),
+            if (topic.wordLearned >= 0)
+              SizedBox(
+                width: 150,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  child: LinearProgressIndicator(
+                    value: topic.wordLearned / topic.wordCount,
+                    minHeight: 7,
+                    backgroundColor: Colors.blue[100],
+                    color: Colors.blue,
+                  ),
+                ),
+              ),
             SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -60,73 +110,34 @@ class TopicCard extends StatelessWidget {
                   children: [
                     CircleAvatar(
                       radius: 16,
-                      backgroundImage: NetworkImage(authorAvatar ??
+                      backgroundImage: NetworkImage(topic.authoravatar ??
                           'https://firebasestorage.googleapis.com/v0/b/language-assistant-7727.appspot.com/o/Users%2FAvatars%2Favatar_default.png?alt=media&token=490b3731-c6a2-4d1b-a75a-4902372c307b'),
                       onBackgroundImageError: (exception, stackTrace) {
                         // Log the error, show a dialog, or use a fallback image
                         print('Error loading background image: $exception');
                       },
-                      child: authorAvatar == null
+                      child: topic.authoravatar == null
                           ? Icon(Icons
                               .person) // Fallback icon in case the URL is null
                           : null,
                     ),
                     SizedBox(width: 8),
                     Text(
-                      authorName,
+                      topic.authorName ?? "",
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: 12,
                       ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
                     ),
                   ],
                 ),
-                Text(
-                  timeAgo,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey,
-                  ),
-                ),
+                CustomButton(onContinue: onContinue, word: word),
               ],
-            ),
-            SizedBox(height: 16),
-            Align(
-              alignment: Alignment.centerRight,
-              child: ElevatedButton(
-                onPressed: onContinue,
-                child: Text('CONTINUE'),
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-              ),
             ),
           ],
         ),
       ),
     );
   }
-}
-
-void main() {
-  runApp(
-    MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: TopicCard(
-            title: 'Topic: Expressions/Questions',
-            wordCount: 2,
-            totalWords: 10,
-            authorName: 'Ariana HeHe',
-            timeAgo: '30 phút trước',
-            onContinue: () {
-              // Handle continue action here
-              print('Continue tapped');
-            },
-          ),
-        ),
-      ),
-    ),
-  );
 }

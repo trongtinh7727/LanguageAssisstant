@@ -18,7 +18,7 @@ class TopicModel {
     required this.id,
     required this.title,
     this.description,
-    this.wordLearned = 0,
+    this.wordLearned = -1,
     this.lastAccess = 0,
     this.wordCount = 0,
     this.viewCount = 0,
