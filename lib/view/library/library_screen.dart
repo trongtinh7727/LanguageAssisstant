@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:languageassistant/utils/app_color.dart';
 import 'package:languageassistant/view_model/topic_view_model.dart';
+import 'package:languageassistant/widget/custom_button.dart';
 import 'package:languageassistant/widget/personal_topic_card.dart';
 import 'package:provider/provider.dart';
 
@@ -9,11 +11,13 @@ class LibraryScreen extends StatefulWidget {
 }
 
 class _LibraryScreenState extends State<LibraryScreen> {
+  late PageController pageController;
+  int current = 0;
+
   @override
   void initState() {
     super.initState();
-    // We use `WidgetsBinding.instance.addPostFrameCallback` to make sure the
-    // context is fully built before we try to access the Provider.
+    pageController = PageController();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         final topicViewModel =
@@ -21,6 +25,60 @@ class _LibraryScreenState extends State<LibraryScreen> {
         topicViewModel.fetchTopicsByUser('jQBsoZuLugWdlbCPWEDLShzw6tU2', 5);
       }
     });
+  }
+
+  @override
+  void dispose() {
+    pageController.dispose();
+    super.dispose();
+  }
+
+  Widget _buildCustomTabBar() {
+    List<String> items = ["Topic", "Folder"];
+
+    return Container(
+      alignment: Alignment.center,
+      height: 80,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: items.map((item) {
+          int index = items.indexOf(item);
+          return GestureDetector(
+            onTap: () {
+              setState(() {
+                current = index;
+              });
+              pageController.animateToPage(
+                current,
+                duration: const Duration(milliseconds: 200),
+                curve: Curves.ease,
+              );
+            },
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              margin: const EdgeInsets.symmetric(horizontal: 10),
+              width: 150,
+              height: 40,
+              decoration: BoxDecoration(
+                color: current == index ? primaryColor : tabUnselectedColor,
+                borderRadius: BorderRadius.circular(5),
+                border: Border.all(color: Colors.blue, width: 2.5),
+              ),
+              child: Center(
+                child: Text(
+                  item,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                    color: current == index ? Colors.white : primaryColor,
+                  ),
+                ),
+              ),
+            ),
+          );
+        }).toList(),
+      ),
+    );
   }
 
   @override
@@ -38,26 +96,42 @@ class _LibraryScreenState extends State<LibraryScreen> {
             },
           ),
         ],
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(80.0),
+          child: _buildCustomTabBar(),
+        ),
       ),
-      body: Column(
-        children: [
-          // Your search bar and tabs
-          Expanded(
-            child: ListView.builder(
+      body: PageView.builder(
+        itemCount: 2, // Number of pages
+        controller: pageController,
+        onPageChanged: (index) {
+          setState(() {
+            current = index;
+          });
+        },
+        itemBuilder: (context, index) {
+          // Your Tab Contents
+          if (index == 0) {
+            // First tab content: Topic
+            return ListView.builder(
               itemCount: topicViewModel.topics.length,
               itemBuilder: (context, index) {
                 final topic = topicViewModel.topics[index];
                 return TopicCard(
-                  topic:
-                      topic, // Replace with dynamic time based on topic.createTime
+                  topic: topic,
                   onContinue: () {
                     // Handle continue action here
                   },
                 );
               },
-            ),
-          ),
-        ],
+            );
+          } else {
+            // Second tab content: Folder
+            return Center(
+              child: Text('Folder content goes here'),
+            );
+          }
+        },
       ),
     );
   }
