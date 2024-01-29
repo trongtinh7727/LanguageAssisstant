@@ -5,6 +5,8 @@ import 'package:languageassistant/view/account/account_screen.dart';
 import 'package:languageassistant/view/discovery/discovery_screen.dart';
 import 'package:languageassistant/view/home/home_screen.dart';
 import 'package:languageassistant/view/library/library_screen.dart';
+import 'package:languageassistant/view_model/topic_view_model.dart';
+import 'package:provider/provider.dart';
 
 class MainLayout extends StatefulWidget {
   @override
@@ -49,6 +51,12 @@ class MainLayoutState extends State<MainLayout> {
             onTap: () {
               setState(() {
                 currentIndex = index;
+                if (index == 1) {
+                  final topicViewModel =
+                      Provider.of<TopicViewModel>(context, listen: false);
+                  topicViewModel.fetchTopicsByUser(
+                      'jQBsoZuLugWdlbCPWEDLShzw6tU2', 5);
+                }
               });
             },
             splashColor: Colors.transparent,

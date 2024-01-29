@@ -34,4 +34,11 @@ class DateTimeUtil {
       }
     }
   }
+
+  static String format(int timestamp) {
+    DateTime time = timestampToDateTime(timestamp);
+    String formattedDate =
+        "${time.hour}:${time.minute} ${time.day} tháng ${time.month}, ${time.year}";
+    return formattedDate;
+  }
 }

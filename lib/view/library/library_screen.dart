@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:languageassistant/routes/name_routes.dart';
 import 'package:languageassistant/utils/app_color.dart';
 import 'package:languageassistant/view_model/topic_view_model.dart';
 import 'package:languageassistant/widget/custom_button.dart';
@@ -12,23 +13,47 @@ class LibraryScreen extends StatefulWidget {
 
 class _LibraryScreenState extends State<LibraryScreen> {
   late PageController pageController;
+  late ScrollController _scrollController;
+  late TopicViewModel topicViewModel;
+
   int current = 0;
 
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController();
+    _scrollController.addListener(_scrollListener);
+
     pageController = PageController();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        final topicViewModel =
-            Provider.of<TopicViewModel>(context, listen: false);
-        topicViewModel.fetchTopicsByUser('jQBsoZuLugWdlbCPWEDLShzw6tU2', 5);
+    topicViewModel = Provider.of<TopicViewModel>(context, listen: false);
+
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   if (mounted) {
+    //     final topicViewModel =
+    //         Provider.of<TopicViewModel>(context, listen: false);
+    //     topicViewModel.fetchTopicsByUser('jQBsoZuLugWdlbCPWEDLShzw6tU2', 5);
+    //   }
+    // });
+  }
+
+  void _scrollListener() {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
+      // Call load more method from your viewmodel
+      if (topicViewModel.hasNextPage) {
+        topicViewModel.fetchTopicsByUserMore(
+          'jQBsoZuLugWdlbCPWEDLShzw6tU2',
+          5,
+        );
       }
-    });
+    }
   }
 
   @override
   void dispose() {
+    _scrollController.removeListener(_scrollListener);
+    _scrollController.dispose();
+
     pageController.dispose();
     super.dispose();
   }
@@ -88,6 +113,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Thư Viện'),
+        automaticallyImplyLeading: false,
         actions: [
           IconButton(
             icon: Icon(Icons.add),
@@ -101,38 +127,50 @@ class _LibraryScreenState extends State<LibraryScreen> {
           child: _buildCustomTabBar(),
         ),
       ),
-      body: PageView.builder(
-        itemCount: 2, // Number of pages
-        controller: pageController,
-        onPageChanged: (index) {
-          setState(() {
-            current = index;
-          });
-        },
-        itemBuilder: (context, index) {
-          // Your Tab Contents
-          if (index == 0) {
-            // First tab content: Topic
-            return ListView.builder(
-              itemCount: topicViewModel.topics.length,
-              itemBuilder: (context, index) {
-                final topic = topicViewModel.topics[index];
-                return TopicCard(
-                  topic: topic,
-                  onContinue: () {
-                    // Handle continue action here
-                  },
-                );
-              },
-            );
-          } else {
-            // Second tab content: Folder
-            return Center(
-              child: Text('Folder content goes here'),
-            );
-          }
-        },
-      ),
+      body: Stack(children: <Widget>[
+        PageView.builder(
+          itemCount: 2, // Number of pages
+          controller: pageController,
+          onPageChanged: (index) {
+            setState(() {
+              current = index;
+            });
+          },
+          itemBuilder: (context, index) {
+            // Your Tab Contents
+            if (index == 0) {
+              // First tab content: Topic
+              return ListView.builder(
+                controller: _scrollController,
+                itemCount: topicViewModel.topics.length,
+                itemBuilder: (context, index) {
+                  final topic = topicViewModel.topics[index];
+                  return TopicCard(
+                    topic: topic,
+                    onContinue: () {
+                      // Handle continue action here
+                      Navigator.pushNamed(context, RouteName.topicDetailScreen,
+                          arguments: topic);
+                    },
+                  );
+                },
+              );
+            } else {
+              // Second tab content: Folder
+              return Center(
+                child: Text('Folder content goes here'),
+              );
+            }
+          },
+        ),
+        if (topicViewModel.isLoading)
+          Container(
+            color: Colors.black45,
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
+          ),
+      ]),
     );
   }
 }
