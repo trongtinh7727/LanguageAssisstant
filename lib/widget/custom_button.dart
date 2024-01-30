@@ -16,26 +16,26 @@ class CustomButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Color btnBack = buttonBackColor;
-    if (this.btnBackground != Colors.black) {
+    if (btnBackground != Colors.black) {
       btnBack = btnBackground;
     }
     return SizedBox(
       width: 108,
       child: ElevatedButton(
         onPressed: onContinue,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: btnBack, // Sử dụng giá trị buttonBackColor
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5),
+            side: BorderSide(color: primaryColor, width: 2),
+          ),
+        ),
         child: Text(
           word,
           style: TextStyle(
             color: buttonTextColor,
             fontWeight: FontWeight.bold,
             fontSize: 10,
-          ),
-        ),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: btnBack, // Sử dụng giá trị buttonBackColor
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(5),
-            side: BorderSide(color: primaryColor, width: 2),
           ),
         ),
       ),

@@ -2,12 +2,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:languageassistant/model/models/topic_model.dart';
 import 'package:languageassistant/model/models/word_model.dart';
+import 'package:languageassistant/model/repository/topic_repository.dart';
 import 'package:languageassistant/utils/app_color.dart';
 import 'package:languageassistant/utils/app_enum.dart';
 import 'package:languageassistant/utils/date_time_util.dart';
 import 'package:languageassistant/view_model/topic_view_model.dart';
 import 'package:languageassistant/widget/custom_button.dart';
 import 'package:languageassistant/widget/personal_topic_card.dart';
+import 'package:languageassistant/widget/user_leaderboard_item.dart';
 import 'package:languageassistant/widget/word_item.dart';
 import 'package:provider/provider.dart';
 
@@ -81,101 +83,25 @@ class _TopicDetailScreenState extends State<TopicDetailScreen> {
           ),
         ],
       ),
-      body: Stack(
-        children: <Widget>[
-          Column(
-            children: [
-              topicInforSection(viewCount, wordProgress),
-              Row(
-                children: [
-                  Text(
-                    'Các thuật ngữ trong chủ đề',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              controller: _scrollController,
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 5),
+                child: Column(
+                  children: [
+                    topicInforSection(viewCount, wordProgress),
+                    SizedBox(
+                      height: 8,
                     ),
-                  ),
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: DropdownMenu<String>(
-                        initialSelection: list.first,
-                        width: 150,
-                        inputDecorationTheme: InputDecorationTheme(
-                            isDense: true,
-                            floatingLabelAlignment:
-                                FloatingLabelAlignment.center,
-                            constraints: const BoxConstraints(maxHeight: 40)),
-                        onSelected: (String? value) {
-                          // This is called when the user selects an item.
-                          setState(() {
-                            dropdownValue = value!;
-                            switch (value) {
-                              case "Tất cả":
-                                topicViewModel.fetchWordsByStatus(
-                                    _auth.currentUser!.uid,
-                                    widget.topic.id,
-                                    WordStatus.ALL);
-                                break;
-                              case "Đã học":
-                                topicViewModel.fetchWordsByStatus(
-                                    _auth.currentUser!.uid,
-                                    widget.topic.id,
-                                    WordStatus.LEARNED);
-                                break;
-                              case "Chưa học":
-                                topicViewModel.fetchWordsByStatus(
-                                    _auth.currentUser!.uid,
-                                    widget.topic.id,
-                                    WordStatus.NOT_LEARNED);
-                                break;
-                              case "Đã thành thạo":
-                                topicViewModel.fetchWordsByStatus(
-                                    _auth.currentUser!.uid,
-                                    widget.topic.id,
-                                    WordStatus.MASTERED);
-                                break;
-                            }
-                          });
-                        },
-                        dropdownMenuEntries:
-                            list.map<DropdownMenuEntry<String>>((String value) {
-                          return DropdownMenuEntry<String>(
-                            value: value,
-                            label: value,
-                          );
-                        }).toList(),
-                        textStyle: TextStyle(
-                          fontSize:
-                              14, // Điều chỉnh kích thước font cho Dropdown
-                          fontWeight: FontWeight
-                              .normal, // Điều chỉnh độ đậm của font cho Dropdown
-                          color: Colors
-                              .black, // Điều chỉnh màu sắc của font cho Dropdown
-                          // Căn lề phải cho Dropdown
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 8,
-              ),
-              Expanded(
-                child: ListView.builder(
-                  controller: _scrollController,
-                  itemCount: topicViewModel.words.length,
-                  itemBuilder: (context, index) {
-                    final word = topicViewModel.words[index];
-                    return WordItem(
-                      word: word,
-                    );
-                  },
+                    leaderBoardSection(),
+                    wordSection(list, dropdownValue),
+                  ],
                 ),
               ),
-            ],
+            ),
           ),
           if (topicViewModel.isLoading)
             Container(
@@ -189,7 +115,138 @@ class _TopicDetailScreenState extends State<TopicDetailScreen> {
     );
   }
 
-// topicInforSection
+  Column wordSection(List<String> list, String dropdownValue) {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Text(
+              'Các thuật ngữ trong chủ đề',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+            Expanded(
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: DropdownMenu<String>(
+                  initialSelection: list.first,
+                  width: 150,
+                  inputDecorationTheme: InputDecorationTheme(
+                    isDense: true,
+                    floatingLabelAlignment: FloatingLabelAlignment.center,
+                    constraints: const BoxConstraints(maxHeight: 40),
+                  ),
+                  onSelected: (String? value) {
+                    // This is called when the user selects an item.
+                    setState(() {
+                      dropdownValue = value!;
+                      switch (value) {
+                        case "Tất cả":
+                          topicViewModel.fetchWordsByStatus(
+                            _auth.currentUser!.uid,
+                            widget.topic.id,
+                            WordStatus.ALL,
+                          );
+                          break;
+                        case "Đã học":
+                          topicViewModel.fetchWordsByStatus(
+                            _auth.currentUser!.uid,
+                            widget.topic.id,
+                            WordStatus.LEARNED,
+                          );
+                          break;
+                        case "Chưa học":
+                          topicViewModel.fetchWordsByStatus(
+                            _auth.currentUser!.uid,
+                            widget.topic.id,
+                            WordStatus.NOT_LEARNED,
+                          );
+                          break;
+                        case "Đã thành thạo":
+                          topicViewModel.fetchWordsByStatus(
+                            _auth.currentUser!.uid,
+                            widget.topic.id,
+                            WordStatus.MASTERED,
+                          );
+                          break;
+                      }
+                    });
+                  },
+                  dropdownMenuEntries: list
+                      .map<DropdownMenuEntry<String>>(
+                        (String value) => DropdownMenuEntry<String>(
+                          value: value,
+                          label: value,
+                        ),
+                      )
+                      .toList(),
+                  textStyle: TextStyle(
+                    fontSize: 14, // Điều chỉnh kích thước font cho Dropdown
+                    fontWeight: FontWeight
+                        .normal, // Điều chỉnh độ đậm của font cho Dropdown
+                    color: Colors
+                        .black, // Điều chỉnh màu sắc của font cho Dropdown
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(
+          height: 8,
+        ),
+        ListView.builder(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          itemCount: topicViewModel.words.length,
+          itemBuilder: (context, index) {
+            final word = topicViewModel.words[index];
+            return WordItem(
+              word: word,
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  Column leaderBoardSection() {
+    return Column(
+      children: [
+        Text(
+          'Bảng Xếp Hạng',
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+        ),
+        SizedBox(
+          height: 8,
+        ),
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 5),
+          height: 200, // Adjust height accordingly
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: topicViewModel
+                .ranks.length, // Replace with the actual number of items
+            itemBuilder: (context, index) {
+              final item = topicViewModel.ranks[index];
+              return UserLeaderBoardItem(
+                userRank: item,
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  // topicInforSection
   Container topicInforSection(int viewCount, String wordProgress) {
     return Container(
       padding: EdgeInsets.all(5.0),

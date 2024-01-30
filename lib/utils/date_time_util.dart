@@ -41,4 +41,24 @@ class DateTimeUtil {
         "${time.hour}:${time.minute} ${time.day} tháng ${time.month}, ${time.year}";
     return formattedDate;
   }
+
+  static String formatTimeDuration(int seconds) {
+    int hours = seconds ~/ 3600;
+    int minutes = (seconds % 3600) ~/ 60;
+    int remainingSeconds = seconds % 60;
+
+    StringBuffer timeStringBuilder = StringBuffer();
+
+    if (hours > 0) {
+      timeStringBuilder.write('${hours}h');
+    }
+
+    if (minutes > 0 || hours > 0) {
+      timeStringBuilder.write('${minutes}p');
+    }
+
+    timeStringBuilder.write('${remainingSeconds}');
+
+    return timeStringBuilder.toString();
+  }
 }

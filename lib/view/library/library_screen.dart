@@ -155,6 +155,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
                       // Handle continue action here
                       topicViewModel.fetchWordsByStatus(
                           _auth.currentUser!.uid, topic.id, WordStatus.ALL);
+                      topicViewModel.fetchLeaderBoard(topic.id);
                       Navigator.pushNamed(context, RouteName.topicDetailScreen,
                           arguments: topic);
                     },

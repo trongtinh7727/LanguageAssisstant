@@ -18,13 +18,13 @@ class TopicCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final int wordLearned = topic.wordLearned;
     final int wordCount = topic.wordCount;
-    final int viewCount = 122;
+    final int viewCount = topic.viewCount;
     String wordProgress = "$wordCount";
 
     if (topic.wordLearned >= 0) {
       wordProgress = "$wordLearned/$wordCount";
     }
-    final String word = "Chi Tiết";
+    const String word = "Chi Tiết";
     return Card(
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
@@ -41,7 +41,7 @@ class TopicCard extends StatelessWidget {
                 Expanded(
                   child: Text(
                     topic.title,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
                     ),
@@ -52,24 +52,24 @@ class TopicCard extends StatelessWidget {
                 ),
                 Text(
                   DateTimeUtil.getDateFromTimestamp(topic.lastAccess),
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 12,
                     color: Colors.grey,
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Row(
               children: [
                 Text(
                   '$wordProgress words',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 12,
                     color: Colors.grey,
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 20,
                 ),
                 if (topic.wordLearned < 0)
@@ -81,19 +81,19 @@ class TopicCard extends StatelessWidget {
                 if (topic.wordLearned < 0)
                   Text(
                     '$viewCount',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 12,
                       color: Colors.grey,
                     ),
                   ),
               ],
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             if (topic.wordLearned >= 0)
               SizedBox(
                 width: 150,
                 child: ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  borderRadius: const BorderRadius.all(Radius.circular(10)),
                   child: LinearProgressIndicator(
                     value: topic.wordLearned / topic.wordCount,
                     minHeight: 7,
@@ -102,7 +102,7 @@ class TopicCard extends StatelessWidget {
                   ),
                 ),
               ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -117,14 +117,14 @@ class TopicCard extends StatelessWidget {
                         print('Error loading background image: $exception');
                       },
                       child: topic.authoravatar == null
-                          ? Icon(Icons
+                          ? const Icon(Icons
                               .person) // Fallback icon in case the URL is null
                           : null,
                     ),
-                    SizedBox(width: 8),
+                    const SizedBox(width: 8),
                     Text(
                       topic.authorName ?? "",
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 12,
                       ),
                       overflow: TextOverflow.ellipsis,

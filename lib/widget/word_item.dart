@@ -34,7 +34,7 @@ class WordItem extends StatelessWidget {
                 Expanded(
                   child: Text(
                     word.english ?? "English",
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
                     ),
@@ -58,25 +58,25 @@ class WordItem extends StatelessWidget {
                     onTap: () {
                       print('Star tapped!');
                     },
-                    child: Icon(Icons.star_border_outlined),
+                    child: const Icon(Icons.star_border_outlined),
                   ),
                 InkWell(
                   onTap: () {
                     print('Volume tapped!');
                   },
-                  child: Icon(Icons.volume_up_rounded),
+                  child: const Icon(Icons.volume_up_rounded),
                 ),
               ],
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               word.vietnamese ?? "vietnamese",
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 12,
                 color: Colors.grey,
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
           ],
         ),
       ),

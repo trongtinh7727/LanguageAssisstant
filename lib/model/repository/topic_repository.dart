@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 import 'package:languageassistant/model/models/topic_model.dart';
 import 'package:languageassistant/model/models/user_model.dart';
 import 'package:languageassistant/model/repository/base_repository.dart';
+import 'package:languageassistant/utils/date_time_util.dart';
 
 class TopicRepository extends BaseRepository<TopicModel> {
   TopicRepository()
@@ -59,6 +61,54 @@ class TopicRepository extends BaseRepository<TopicModel> {
       return Pair([], Pair(false, null));
     }
   }
+
+  Future<List<RankItem>> getLeaderBoard(String topicID) async {
+    final leaderBoardCollection =
+        _firestore.collection("topics").doc(topicID).collection("leaderBoard");
+
+    try {
+      final querySnapshot = await leaderBoardCollection
+          .orderBy("score", descending: true)
+          .orderBy("timeDuration", descending: false)
+          .orderBy("submitted", descending: false)
+          .limit(10)
+          .get();
+
+      List<RankItem> leaderBoardList = [];
+
+      for (var document in querySnapshot.docs) {
+        final leaderBoardData = document.data();
+        final userRef = leaderBoardData['userRef'] as DocumentReference?;
+
+        if (userRef != null) {
+          final userSnapshot = await userRef.get();
+          final user = UserModel.fromMap(
+              userSnapshot.data() as Map<String, dynamic>, userSnapshot.id);
+
+          final timeDuration = leaderBoardData['timeDuration'] ?? 0;
+          final time = DateTimeUtil.formatTimeDuration(timeDuration);
+          DateTime date = DateTimeUtil.timestampToDateTime(
+              leaderBoardData['submitted'] ?? 0);
+          String dateFormated = DateFormat('dd/MM/yyyy').format(date);
+          final top = "Top #${leaderBoardList.length + 1}";
+
+          leaderBoardList.add(
+            RankItem(
+              avatarUrl: user.avatarUrl ?? '',
+              name: user.name ?? '',
+              time: time,
+              date: dateFormated,
+              rank: top,
+            ),
+          );
+        }
+      }
+      return leaderBoardList;
+    } catch (e) {
+      print('Error fetching leaderboard: $e');
+      return [];
+    }
+  }
 }
 
 class Pair<T1, T2> {
@@ -66,4 +116,22 @@ class Pair<T1, T2> {
   final T2 second;
 
   Pair(this.first, this.second);
+}
+
+class RankItem {
+  final String avatarUrl;
+  final String name;
+  final String time;
+  final String date;
+  final String rank;
+
+  RankItem({
+    required this.avatarUrl,
+    required this.name,
+    required this.time,
+    required this.date,
+    required this.rank,
+  });
+
+  // Add a fromMap constructor if needed
 }

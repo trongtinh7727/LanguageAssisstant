@@ -9,11 +9,13 @@ import 'package:languageassistant/utils/app_enum.dart';
 class TopicViewModel extends ChangeNotifier {
   List<TopicModel> _topics = [];
   List<WordModel> _words = [];
+  List<RankItem> _ranks = [];
   final TopicRepository _topicRepository = TopicRepository();
   final WordRepository _wordRepository = WordRepository();
   bool _isLoading = false; // Thêm biến này
 
   List<TopicModel> get topics => _topics;
+  List<RankItem> get ranks => _ranks;
   List<WordModel> get words => _words; // Getter for words
 
   bool _hasNextPage = false;
@@ -36,6 +38,14 @@ class TopicViewModel extends ChangeNotifier {
       print('Error fetching topics: $e');
       notifyListeners();
     }
+  }
+
+  void fetchLeaderBoard(String topicID) async {
+    _isLoading = true; //
+    notifyListeners();
+    _ranks = await _topicRepository.getLeaderBoard(topicID);
+    _isLoading = false;
+    notifyListeners();
   }
 
   void fetchWordsByStatus(
