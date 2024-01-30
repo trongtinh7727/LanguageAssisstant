@@ -206,6 +206,8 @@ class _TopicDetailScreenState extends State<TopicDetailScreen> {
             final word = topicViewModel.words[index];
             return WordItem(
               word: word,
+              backgroundColor:
+                  index % 2 == 0 ? greyColor_100 : tabUnselectedColor,
             );
           },
         ),

@@ -1,19 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:languageassistant/model/models/topic_model.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:languageassistant/model/models/word_model.dart';
 import 'package:languageassistant/utils/app_color.dart';
-import 'package:languageassistant/utils/date_time_util.dart';
-import 'package:languageassistant/widget/custom_button.dart';
 
 class WordItem extends StatelessWidget {
   final WordModel word;
   final Color backgroundColor;
 
-  const WordItem({
+  WordItem({
     Key? key,
     required this.word,
     this.backgroundColor = Colors.white,
   }) : super(key: key);
+
+  final FlutterTts flutterTts = FlutterTts();
+
+  Future<void> _speak() async {
+    await flutterTts.setLanguage(
+        "en-US"); // Set the language to Vietnamese (adjust as needed)
+    await flutterTts.speak(word.english ?? "vietnamese");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,9 +67,7 @@ class WordItem extends StatelessWidget {
                     child: const Icon(Icons.star_border_outlined),
                   ),
                 InkWell(
-                  onTap: () {
-                    print('Volume tapped!');
-                  },
+                  onTap: _speak, // Call the speak method when tapped
                   child: const Icon(Icons.volume_up_rounded),
                 ),
               ],
@@ -73,7 +77,7 @@ class WordItem extends StatelessWidget {
               word.vietnamese ?? "vietnamese",
               style: const TextStyle(
                 fontSize: 12,
-                color: Colors.grey,
+                color: Color.fromARGB(255, 80, 71, 71),
               ),
             ),
             const SizedBox(height: 8),
