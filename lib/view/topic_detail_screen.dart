@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:languageassistant/model/models/topic_model.dart';
 import 'package:languageassistant/model/models/word_model.dart';
 import 'package:languageassistant/utils/app_color.dart';
+import 'package:languageassistant/utils/app_enum.dart';
 import 'package:languageassistant/utils/date_time_util.dart';
 import 'package:languageassistant/view_model/topic_view_model.dart';
 import 'package:languageassistant/widget/custom_button.dart';
@@ -20,6 +22,7 @@ class _TopicDetailScreenState extends State<TopicDetailScreen> {
   late PageController pageController;
   late ScrollController _scrollController;
   late TopicViewModel topicViewModel;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   int current = 0;
 
@@ -28,17 +31,7 @@ class _TopicDetailScreenState extends State<TopicDetailScreen> {
     super.initState();
     _scrollController = ScrollController();
     _scrollController.addListener(_scrollListener);
-
     pageController = PageController();
-    topicViewModel = Provider.of<TopicViewModel>(context, listen: false);
-
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   if (mounted) {
-    //     final topicViewModel =
-    //         Provider.of<TopicViewModel>(context, listen: false);
-    //     topicViewModel.fetchTopicsByUser('jQBsoZuLugWdlbCPWEDLShzw6tU2', 5);
-    //   }
-    // });
   }
 
   void _scrollListener() {
@@ -59,11 +52,12 @@ class _TopicDetailScreenState extends State<TopicDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final topicViewModel = Provider.of<TopicViewModel>(context);
     final int viewCount = widget.topic.viewCount;
     final int wordLearned = widget.topic.wordLearned;
     final int wordCount = widget.topic.wordCount;
     String wordProgress = "$wordCount";
+    topicViewModel = Provider.of<TopicViewModel>(context, listen: true);
+
     const List<String> list = <String>[
       'Tất cả',
       'Đã học',
@@ -117,6 +111,32 @@ class _TopicDetailScreenState extends State<TopicDetailScreen> {
                           // This is called when the user selects an item.
                           setState(() {
                             dropdownValue = value!;
+                            switch (value) {
+                              case "Tất cả":
+                                topicViewModel.fetchWordsByStatus(
+                                    _auth.currentUser!.uid,
+                                    widget.topic.id,
+                                    WordStatus.ALL);
+                                break;
+                              case "Đã học":
+                                topicViewModel.fetchWordsByStatus(
+                                    _auth.currentUser!.uid,
+                                    widget.topic.id,
+                                    WordStatus.LEARNED);
+                                break;
+                              case "Chưa học":
+                                topicViewModel.fetchWordsByStatus(
+                                    _auth.currentUser!.uid,
+                                    widget.topic.id,
+                                    WordStatus.NOT_LEARNED);
+                                break;
+                              case "Đã thành thạo":
+                                topicViewModel.fetchWordsByStatus(
+                                    _auth.currentUser!.uid,
+                                    widget.topic.id,
+                                    WordStatus.MASTERED);
+                                break;
+                            }
                           });
                         },
                         dropdownMenuEntries:
@@ -146,9 +166,9 @@ class _TopicDetailScreenState extends State<TopicDetailScreen> {
               Expanded(
                 child: ListView.builder(
                   controller: _scrollController,
-                  itemCount: topicViewModel.topics.length,
+                  itemCount: topicViewModel.words.length,
                   itemBuilder: (context, index) {
-                    final word = new WordModel(createTime: 0, updateTime: 0);
+                    final word = topicViewModel.words[index];
                     return WordItem(
                       word: word,
                     );

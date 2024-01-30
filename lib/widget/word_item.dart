@@ -43,12 +43,23 @@ class WordItem extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                InkWell(
-                  onTap: () {
-                    print('Star tapped!');
-                  },
-                  child: Icon(Icons.star_border_outlined),
-                ),
+                if (word.isMarked)
+                  InkWell(
+                    onTap: () {
+                      print('Star tapped!');
+                    },
+                    child: Icon(
+                      Icons.star_purple500_sharp,
+                      color: redColor,
+                    ),
+                  )
+                else
+                  InkWell(
+                    onTap: () {
+                      print('Star tapped!');
+                    },
+                    child: Icon(Icons.star_border_outlined),
+                  ),
                 InkWell(
                   onTap: () {
                     print('Volume tapped!');

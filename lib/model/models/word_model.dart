@@ -25,7 +25,6 @@ class WordModel {
     return {
       'english': english,
       'vietnamese': vietnamese,
-      'isMarked': isMarked,
       'createTime': createTime,
       'updateTime': updateTime,
       'imageUrl': imageUrl,
@@ -39,7 +38,6 @@ class WordModel {
       id: id,
       english: map['english'],
       vietnamese: map['vietnamese'],
-      isMarked: map['isMarked'],
       createTime: map['createTime'],
       updateTime: map['updateTime'],
       imageUrl: map['imageUrl'],

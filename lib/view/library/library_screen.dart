@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:languageassistant/routes/name_routes.dart';
 import 'package:languageassistant/utils/app_color.dart';
+import 'package:languageassistant/utils/app_enum.dart';
 import 'package:languageassistant/view_model/topic_view_model.dart';
 import 'package:languageassistant/widget/custom_button.dart';
 import 'package:languageassistant/widget/personal_topic_card.dart';
@@ -15,6 +17,8 @@ class _LibraryScreenState extends State<LibraryScreen> {
   late PageController pageController;
   late ScrollController _scrollController;
   late TopicViewModel topicViewModel;
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   int current = 0;
 
@@ -42,7 +46,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
       // Call load more method from your viewmodel
       if (topicViewModel.hasNextPage) {
         topicViewModel.fetchTopicsByUserMore(
-          'jQBsoZuLugWdlbCPWEDLShzw6tU2',
+          _auth.currentUser!.uid,
           5,
         );
       }
@@ -149,6 +153,8 @@ class _LibraryScreenState extends State<LibraryScreen> {
                     topic: topic,
                     onContinue: () {
                       // Handle continue action here
+                      topicViewModel.fetchWordsByStatus(
+                          _auth.currentUser!.uid, topic.id, WordStatus.ALL);
                       Navigator.pushNamed(context, RouteName.topicDetailScreen,
                           arguments: topic);
                     },

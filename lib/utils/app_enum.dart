@@ -1,0 +1,1 @@
+enum WordStatus { ALL, NOT_LEARNED, LEARNED, MASTERED }

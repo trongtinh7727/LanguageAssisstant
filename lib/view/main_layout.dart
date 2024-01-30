@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:languageassistant/utils/app_icons.dart';
@@ -15,6 +16,7 @@ class MainLayout extends StatefulWidget {
 
 class MainLayoutState extends State<MainLayout> {
   var currentIndex = 0;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -54,8 +56,7 @@ class MainLayoutState extends State<MainLayout> {
                 if (index == 1) {
                   final topicViewModel =
                       Provider.of<TopicViewModel>(context, listen: false);
-                  topicViewModel.fetchTopicsByUser(
-                      'jQBsoZuLugWdlbCPWEDLShzw6tU2', 5);
+                  topicViewModel.fetchTopicsByUser(_auth.currentUser!.uid, 5);
                 }
               });
             },

@@ -17,15 +17,15 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     _checkUser();
     Future.delayed(const Duration(seconds: 3), () {
-      Navigator.pushReplacementNamed(context, RouteName.mainLayout);
+      // Navigator.pushReplacementNamed(context, RouteName.mainLayout);
 
-      // if (_user == null) {
-      //   // If the user is not authenticated, navigate to the login screen.
-      //   Navigator.pushReplacementNamed(context, RouteName.loginScreen);
-      // } else {
-      //   // If the user is authenticated, navigate to the home screen.
-      //   Navigator.pushReplacementNamed(context, RouteName.homeScreen);
-      // }
+      if (_user == null) {
+        // If the user is not authenticated, navigate to the login screen.
+        Navigator.pushReplacementNamed(context, RouteName.loginScreen);
+      } else {
+        // If the user is authenticated, navigate to the home screen.
+        Navigator.pushReplacementNamed(context, RouteName.mainLayout);
+      }
     });
   }
 
