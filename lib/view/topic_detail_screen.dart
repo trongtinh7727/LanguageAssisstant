@@ -204,8 +204,14 @@ class _TopicDetailScreenState extends State<TopicDetailScreen> {
           itemCount: topicViewModel.words.length,
           itemBuilder: (context, index) {
             final word = topicViewModel.words[index];
+            final userID = _auth.currentUser!.uid;
+            final topicID = widget.topic.id;
+
             return WordItem(
               word: word,
+              topicID: topicID,
+              userID: userID,
+              topicViewModel: topicViewModel,
               backgroundColor:
                   index % 2 == 0 ? greyColor_100 : tabUnselectedColor,
             );

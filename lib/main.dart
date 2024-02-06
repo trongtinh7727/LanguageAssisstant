@@ -8,10 +8,25 @@ import 'package:provider/provider.dart';
 import 'package:languageassistant/view_model/auth_provider.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
+import 'package:window_manager/window_manager.dart';
 
 void main() async {
   tz.initializeTimeZones();
   WidgetsFlutterBinding.ensureInitialized();
+  //window_manager on desktop app
+  await windowManager.ensureInitialized();
+  WindowOptions windowOptions = WindowOptions(
+      size: Size(500, 800),
+      center: true,
+      backgroundColor: Colors.transparent,
+      skipTaskbar: false,
+      titleBarStyle: TitleBarStyle.normal,
+      maximumSize: Size(500, 800));
+  windowManager.waitUntilReadyToShow(windowOptions, () async {
+    await windowManager.show();
+    await windowManager.focus();
+  });
+
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(MyApp());
 }

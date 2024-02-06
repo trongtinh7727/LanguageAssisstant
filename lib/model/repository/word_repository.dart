@@ -59,4 +59,37 @@ class WordRepository extends BaseRepository<WordModel> {
       onComplete([]);
     });
   }
+
+  Future<void> mark(
+      String topicId, String wordId, String userId, bool newStatus) async {
+    final wordCollection = FirebaseFirestore.instance
+        .collection('topics')
+        .doc(topicId)
+        .collection('words')
+        .doc(wordId);
+
+    try {
+      final documentSnapshot = await wordCollection.get();
+
+      if (documentSnapshot.exists) {
+        final wordData = documentSnapshot.data() as Map<String, dynamic>;
+        final word = WordModel.fromMap(wordData, documentSnapshot.id);
+
+        final updatedStatusByUser = Map<String, bool>.from(word.bookmarkByUser);
+        updatedStatusByUser[userId] = newStatus;
+
+        final currentTime = DateTime.now().millisecondsSinceEpoch;
+
+        word.updateTime = currentTime;
+        word.bookmarkByUser = updatedStatusByUser;
+
+        await wordCollection.update({
+          'bookmarkByUser': updatedStatusByUser,
+          'updateTime': currentTime,
+        });
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
 }

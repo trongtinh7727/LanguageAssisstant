@@ -82,6 +82,22 @@ class TopicViewModel extends ChangeNotifier {
     }
   }
 
+  Future<void> markWord(
+      String topicId, String wordId, String userId, bool newStatus) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      final result =
+          await _wordRepository.mark(topicId, wordId, userId, newStatus);
+      _isLoading = false; // Cập nhật lại trạng thái sau khi tải xong
+      notifyListeners();
+    } catch (e) {
+      _isLoading = false; // Cập nhật lại trạng thái nếu có lỗi
+      print('Error fetching topics: $e');
+      notifyListeners();
+    }
+  }
+
   Future<void> fetchTopicsByUserMore(String userId, int pageSize) async {
     // _isLoading = true; // Cập nhật trạng thái tải
     notifyListeners();
