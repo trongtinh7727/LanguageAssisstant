@@ -31,7 +31,7 @@ class TopicCard extends StatelessWidget {
           side: BorderSide(color: primaryColor, width: 2)),
       elevation: 4,
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -50,16 +50,25 @@ class TopicCard extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                Text(
-                  DateTimeUtil.getDateFromTimestamp(topic.lastAccess),
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey,
+                if (topic.lastAccess != 0)
+                  Text(
+                    DateTimeUtil.getDateFromTimestamp(topic.lastAccess),
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey,
+                    ),
+                  )
+                else
+                  Text(
+                    DateTimeUtil.getDateFromTimestamp(topic.createTime),
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey,
+                    ),
                   ),
-                ),
               ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 6),
             Row(
               children: [
                 Text(
@@ -70,7 +79,7 @@ class TopicCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(
-                  width: 20,
+                  width: 8,
                 ),
                 if (topic.wordLearned < 0)
                   Icon(
@@ -88,7 +97,7 @@ class TopicCard extends StatelessWidget {
                   ),
               ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 6),
             if (topic.wordLearned >= 0)
               SizedBox(
                 width: 150,
@@ -102,7 +111,7 @@ class TopicCard extends StatelessWidget {
                   ),
                 ),
               ),
-            const SizedBox(height: 16),
+            if (topic.wordLearned >= 0) const SizedBox(height: 8),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

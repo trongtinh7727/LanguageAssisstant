@@ -30,14 +30,6 @@ class _LibraryScreenState extends State<LibraryScreen> {
 
     pageController = PageController();
     topicViewModel = Provider.of<TopicViewModel>(context, listen: false);
-
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   if (mounted) {
-    //     final topicViewModel =
-    //         Provider.of<TopicViewModel>(context, listen: false);
-    //     topicViewModel.fetchTopicsByUser('jQBsoZuLugWdlbCPWEDLShzw6tU2', 5);
-    //   }
-    // });
   }
 
   void _scrollListener() {
@@ -57,7 +49,6 @@ class _LibraryScreenState extends State<LibraryScreen> {
   void dispose() {
     _scrollController.removeListener(_scrollListener);
     _scrollController.dispose();
-
     pageController.dispose();
     super.dispose();
   }

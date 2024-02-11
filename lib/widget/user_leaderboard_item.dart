@@ -14,6 +14,7 @@ class UserLeaderBoardItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(8.0),
+      margin: EdgeInsets.symmetric(horizontal: 5),
       decoration: BoxDecoration(
         color: tabUnselectedColor,
         borderRadius: BorderRadius.circular(10),

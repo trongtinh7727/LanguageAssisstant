@@ -75,6 +75,16 @@ flutter:
     - assets/images/logo.png
     - assets/images/logo_light.png
     - assets/images/background.png
+    - assets/images/top1.png
+    - assets/images/top2.png
+    - assets/images/top3.png
+    - assets/images/top4.png
+    - assets/images/top5.png
+    - assets/images/top6.png
+    - assets/images/top7.png
+    - assets/images/top8.png
+    - assets/images/top9.png
+    - assets/images/top10.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -6,6 +6,7 @@ import 'package:languageassistant/view/account/account_screen.dart';
 import 'package:languageassistant/view/discovery/discovery_screen.dart';
 import 'package:languageassistant/view/home/home_screen.dart';
 import 'package:languageassistant/view/library/library_screen.dart';
+import 'package:languageassistant/view_model/home_view_model.dart';
 import 'package:languageassistant/view_model/topic_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -19,11 +20,26 @@ class MainLayoutState extends State<MainLayout> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        final homeViewModel =
+            Provider.of<HomeViewModel>(context, listen: false);
+        homeViewModel.fetchRecentTopics(_auth.currentUser!.uid, 10);
+        homeViewModel.fetchNewTopics(5);
+        homeViewModel.fetchTopTopics(10);
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     double displayWidth = MediaQuery.of(context).size.width;
     if (displayWidth > 500) {
       displayWidth = 500;
     }
+
     return Scaffold(
       body: IndexedStack(
         index: currentIndex,
@@ -58,10 +74,24 @@ class MainLayoutState extends State<MainLayout> {
               onTap: () {
                 setState(() {
                   currentIndex = index;
-                  if (index == 1) {
-                    final topicViewModel =
-                        Provider.of<TopicViewModel>(context, listen: false);
-                    topicViewModel.fetchTopicsByUser(_auth.currentUser!.uid, 5);
+                  final topicViewModel =
+                      Provider.of<TopicViewModel>(context, listen: false);
+                  final homeViewModel =
+                      Provider.of<HomeViewModel>(context, listen: false);
+                  switch (currentIndex) {
+                    case 0:
+                      homeViewModel.fetchRecentTopics(
+                          _auth.currentUser!.uid, 10);
+                      homeViewModel.fetchNewTopics(5);
+                      homeViewModel.fetchTopTopics(10);
+                      break;
+                    case 1:
+                      topicViewModel.fetchTopicsByUser(
+                          _auth.currentUser!.uid, 5);
+
+                      break;
+
+                    default:
                   }
                 });
               },
