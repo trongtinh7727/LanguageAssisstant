@@ -41,6 +41,7 @@ class MainLayoutState extends State<MainLayout> {
     }
 
     return Scaffold(
+      extendBody: true,
       body: IndexedStack(
         index: currentIndex,
         children: [
@@ -170,7 +171,7 @@ class MainLayoutState extends State<MainLayout> {
                               size: displayWidth * .076,
                               color: index == currentIndex
                                   ? Colors.blueAccent
-                                  : Colors.black26,
+                                  : Colors.black,
                             ),
                           ],
                         ),
