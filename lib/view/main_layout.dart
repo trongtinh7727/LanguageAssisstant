@@ -6,6 +6,7 @@ import 'package:languageassistant/view/account/account_screen.dart';
 import 'package:languageassistant/view/discovery/discovery_screen.dart';
 import 'package:languageassistant/view/home/home_screen.dart';
 import 'package:languageassistant/view/library/library_screen.dart';
+import 'package:languageassistant/view_model/auth_provider.dart';
 import 'package:languageassistant/view_model/home_view_model.dart';
 import 'package:languageassistant/view_model/topic_view_model.dart';
 import 'package:provider/provider.dart';
@@ -39,6 +40,8 @@ class MainLayoutState extends State<MainLayout> {
     if (displayWidth > 500) {
       displayWidth = 500;
     }
+    final authProvider = Provider.of<AuthenticationProvider>(context);
+    authProvider.setUserModel();
 
     return Scaffold(
       extendBody: true,
@@ -48,7 +51,9 @@ class MainLayoutState extends State<MainLayout> {
           HomeScreen(),
           LibraryScreen(),
           DiscoveryScreen(),
-          AccountScreen()
+          AccountScreen(
+            userModel: authProvider.userModel,
+          )
         ],
       ),
       bottomNavigationBar: Container(

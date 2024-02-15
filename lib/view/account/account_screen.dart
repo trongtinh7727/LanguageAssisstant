@@ -1,59 +1,144 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:hexcolor/hexcolor.dart';
+import 'package:languageassistant/model/models/user_model.dart';
+import 'package:languageassistant/routes/name_routes.dart';
+import 'package:languageassistant/utils/app_color.dart';
+import 'package:languageassistant/utils/app_enum.dart';
+import 'package:languageassistant/view_model/home_view_model.dart';
+import 'package:languageassistant/view_model/topic_view_model.dart';
+import 'package:languageassistant/widget/personal_topic_card.dart';
+import 'package:languageassistant/widget/topic_leaderboard_item.dart';
+import 'package:provider/provider.dart';
 
-class AccountScreen extends StatelessWidget {
+class AccountScreen extends StatefulWidget {
+  final UserModel? userModel;
+  const AccountScreen({super.key, required this.userModel});
+  @override
+  _AccountScreenState createState() => _AccountScreenState();
+}
+
+class _AccountScreenState extends State<AccountScreen> {
+  late HomeViewModel _homeViewModel;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _homeViewModel = Provider.of<HomeViewModel>(context, listen: false);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final _homeViewModel = Provider.of<HomeViewModel>(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('IIEX'),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () {
-              // Implement your search action
-            },
-          ),
-        ],
+        title: Text('Cá nhân'),
       ),
-      body: ListView(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text('Tiếp tục bài học trước',
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ListView(
+          physics: BouncingScrollPhysics(),
+          children: [
+            Center(
+              child: Stack(
+                children: [
+                  if (widget.userModel != null)
+                    buildImage(widget.userModel!.avatarUrl!, () => {}),
+                  Positioned(
+                    bottom: 0,
+                    right: 4,
+                    child: buildEditIcon(primaryColor, true),
+                  ),
+                ],
+              ),
+            ),
+            Text('Bài viết',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            _newTopics(),
+            if (_homeViewModel.isLoading)
+              Text('Đang load',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildImage(String imagePath, VoidCallback onClicked) {
+    final image = NetworkImage(imagePath);
+
+    return ClipOval(
+      child: Material(
+        color: Colors.transparent,
+        child: Ink.image(
+          image: image,
+          fit: BoxFit.cover,
+          width: 128,
+          height: 128,
+          child: InkWell(onTap: onClicked),
+        ),
+      ),
+    );
+  }
+
+  Widget buildEditIcon(Color color, bool isEdit) => buildCircle(
+        color: Colors.white,
+        all: 3,
+        child: buildCircle(
+          color: color,
+          all: 8,
+          child: Icon(
+            isEdit ? Icons.add_a_photo : Icons.edit,
+            color: Colors.white,
+            size: 20,
           ),
-          // Your 'Topic: Expressions/Questions on Classe' card here
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text('Hôm nay làm gì?',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          ),
-          // Your list of activities here
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Text('Gợi ý cho bạn',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          ),
-          Container(
-            height: 150, // Adjust height accordingly
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: 10, // Replace with the actual number of items
-              itemBuilder: (BuildContext context, int index) {
-                return Card(
-                  // Replace with actual data
-                  child: Text("Texxt"),
-                );
+        ),
+      );
+
+  Widget buildCircle({
+    required Widget child,
+    required double all,
+    required Color color,
+  }) =>
+      ClipOval(
+        child: Container(
+          padding: EdgeInsets.all(all),
+          color: color,
+          child: child,
+        ),
+      );
+
+  Widget _newTopics() {
+    final _homeViewModel = Provider.of<HomeViewModel>(context);
+    final _topicViewModel = Provider.of<TopicViewModel>(context);
+    return SizedBox(
+      height: 500, // Chiều cao cố định cho ListView.builder
+      width: MediaQuery.of(context).size.width - 20,
+      child: ListView.builder(
+        // scrollDirection: Axis.vertical,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: _homeViewModel.topics.length,
+        itemBuilder: (context, index) {
+          final topic = _homeViewModel.topics[index];
+          return SizedBox(
+            width: 320,
+            height: 125,
+            child: TopicCard(
+              topic: topic,
+              onContinue: () {
+                // Handle continue action here
+                _topicViewModel.fetchWordsByStatus(
+                    _auth.currentUser!.uid, topic.id, WordStatus.ALL);
+                _topicViewModel.fetchLeaderBoard(topic.id);
+                Navigator.pushNamed(context, RouteName.topicDetailScreen,
+                    arguments: topic);
               },
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Text('Cộng đồng',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          ),
-          // Your 'Community' section here
-        ],
+          );
+        },
       ),
     );
   }

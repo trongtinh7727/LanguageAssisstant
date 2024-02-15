@@ -10,11 +10,14 @@ class AuthenticationProvider with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final UserRepository _userRepository = UserRepository();
 
+  UserModel? _userModel;
+
   bool _isLoading = false;
   String _errorMessage = '';
 
   bool get isLoading => _isLoading;
   String get errorMessage => _errorMessage;
+  UserModel? get userModel => _userModel;
 
   void setLoading(bool loading) {
     _isLoading = loading;
@@ -61,6 +64,10 @@ class AuthenticationProvider with ChangeNotifier {
     setLoading(false);
   }
 
+  void setUserModel() async {
+    _userModel = await _userRepository.read(_auth.currentUser!.uid);
+  }
+
   Future<bool> signInWithEmailAndPassword(String email, String password) async {
     setLoading(true);
     try {
@@ -71,6 +78,7 @@ class AuthenticationProvider with ChangeNotifier {
         );
         setErrorMessage(''); // Clear any previous error messages
         setLoading(false);
+        setUserModel();
         return true; // Sign-in successful
       } else {
         setErrorMessage('Email and password cannot be empty.');
