@@ -1,11 +1,17 @@
 import 'dart:math';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:languageassistant/model/models/topic_model.dart';
 import 'package:languageassistant/model/models/word_model.dart';
+import 'package:languageassistant/routes/name_routes.dart';
 import 'package:languageassistant/utils/app_color.dart';
+import 'package:languageassistant/utils/app_enum.dart';
+import 'package:languageassistant/view_model/topic_view_model.dart';
 import 'package:languageassistant/widget/custom_button.dart';
 import 'package:languageassistant/widget/text_field_widget.dart';
 import 'package:languageassistant/widget/word_input_field.dart';
+import 'package:provider/provider.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
@@ -16,17 +22,19 @@ class AddTopicScreen extends StatefulWidget {
 
 class _AddTopicScreenState extends State<AddTopicScreen> {
   // List of text controllers for each field
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   final TextEditingController _titleController = TextEditingController();
   final List<WordModel> _words = [];
   final Random _random = Random();
   void _addTermField() {
     tz.TZDateTime nowInTimeZone =
-        tz.TZDateTime.now(tz.getLocation('Asia/Bangkok'));
+        tz.TZDateTime.now(tz.getLocation('Asia/Ho_Chi_Minh'));
+    int currentTimesnap = (nowInTimeZone.millisecondsSinceEpoch / 1000).toInt();
     setState(() {
       _words.add(WordModel(
           id: _generateUniqueId(),
-          createTime: nowInTimeZone.millisecondsSinceEpoch,
-          updateTime: nowInTimeZone.millisecondsSinceEpoch));
+          createTime: currentTimesnap,
+          updateTime: currentTimesnap));
     });
   }
 
@@ -44,6 +52,8 @@ class _AddTopicScreenState extends State<AddTopicScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final topicViewModel = Provider.of<TopicViewModel>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Thêm Topic'),
@@ -94,14 +104,18 @@ class _AddTopicScreenState extends State<AddTopicScreen> {
               tooltip: 'Thêm thuật ngữ',
             ),
             ElevatedButton(
-              onPressed: _saveAndShowWords,
+              onPressed: () => _saveAndShowWords(topicViewModel),
               style: ElevatedButton.styleFrom(
                 backgroundColor: primaryColor,
                 fixedSize: Size(295, 50),
                 padding:
                     const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
               ),
-              child: Text('Lưu', style: TextStyle(color: whiteColor)),
+              child: topicViewModel.isLoading
+                  ? CircularProgressIndicator(
+                      color: whiteColor,
+                    )
+                  : Text('Lưu', style: TextStyle(color: whiteColor)),
             ),
           ],
         ),
@@ -115,30 +129,30 @@ class _AddTopicScreenState extends State<AddTopicScreen> {
     });
   }
 
-  void _saveAndShowWords() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('List of Words'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: _words.map((word) {
-                return Text(
-                    'English: ${word.english}, Vietnamese: ${word.vietnamese}');
-              }).toList(),
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Close'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
+  void _saveAndShowWords(TopicViewModel topicViewModel) async {
+    tz.TZDateTime nowInTimeZone =
+        tz.TZDateTime.now(tz.getLocation('Asia/Ho_Chi_Minh'));
+    int currentTimesnap = (nowInTimeZone.millisecondsSinceEpoch / 1000).toInt();
+    TopicModel _topic = TopicModel(
+        id: "",
+        title: _titleController.value.text,
+        description: '',
+        wordCount: _words.length,
+        viewCount: 0,
+        public: false,
+        author: _auth.currentUser!.uid,
+        createTime: currentTimesnap,
+        updateTime: currentTimesnap);
+    try {
+      final addedTopic = await topicViewModel.createTopic(_topic, _words);
+      topicViewModel.fetchWordsByStatus(
+          _auth.currentUser!.uid, addedTopic.id, WordStatus.ALL);
+      topicViewModel.fetchLeaderBoard(addedTopic.id);
+      Navigator.pushNamed(context, RouteName.topicDetailScreen,
+          arguments: addedTopic);
+    } catch (e) {
+      print("Error saving topic: $e");
+      // Handle the error, maybe show a dialog to the user.
+    }
   }
 }

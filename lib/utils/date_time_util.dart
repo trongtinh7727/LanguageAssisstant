@@ -1,14 +1,16 @@
 import 'package:intl/intl.dart';
 
 class DateTimeUtil {
+  static final int _offset = 7 * 3600 * 1000;
   static DateTime timestampToDateTime(int timestamp) {
     // Dart's DateTime uses milliseconds since epoch, so multiply by 1000
-    return DateTime.fromMillisecondsSinceEpoch(timestamp * 1000, isUtc: true);
+    return DateTime.fromMillisecondsSinceEpoch(timestamp * 1000, isUtc: true)
+        .add(Duration(milliseconds: _offset));
   }
 
   static String getDateFromTimestamp(int timestamp) {
     DateTime timestampDateTime = timestampToDateTime(timestamp);
-    DateTime now = DateTime.now().toUtc();
+    DateTime now = DateTime.now().toUtc().add(Duration(milliseconds: _offset));
 
     Duration difference = now.difference(timestampDateTime);
 

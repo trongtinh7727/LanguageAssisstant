@@ -53,54 +53,6 @@ class _LibraryScreenState extends State<LibraryScreen> {
     super.dispose();
   }
 
-  Widget _buildCustomTabBar() {
-    List<String> items = ["Topic", "Folder"];
-
-    return Container(
-      alignment: Alignment.center,
-      height: 80,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: items.map((item) {
-          int index = items.indexOf(item);
-          return GestureDetector(
-            onTap: () {
-              setState(() {
-                current = index;
-              });
-              pageController.animateToPage(
-                current,
-                duration: const Duration(milliseconds: 200),
-                curve: Curves.ease,
-              );
-            },
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              margin: const EdgeInsets.symmetric(horizontal: 10),
-              width: 150,
-              height: 40,
-              decoration: BoxDecoration(
-                color: current == index ? primaryColor : tabUnselectedColor,
-                borderRadius: BorderRadius.circular(5),
-                border: Border.all(color: Colors.blue, width: 2.5),
-              ),
-              child: Center(
-                child: Text(
-                  item,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                    color: current == index ? Colors.white : primaryColor,
-                  ),
-                ),
-              ),
-            ),
-          );
-        }).toList(),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final topicViewModel = Provider.of<TopicViewModel>(context);
@@ -171,6 +123,54 @@ class _LibraryScreenState extends State<LibraryScreen> {
               child: CircularProgressIndicator(),
             ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildCustomTabBar() {
+    List<String> items = ["Topic", "Folder"];
+
+    return Container(
+      alignment: Alignment.center,
+      height: 80,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: items.map((item) {
+          int index = items.indexOf(item);
+          return GestureDetector(
+            onTap: () {
+              setState(() {
+                current = index;
+              });
+              pageController.animateToPage(
+                current,
+                duration: const Duration(milliseconds: 200),
+                curve: Curves.ease,
+              );
+            },
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              margin: const EdgeInsets.symmetric(horizontal: 10),
+              width: 150,
+              height: 40,
+              decoration: BoxDecoration(
+                color: current == index ? primaryColor : tabUnselectedColor,
+                borderRadius: BorderRadius.circular(5),
+                border: Border.all(color: Colors.blue, width: 2.5),
+              ),
+              child: Center(
+                child: Text(
+                  item,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                    color: current == index ? Colors.white : primaryColor,
+                  ),
+                ),
+              ),
+            ),
+          );
+        }).toList(),
       ),
     );
   }

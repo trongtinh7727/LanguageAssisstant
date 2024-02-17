@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class TopicModel {
   String id;
   String author;
@@ -10,7 +12,7 @@ class TopicModel {
   int wordCount;
   int viewCount;
   bool public;
-  dynamic authorRef;
+  DocumentReference? authorRef;
   int createTime;
   int updateTime;
 

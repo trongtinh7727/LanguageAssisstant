@@ -117,4 +117,23 @@ class TopicViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<TopicModel> createTopic(
+      TopicModel topic, List<WordModel> words) async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      final addedTopic =
+          await _topicRepository.createTopicWithWords(topic, words);
+      _isLoading = false;
+      notifyListeners();
+      return addedTopic;
+    } catch (e) {
+      _isLoading = false;
+      print('Error creating topic: $e');
+      notifyListeners();
+      return topic;
+    }
+  }
 }

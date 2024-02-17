@@ -2,7 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:languageassistant/model/models/topic_model.dart';
 import 'package:languageassistant/model/models/user_model.dart';
+import 'package:languageassistant/model/models/user_topic_ref.dart';
+import 'package:languageassistant/model/models/word_model.dart';
 import 'package:languageassistant/model/repository/base_repository.dart';
+import 'package:languageassistant/model/repository/user_repository.dart';
+import 'package:languageassistant/model/repository/word_repository.dart';
 import 'package:languageassistant/utils/date_time_util.dart';
 
 class TopicRepository extends BaseRepository<TopicModel> {
@@ -13,6 +17,33 @@ class TopicRepository extends BaseRepository<TopicModel> {
           toMap: (topic) => topic.toMap(),
         );
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  Future<TopicModel> createTopicWithWords(
+      TopicModel topic, List<WordModel> words) async {
+    // Create the topic and get its ID
+    String topicId = await create(topic);
+    // Using a batch to perform all writes as a single transaction
+    WriteBatch batch = _firestore.batch();
+
+    // Add each word to the batch
+    for (var word in words) {
+      DocumentReference docRef =
+          _firestore.collection('topics/$topicId/words').doc(word.id);
+      batch.set(docRef, word.toMap());
+    }
+    // Commit the batch
+    await batch.commit();
+
+    topic.id = topicId;
+    topic.authorRef = _firestore.collection('users').doc(topic.author);
+    await update(topicId, topic);
+    final _topicReference = UserTopicRef(
+        lastAccess: topic.updateTime,
+        topicRef: _firestore.collection("topics").doc(topicId));
+    final _userRepository = UserRepository();
+    _userRepository.addTopicToUser(topic.author, topicId, _topicReference);
+    return topic;
+  }
 
   Future<Pair<List<TopicModel>, Pair<bool, DocumentSnapshot?>>> getUserTopics(
     String userId, {
@@ -41,9 +72,9 @@ class TopicRepository extends BaseRepository<TopicModel> {
         final topic = TopicModel.fromMap(
             topicSnapshot.data() as Map<String, dynamic>, topicSnapshot.id);
         // Fetch author data if necessary, similar to the Kotlin code
-        final authorSnapshot = await topic.authorRef.get();
+        final authorSnapshot = await topic.authorRef?.get();
         final author = UserModel.fromMap(
-            authorSnapshot.data() as Map<String, dynamic>, authorSnapshot.id);
+            authorSnapshot!.data() as Map<String, dynamic>, authorSnapshot!.id);
         topic.authorName = author.name;
         topic.authoravatar = author.avatarUrl;
         topic.lastAccess = topicRef['lastAccess'];
@@ -86,7 +117,7 @@ class TopicRepository extends BaseRepository<TopicModel> {
         final topic = TopicModel.fromMap(
             topicSnapshot.data() as Map<String, dynamic>, topicSnapshot.id);
         // Fetch author data if necessary, similar to the Kotlin code
-        final authorSnapshot = await topic.authorRef.get();
+        final authorSnapshot = await topic.authorRef!.get();
         final author = UserModel.fromMap(
             authorSnapshot.data() as Map<String, dynamic>, authorSnapshot.id);
         topic.authorName = author.name;
@@ -129,7 +160,7 @@ class TopicRepository extends BaseRepository<TopicModel> {
         final topic = TopicModel.fromMap(
             topicSnapshot.data() as Map<String, dynamic>, topicSnapshot.id);
         // Fetch author data if necessary, similar to the Kotlin code
-        final authorSnapshot = await topic.authorRef.get();
+        final authorSnapshot = await topic.authorRef!.get();
         final author = UserModel.fromMap(
             authorSnapshot.data() as Map<String, dynamic>, authorSnapshot.id);
         topic.authorName = author.name;
