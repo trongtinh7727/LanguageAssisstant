@@ -99,7 +99,7 @@ class TopicViewModel extends ChangeNotifier {
   }
 
   Future<void> fetchTopicsByUserMore(String userId, int pageSize) async {
-    // _isLoading = true; // Cập nhật trạng thái tải
+    _isLoading = true; // Cập nhật trạng thái tải
     notifyListeners();
 
     try {

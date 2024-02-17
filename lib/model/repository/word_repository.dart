@@ -4,9 +4,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:languageassistant/utils/app_enum.dart';
 
 class WordRepository extends BaseRepository<WordModel> {
-  WordRepository()
+  final String collectionPath;
+  WordRepository({this.collectionPath = ""})
       : super(
-          collectionPath: 'words',
+          collectionPath: collectionPath,
           fromMap: WordModel.fromMap,
           toMap: (word) => word.toMap(),
         );

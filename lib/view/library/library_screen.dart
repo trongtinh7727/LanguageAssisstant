@@ -113,7 +113,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
           IconButton(
             icon: Icon(Icons.add),
             onPressed: () {
-              // Handle add button
+              Navigator.pushNamed(context, RouteName.addTopicScreen);
             },
           ),
         ],
@@ -122,53 +122,56 @@ class _LibraryScreenState extends State<LibraryScreen> {
           child: _buildCustomTabBar(),
         ),
       ),
-      body: Stack(children: <Widget>[
-        PageView.builder(
-          itemCount: 2, // Number of pages
-          controller: pageController,
-          onPageChanged: (index) {
-            setState(() {
-              current = index;
-            });
-          },
-          itemBuilder: (context, index) {
-            // Your Tab Contents
-            if (index == 0) {
-              // First tab content: Topic
-              return ListView.builder(
-                controller: _scrollController,
-                itemCount: topicViewModel.topics.length,
-                itemBuilder: (context, index) {
-                  final topic = topicViewModel.topics[index];
-                  return TopicCard(
-                    topic: topic,
-                    onContinue: () {
-                      // Handle continue action here
-                      topicViewModel.fetchWordsByStatus(
-                          _auth.currentUser!.uid, topic.id, WordStatus.ALL);
-                      topicViewModel.fetchLeaderBoard(topic.id);
-                      Navigator.pushNamed(context, RouteName.topicDetailScreen,
-                          arguments: topic);
+      body: Column(
+        children: <Widget>[
+          Expanded(
+            // Sử dụng Expanded để cho phép PageView mở rộng đầy đủ theo chiều dọc
+            child: PageView.builder(
+              itemCount: 2, // Number of pages
+              controller: pageController,
+              onPageChanged: (index) {
+                setState(() {
+                  current = index;
+                });
+              },
+              itemBuilder: (context, index) {
+                // Your Tab Contents
+                if (index == 0) {
+                  // First tab content: Topic
+                  return ListView.builder(
+                    controller: _scrollController,
+                    itemCount: topicViewModel.topics.length,
+                    itemBuilder: (context, index) {
+                      final topic = topicViewModel.topics[index];
+                      return TopicCard(
+                        topic: topic,
+                        onContinue: () {
+                          // Handle continue action here
+                          topicViewModel.fetchWordsByStatus(
+                              _auth.currentUser!.uid, topic.id, WordStatus.ALL);
+                          topicViewModel.fetchLeaderBoard(topic.id);
+                          Navigator.pushNamed(
+                              context, RouteName.topicDetailScreen,
+                              arguments: topic);
+                        },
+                      );
                     },
                   );
-                },
-              );
-            } else {
-              // Second tab content: Folder
-              return Center(
-                child: Text('Folder content goes here'),
-              );
-            }
-          },
-        ),
-        if (topicViewModel.isLoading)
-          Container(
-            color: Colors.black45,
-            child: Center(
-              child: CircularProgressIndicator(),
+                } else {
+                  // Second tab content: Folder
+                  return Center(
+                    child: Text('Folder content goes here'),
+                  );
+                }
+              },
             ),
           ),
-      ]),
+          if (topicViewModel.isLoading)
+            Center(
+              child: CircularProgressIndicator(),
+            ),
+        ],
+      ),
     );
   }
 }

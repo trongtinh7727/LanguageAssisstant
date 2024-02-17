@@ -44,15 +44,17 @@ class _AccountScreenState extends State<AccountScreen> {
           children: [
             Center(
               child: Stack(
-                children: [
-                  if (widget.userModel != null)
-                    buildImage(widget.userModel!.avatarUrl!, () => {}),
-                  Positioned(
-                    bottom: 0,
-                    right: 4,
-                    child: buildEditIcon(primaryColor, true),
-                  ),
-                ],
+                children: widget.userModel != null
+                    ? [
+                        buildImage(widget.userModel!.avatarUrl!, () => {}),
+                        if (widget.userModel!.id! == _auth.currentUser!.uid)
+                          Positioned(
+                            bottom: 0,
+                            right: 4,
+                            child: buildEditIcon(primaryColor, true),
+                          ),
+                      ]
+                    : [],
               ),
             ),
             Text('Bài viết',

@@ -3,14 +3,20 @@ import 'package:languageassistant/utils/app_color.dart';
 
 class TextFieldWidget extends StatelessWidget {
   final String hint;
-  final IconData icon;
+  final IconData? icon;
   final bool isPassword;
+  final Color fillColor;
+  final Color textColor;
+  final double paddingH;
   final TextEditingController textEditingController;
 
   const TextFieldWidget({
     Key? key,
-    required this.hint,
-    required this.icon,
+    this.hint = "",
+    this.icon,
+    this.fillColor = Colors.white,
+    this.textColor = Colors.black,
+    this.paddingH = 20.0,
     required this.textEditingController,
     this.isPassword = false,
   }) : super(key: key);
@@ -18,7 +24,7 @@ class TextFieldWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: paddingH),
       child: ConstrainedBox(
         constraints: const BoxConstraints(
             maxWidth: 500), // Set your desired max width here
@@ -26,13 +32,16 @@ class TextFieldWidget extends StatelessWidget {
           controller: textEditingController,
           maxLines: 1,
           obscureText: isPassword,
-          style: const TextStyle(color: Colors.black),
+          style: TextStyle(color: textColor),
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: const TextStyle(color: Color.fromARGB(179, 48, 44, 44)),
-            prefixIcon: Icon(icon, color: Colors.black54),
+            prefixIcon: icon != null
+                ? Icon(icon, color: Colors.black54)
+                : null, // Conditional prefixIcon
+
             filled: true,
-            fillColor: textFieldColor,
+            fillColor: fillColor,
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
               borderSide: const BorderSide(color: Colors.transparent),
