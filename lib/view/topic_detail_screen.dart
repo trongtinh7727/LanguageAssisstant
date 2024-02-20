@@ -5,6 +5,7 @@ import 'package:languageassistant/model/models/word_model.dart';
 import 'package:languageassistant/model/repository/topic_repository.dart';
 import 'package:languageassistant/utils/app_color.dart';
 import 'package:languageassistant/utils/app_enum.dart';
+import 'package:languageassistant/utils/app_style.dart';
 import 'package:languageassistant/utils/date_time_util.dart';
 import 'package:languageassistant/view_model/topic_view_model.dart';
 import 'package:languageassistant/widget/custom_button.dart';
@@ -120,14 +121,8 @@ class _TopicDetailScreenState extends State<TopicDetailScreen> {
       children: [
         Row(
           children: [
-            Text(
-              'Các thuật ngữ trong chủ đề',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
-            ),
+            Text('Các thuật ngữ trong chủ đề',
+                style: AppStyle.textTheme.headline6),
             Expanded(
               child: Align(
                 alignment: Alignment.centerRight,
@@ -183,13 +178,7 @@ class _TopicDetailScreenState extends State<TopicDetailScreen> {
                         ),
                       )
                       .toList(),
-                  textStyle: TextStyle(
-                    fontSize: 14, // Điều chỉnh kích thước font cho Dropdown
-                    fontWeight: FontWeight
-                        .normal, // Điều chỉnh độ đậm của font cho Dropdown
-                    color: Colors
-                        .black, // Điều chỉnh màu sắc của font cho Dropdown
-                  ),
+                  textStyle: AppStyle.body2,
                 ),
               ),
             ),
@@ -226,11 +215,7 @@ class _TopicDetailScreenState extends State<TopicDetailScreen> {
       children: [
         Text(
           'Bảng Xếp Hạng',
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
-          ),
+          style: AppStyle.title,
         ),
         SizedBox(
           height: 8,
@@ -264,19 +249,13 @@ class _TopicDetailScreenState extends State<TopicDetailScreen> {
           Text(
             widget.topic.title,
             maxLines: 5,
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
+            style: AppStyle.headline,
           ),
           Row(
             children: [
               Text(
                 '${DateTimeUtil.format(widget.topic.createTime)}',
-                style: TextStyle(
-                  fontSize: 10,
-                  color: Colors.black,
-                ),
+                style: AppStyle.caption,
               ),
               SizedBox(
                 width: 20,
@@ -288,10 +267,7 @@ class _TopicDetailScreenState extends State<TopicDetailScreen> {
               ),
               Text(
                 '$viewCount',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: primaryColor,
-                ),
+                style: AppStyle.caption,
               ),
             ],
           ),
@@ -300,10 +276,7 @@ class _TopicDetailScreenState extends State<TopicDetailScreen> {
           ),
           Text(
             '$wordProgress words',
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.black,
-            ),
+            style: AppStyle.caption,
           ),
           SizedBox(
             height: 8,
@@ -342,9 +315,7 @@ class _TopicDetailScreenState extends State<TopicDetailScreen> {
               SizedBox(width: 8),
               Text(
                 widget.topic.authorName ?? "",
-                style: TextStyle(
-                  fontSize: 12,
-                ),
+                style: AppStyle.caption,
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
               ),

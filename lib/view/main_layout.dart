@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:languageassistant/utils/app_icons.dart';
+import 'package:languageassistant/utils/app_style.dart';
 import 'package:languageassistant/view/account/account_screen.dart';
 import 'package:languageassistant/view/discovery/discovery_screen.dart';
 import 'package:languageassistant/view/home/home_screen.dart';
@@ -151,11 +152,7 @@ class MainLayoutState extends State<MainLayout> {
                                 index == currentIndex
                                     ? '${listOfStrings[index]}'
                                     : '',
-                                style: TextStyle(
-                                  color: Colors.blueAccent,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 15,
-                                ),
+                                style: AppStyle.active,
                               ),
                             ),
                           ],

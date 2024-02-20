@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:languageassistant/model/models/word_model.dart';
 import 'package:languageassistant/utils/app_color.dart';
+import 'package:languageassistant/utils/app_style.dart';
 import 'package:languageassistant/widget/text_field_widget.dart';
 
 class WordInputField extends StatefulWidget {
@@ -66,9 +67,7 @@ class _WordInputFieldState extends State<WordInputField> {
               children: [
                 Text(
                   "Thuật ngữ",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: AppStyle.body2_bold,
                 ),
                 InkWell(
                   onTap: widget.onDelete,
@@ -94,9 +93,7 @@ class _WordInputFieldState extends State<WordInputField> {
               ),
               const Text(
                 "Định nghĩa",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: AppStyle.body2_bold,
               ),
             ],
           ),

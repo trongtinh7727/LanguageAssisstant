@@ -7,6 +7,7 @@ import 'package:languageassistant/model/models/word_model.dart';
 import 'package:languageassistant/routes/name_routes.dart';
 import 'package:languageassistant/utils/app_color.dart';
 import 'package:languageassistant/utils/app_enum.dart';
+import 'package:languageassistant/utils/app_style.dart';
 import 'package:languageassistant/view_model/topic_view_model.dart';
 import 'package:languageassistant/widget/custom_button.dart';
 import 'package:languageassistant/widget/text_field_widget.dart';
@@ -68,7 +69,7 @@ class _AddTopicScreenState extends State<AddTopicScreen> {
                 ),
                 Text(
                   "Tiêu đề",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  style: AppStyle.title,
                 ),
               ],
             ),
@@ -84,7 +85,7 @@ class _AddTopicScreenState extends State<AddTopicScreen> {
                 ),
                 Text(
                   "Từ vựng",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  style: AppStyle.title,
                 ),
               ],
             ),

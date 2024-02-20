@@ -4,6 +4,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:languageassistant/routes/name_routes.dart';
 import 'package:languageassistant/utils/app_color.dart';
 import 'package:languageassistant/utils/app_enum.dart';
+import 'package:languageassistant/utils/app_style.dart';
 import 'package:languageassistant/view_model/home_view_model.dart';
 import 'package:languageassistant/view_model/topic_view_model.dart';
 import 'package:languageassistant/widget/personal_topic_card.dart';
@@ -54,13 +55,9 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Tiếp tục bài học trước',
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                Text('Tiếp tục bài học trước', style: AppStyle.title),
                 _recentTopics(),
-                Text('Hôm nay làm gì?',
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                Text('Hôm nay làm gì?', style: AppStyle.title),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
@@ -80,18 +77,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                 ),
-                Text('Gợi ý cho bạn',
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                Text('Gợi ý cho bạn', style: AppStyle.title),
                 _topTopics(),
-                Text('Cộng đồng',
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                Text('Cộng đồng', style: AppStyle.title),
                 _newTopics(),
                 if (_homeViewModel.isLoading)
-                  Text('Đang load',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  Text('Đang load', style: AppStyle.title),
               ],
             ),
           ),
@@ -121,7 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children: <Widget>[
           Text(
             _title,
-            style: TextStyle(fontSize: 14),
+            style: AppStyle.title,
           ), // The label text
           SizedBox(width: 8), // Space between text and icon
           Container(

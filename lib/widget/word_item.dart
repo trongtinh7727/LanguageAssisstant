@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:languageassistant/model/models/word_model.dart';
 import 'package:languageassistant/utils/app_color.dart';
+import 'package:languageassistant/utils/app_style.dart';
 import 'package:languageassistant/view_model/topic_view_model.dart';
 
 class WordItem extends StatelessWidget {
@@ -52,10 +53,7 @@ class WordItem extends StatelessWidget {
                 Expanded(
                   child: Text(
                     word.english ?? "English",
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: AppStyle.body2_bold,
                     softWrap: false,
                     maxLines: 5,
                     overflow: TextOverflow.ellipsis,
@@ -87,10 +85,7 @@ class WordItem extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               word.vietnamese ?? "vietnamese",
-              style: const TextStyle(
-                fontSize: 12,
-                color: Color.fromARGB(255, 80, 71, 71),
-              ),
+              style: AppStyle.body2,
             ),
             const SizedBox(height: 8),
           ],

@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:languageassistant/firebase_options.dart';
 import 'package:languageassistant/routes/name_routes.dart';
 import 'package:languageassistant/routes/routes.dart';
+import 'package:languageassistant/utils/app_style.dart';
 import 'package:languageassistant/view_model/home_view_model.dart';
 import 'package:languageassistant/view_model/topic_view_model.dart';
 import 'package:provider/provider.dart';
@@ -50,9 +51,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         title: 'Flutter Firebase Auth',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
+        theme: AppStyle.getTheme(),
         debugShowCheckedModeBanner: false,
         initialRoute: RouteName.splashScreen,
         onGenerateRoute: Routes.generateRoute,

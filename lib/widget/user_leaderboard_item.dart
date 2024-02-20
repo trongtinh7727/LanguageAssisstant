@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:languageassistant/model/repository/topic_repository.dart';
 import 'package:languageassistant/utils/app_color.dart';
+import 'package:languageassistant/utils/app_style.dart';
 
 class UserLeaderBoardItem extends StatelessWidget {
   final RankItem userRank;
@@ -43,9 +44,7 @@ class UserLeaderBoardItem extends StatelessWidget {
           ),
           Text(
             userRank.name,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
+            style: AppStyle.body2_bold,
           ),
           SizedBox(height: 8),
           Row(
@@ -57,7 +56,7 @@ class UserLeaderBoardItem extends StatelessWidget {
               ),
               Text(
                 userRank.time + "s",
-                style: TextStyle(color: primaryColor),
+                style: AppStyle.active,
               ),
             ],
           ),

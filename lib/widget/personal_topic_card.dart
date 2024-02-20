@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:languageassistant/model/models/topic_model.dart';
 import 'package:languageassistant/utils/app_color.dart';
+import 'package:languageassistant/utils/app_style.dart';
 import 'package:languageassistant/utils/date_time_util.dart';
 import 'package:languageassistant/widget/custom_button.dart';
 
@@ -41,10 +42,7 @@ class TopicCard extends StatelessWidget {
                 Expanded(
                   child: Text(
                     topic.title,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: AppStyle.body2_bold,
                     softWrap: false,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -53,18 +51,12 @@ class TopicCard extends StatelessWidget {
                 if (topic.lastAccess != 0)
                   Text(
                     DateTimeUtil.getDateFromTimestamp(topic.lastAccess),
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey,
-                    ),
+                    style: AppStyle.caption,
                   )
                 else
                   Text(
                     DateTimeUtil.getDateFromTimestamp(topic.createTime),
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey,
-                    ),
+                    style: AppStyle.caption,
                   ),
               ],
             ),
@@ -73,10 +65,7 @@ class TopicCard extends StatelessWidget {
               children: [
                 Text(
                   '$wordProgress words',
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey,
-                  ),
+                  style: AppStyle.caption,
                 ),
                 const SizedBox(
                   width: 8,
@@ -90,10 +79,7 @@ class TopicCard extends StatelessWidget {
                 if (topic.wordLearned < 0)
                   Text(
                     '$viewCount',
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey,
-                    ),
+                    style: AppStyle.caption,
                   ),
               ],
             ),
@@ -133,9 +119,7 @@ class TopicCard extends StatelessWidget {
                     const SizedBox(width: 8),
                     Text(
                       topic.authorName ?? "",
-                      style: const TextStyle(
-                        fontSize: 12,
-                      ),
+                      style: AppStyle.caption,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                     ),

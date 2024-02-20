@@ -4,6 +4,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:languageassistant/routes/name_routes.dart';
 import 'package:languageassistant/utils/app_color.dart';
 import 'package:languageassistant/utils/app_enum.dart';
+import 'package:languageassistant/utils/app_style.dart';
 import 'package:languageassistant/view_model/home_view_model.dart';
 import 'package:languageassistant/view_model/topic_view_model.dart';
 import 'package:languageassistant/widget/personal_topic_card.dart';
@@ -49,18 +50,12 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('TOP 10',
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                Text('TOP 10', style: AppStyle.title),
                 _topTopics(),
-                Text('Bài viết mới',
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                Text('Bài viết mới', style: AppStyle.title),
                 _newTopics(),
                 if (_homeViewModel.isLoading)
-                  Text('Đang load',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  Text('Đang load', style: AppStyle.title),
               ],
             ),
           ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:languageassistant/model/models/topic_model.dart';
 import 'package:languageassistant/utils/app_color.dart';
+import 'package:languageassistant/utils/app_style.dart';
 import 'package:languageassistant/utils/date_time_util.dart';
 import 'package:languageassistant/widget/custom_button.dart';
 
@@ -51,10 +52,7 @@ class TopicLeaderBoardItem extends StatelessWidget {
                 ),
                 Text(
                   topic.title,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: AppStyle.body2_bold,
                   softWrap: false,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -62,10 +60,7 @@ class TopicLeaderBoardItem extends StatelessWidget {
                 const SizedBox(height: 6),
                 Text(
                   '$wordProgress words',
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey,
-                  ),
+                  style: AppStyle.caption,
                 ),
                 Row(
                   children: [
@@ -75,13 +70,7 @@ class TopicLeaderBoardItem extends StatelessWidget {
                       size: 16,
                     ),
                     const SizedBox(width: 4),
-                    Text(
-                      '$viewCount',
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey,
-                      ),
-                    ),
+                    Text('$viewCount', style: AppStyle.caption),
                   ],
                 ),
                 const SizedBox(height: 6),
@@ -104,10 +93,7 @@ class TopicLeaderBoardItem extends StatelessWidget {
                     Expanded(
                       child: Text(
                         topic.authorName ?? "",
-                        style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.normal,
-                        ),
+                        style: AppStyle.caption,
                         softWrap: false,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,

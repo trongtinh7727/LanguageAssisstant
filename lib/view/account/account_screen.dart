@@ -5,6 +5,7 @@ import 'package:languageassistant/model/models/user_model.dart';
 import 'package:languageassistant/routes/name_routes.dart';
 import 'package:languageassistant/utils/app_color.dart';
 import 'package:languageassistant/utils/app_enum.dart';
+import 'package:languageassistant/utils/app_style.dart';
 import 'package:languageassistant/view_model/home_view_model.dart';
 import 'package:languageassistant/view_model/topic_view_model.dart';
 import 'package:languageassistant/widget/personal_topic_card.dart';
@@ -57,12 +58,10 @@ class _AccountScreenState extends State<AccountScreen> {
                     : [],
               ),
             ),
-            Text('Bài viết',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text('Bài viết', style: AppStyle.title),
             _newTopics(),
             if (_homeViewModel.isLoading)
-              Text('Đang load',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              Text('Đang load', style: AppStyle.title),
           ],
         ),
       ),

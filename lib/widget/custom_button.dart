@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:languageassistant/utils/app_color.dart';
+import 'package:languageassistant/utils/app_style.dart';
 
 class CustomButton extends StatelessWidget {
   const CustomButton({
@@ -32,11 +33,7 @@ class CustomButton extends StatelessWidget {
         ),
         child: Text(
           word,
-          style: TextStyle(
-            color: buttonTextColor,
-            fontWeight: FontWeight.bold,
-            fontSize: 10,
-          ),
+          style: AppStyle.active,
         ),
       ),
     );

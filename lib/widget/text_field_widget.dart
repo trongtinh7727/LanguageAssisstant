@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:languageassistant/utils/app_color.dart';
+import 'package:languageassistant/utils/app_style.dart';
 
 class TextFieldWidget extends StatelessWidget {
   final String hint;
@@ -32,10 +33,10 @@ class TextFieldWidget extends StatelessWidget {
           controller: textEditingController,
           maxLines: 1,
           obscureText: isPassword,
-          style: TextStyle(color: textColor),
+          style: AppStyle.body2,
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: const TextStyle(color: Color.fromARGB(179, 48, 44, 44)),
+            hintStyle: AppStyle.caption,
             prefixIcon: icon != null
                 ? Icon(icon, color: Colors.black54)
                 : null, // Conditional prefixIcon
