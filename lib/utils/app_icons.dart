@@ -22,4 +22,6 @@ class LAIcons {
       IconData(0xe806, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData discovery =
       IconData(0xe807, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData import =
+      IconData(0xe808, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }

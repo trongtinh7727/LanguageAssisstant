@@ -1,21 +1,15 @@
-import 'dart:math';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:languageassistant/model/models/topic_model.dart';
-import 'package:languageassistant/model/models/word_model.dart';
 import 'package:languageassistant/routes/name_routes.dart';
-
 import 'package:languageassistant/utils/app_enum.dart';
+import 'package:languageassistant/utils/app_icons.dart';
 import 'package:languageassistant/utils/app_style.dart';
+import 'package:languageassistant/view_model/add_topic_view_model.dart';
 import 'package:languageassistant/view_model/topic_view_model.dart';
 import 'package:languageassistant/widget/bottomsheet_widget.dart';
-import 'package:languageassistant/widget/custom_button.dart';
 import 'package:languageassistant/widget/text_field_widget.dart';
 import 'package:languageassistant/widget/word_input_field.dart';
 import 'package:provider/provider.dart';
-import 'package:timezone/data/latest.dart' as tz;
-import 'package:timezone/timezone.dart' as tz;
 
 class AddTopicScreen extends StatefulWidget {
   @override
@@ -23,27 +17,15 @@ class AddTopicScreen extends StatefulWidget {
 }
 
 class _AddTopicScreenState extends State<AddTopicScreen> {
-  // List of text controllers for each field
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final TextEditingController _titleController = TextEditingController();
-  final List<WordModel> _words = [];
-  final Random _random = Random();
-  void _addTermField() {
-    tz.TZDateTime nowInTimeZone =
-        tz.TZDateTime.now(tz.getLocation('Asia/Ho_Chi_Minh'));
-    int currentTimesnap = (nowInTimeZone.millisecondsSinceEpoch / 1000).toInt();
-    setState(() {
-      _words.add(WordModel(
-          id: _generateUniqueId(),
-          createTime: currentTimesnap,
-          updateTime: currentTimesnap));
-    });
-  }
+  late AddTopicViewModel _addTopicViewModel;
 
-  String _generateUniqueId() {
-    final timestamp = DateTime.now().microsecondsSinceEpoch;
-    final randomValue = _random.nextInt(1000);
-    return 'w$timestamp$randomValue';
+  @override
+  void initState() {
+    super.initState();
+    _addTopicViewModel = Provider.of<AddTopicViewModel>(context, listen: false);
+    _addTopicViewModel.clearWords();
   }
 
   @override
@@ -54,19 +36,23 @@ class _AddTopicScreenState extends State<AddTopicScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final topicViewModel = Provider.of<TopicViewModel>(context);
-    bool _show = true;
-    void _showButton(bool value) {
-      setState(() {
-        _show = value;
-      });
-    }
-
+    _addTopicViewModel = Provider.of<AddTopicViewModel>(context);
     void _showModalBottomSheet(BuildContext context) {
+      BottomSheetItem _bottomSheet = BottomSheetItem(
+        icon: LAIcons.import,
+        onTap: () {
+          _addTopicViewModel.pickFile();
+          Navigator.pop(context);
+        },
+        text: "Thêm bằng file CSV",
+      );
+
       showModalBottomSheet<void>(
         context: context,
         builder: (context) {
-          return BottomSheetWidget();
+          return BottomSheetWidget(
+            bottomSheetItems: Column(children: [_bottomSheet]),
+          );
         },
       );
     }
@@ -76,16 +62,15 @@ class _AddTopicScreenState extends State<AddTopicScreen> {
         title: Text('Thêm Topic'),
         actions: [
           IconButton(
-              onPressed: () {
-                _showModalBottomSheet(context);
-              },
-              icon: Icon(Icons.more_vert_rounded))
+            onPressed: () => _showModalBottomSheet(context),
+            icon: Icon(Icons.more_vert_rounded),
+          )
         ],
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Row(
+            const Row(
               children: [
                 SizedBox(
                   width: 5,
@@ -97,11 +82,12 @@ class _AddTopicScreenState extends State<AddTopicScreen> {
               ],
             ),
             TextFieldWidget(
-                fillColor: AppStyle.tabUnselectedColor,
-                paddingH: 5,
-                hint: 'Tiêu đề',
-                textEditingController: _titleController),
-            Row(
+              fillColor: AppStyle.tabUnselectedColor,
+              paddingH: 5,
+              hint: 'Tiêu đề',
+              textEditingController: _titleController,
+            ),
+            const Row(
               children: [
                 SizedBox(
                   width: 5,
@@ -115,31 +101,36 @@ class _AddTopicScreenState extends State<AddTopicScreen> {
             ListView.builder(
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
-              itemCount: _words.length,
+              itemCount: _addTopicViewModel.words.length,
               itemBuilder: (context, index) {
-                final word = _words[index];
+                final word = _addTopicViewModel.words[index];
                 return WordInputField(
-                    word: word, onDelete: () => _removeWord(word));
+                  word: word,
+                  onDelete: () => _addTopicViewModel.removeWord(word),
+                );
               },
             ),
             IconButton(
               icon: Icon(Icons.add_circle),
-              onPressed: _addTermField,
+              onPressed: _addTopicViewModel.addEmptyTermField,
               tooltip: 'Thêm thuật ngữ',
             ),
             ElevatedButton(
-              onPressed: () => _saveAndShowWords(topicViewModel),
+              onPressed: () => _saveAndShowWords(_addTopicViewModel),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppStyle.primaryColor,
-                fixedSize: Size(295, 50),
+                fixedSize: const Size(300, 50),
                 padding:
                     const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
               ),
-              child: topicViewModel.isLoading
+              child: _addTopicViewModel.isLoading
                   ? CircularProgressIndicator(
                       color: Colors.white,
                     )
-                  : Text('Lưu', style: TextStyle(color: Colors.white)),
+                  : Text(
+                      'Lưu',
+                      style: TextStyle(color: Colors.white),
+                    ),
             ),
           ],
         ),
@@ -147,32 +138,16 @@ class _AddTopicScreenState extends State<AddTopicScreen> {
     );
   }
 
-  void _removeWord(WordModel wordModel) {
-    setState(() {
-      _words.removeWhere((word) => word.id == wordModel.id);
-    });
-  }
-
-  void _saveAndShowWords(TopicViewModel topicViewModel) async {
-    tz.TZDateTime nowInTimeZone =
-        tz.TZDateTime.now(tz.getLocation('Asia/Ho_Chi_Minh'));
-    int currentTimesnap = (nowInTimeZone.millisecondsSinceEpoch / 1000).toInt();
-    TopicModel _topic = TopicModel(
-        id: "",
-        title: _titleController.value.text,
-        description: '',
-        wordCount: _words.length,
-        viewCount: 0,
-        public: false,
-        author: _auth.currentUser!.uid,
-        createTime: currentTimesnap,
-        updateTime: currentTimesnap);
+  void _saveAndShowWords(AddTopicViewModel addTopicViewModel) async {
     try {
-      final addedTopic = await topicViewModel.createTopic(_topic, _words);
+      final addedTopic = await addTopicViewModel.saveAndShowWords(
+          _titleController.value.text, _auth.currentUser!.uid);
+      final topicViewModel =
+          Provider.of<TopicViewModel>(context, listen: false);
       topicViewModel.fetchWordsByStatus(
           _auth.currentUser!.uid, addedTopic.id, WordStatus.ALL);
       topicViewModel.fetchLeaderBoard(addedTopic.id);
-      Navigator.pushNamed(context, RouteName.topicDetailScreen,
+      Navigator.pushReplacementNamed(context, RouteName.topicDetailScreen,
           arguments: addedTopic);
     } catch (e) {
       print("Error saving topic: $e");

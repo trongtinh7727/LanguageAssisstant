@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:hexcolor/hexcolor.dart';
 import 'package:languageassistant/routes/name_routes.dart';
 
 import 'package:languageassistant/utils/app_enum.dart';
