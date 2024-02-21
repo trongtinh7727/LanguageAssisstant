@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:languageassistant/model/models/topic_model.dart';
 import 'package:languageassistant/model/models/word_model.dart';
 import 'package:languageassistant/model/repository/topic_repository.dart';
-import 'package:languageassistant/utils/app_color.dart';
+
 import 'package:languageassistant/utils/app_enum.dart';
 import 'package:languageassistant/utils/app_style.dart';
 import 'package:languageassistant/utils/date_time_util.dart';
@@ -201,8 +201,9 @@ class _TopicDetailScreenState extends State<TopicDetailScreen> {
               topicID: topicID,
               userID: userID,
               topicViewModel: topicViewModel,
-              backgroundColor:
-                  index % 2 == 0 ? greyColor_100 : tabUnselectedColor,
+              backgroundColor: index % 2 == 0
+                  ? AppStyle.greyColor_100
+                  : AppStyle.tabUnselectedColor,
             );
           },
         ),
@@ -262,7 +263,7 @@ class _TopicDetailScreenState extends State<TopicDetailScreen> {
               ),
               Icon(
                 Icons.remove_red_eye_outlined,
-                color: primaryColor,
+                color: AppStyle.primaryColor,
                 size: 16,
               ),
               Text(

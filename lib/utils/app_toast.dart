@@ -1,5 +1,5 @@
+import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'app_color.dart';
 
 commonToast(String message) {
   Fluttertoast.showToast(
@@ -7,7 +7,7 @@ commonToast(String message) {
       toastLength: Toast.LENGTH_SHORT,
       gravity: ToastGravity.BOTTOM,
       timeInSecForIosWeb: 1,
-      backgroundColor: blackColor,
-      textColor: whiteColor,
+      backgroundColor: Colors.black,
+      textColor: Colors.white,
       fontSize: 16.0);
 }

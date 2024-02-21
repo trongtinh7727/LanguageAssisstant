@@ -9,6 +9,14 @@ class AppStyle {
   static const Color lightText = Color(0xFF4A6572);
   static const Color activeText = Color.fromARGB(255, 0, 75, 185);
 
+  static const Color primaryColor = Color(0xFF3A94E7);
+  static const Color buttonBackColor = Color(0xFFE6EDF8);
+  static const Color buttonTextColor = Color(0xFF004AB9);
+  static const Color textFieldColor = Color(0xFFD1D1D1);
+  static const Color tabUnselectedColor = Color(0xFFDFE9F8);
+  static const Color greyColor_100 = Color(0xFFDEE0E5);
+  static const Color redColor = Color(0xFFFF0000);
+
   static const TextTheme textTheme = TextTheme(
     headline4: display1,
     headline5: headline,
@@ -99,6 +107,11 @@ class AppStyle {
 
   static ThemeData getTheme() {
     return ThemeData(
-        textTheme: textTheme, fontFamily: fontName, primarySwatch: Colors.blue);
+      textTheme: textTheme,
+      fontFamily: fontName,
+      primarySwatch: Colors.blue,
+      bottomSheetTheme:
+          BottomSheetThemeData(backgroundColor: Colors.black.withOpacity(0)),
+    );
   }
 }

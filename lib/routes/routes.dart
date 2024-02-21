@@ -7,7 +7,7 @@ import 'package:languageassistant/view/home/home_screen.dart';
 import 'package:languageassistant/view/library/add_topic_screen.dart';
 import 'package:languageassistant/view/main_layout.dart';
 import 'package:languageassistant/view/splash_screen.dart';
-import 'package:languageassistant/view/topic_detail_screen.dart';
+import 'package:languageassistant/view/topic_detail/topic_detail_screen.dart';
 import 'name_routes.dart';
 
 class Routes {

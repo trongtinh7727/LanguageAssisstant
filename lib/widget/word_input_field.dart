@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:languageassistant/model/models/word_model.dart';
-import 'package:languageassistant/utils/app_color.dart';
+
 import 'package:languageassistant/utils/app_style.dart';
 import 'package:languageassistant/widget/text_field_widget.dart';
 
@@ -54,7 +54,8 @@ class _WordInputFieldState extends State<WordInputField> {
     return Container(
       margin: EdgeInsets.all(5),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10), color: tabUnselectedColor),
+          borderRadius: BorderRadius.circular(10),
+          color: AppStyle.tabUnselectedColor),
       child: Column(
         children: [
           SizedBox(

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:languageassistant/utils/app_color.dart';
+
 import 'package:languageassistant/utils/app_style.dart';
 
 class CustomButton extends StatelessWidget {
@@ -16,7 +16,7 @@ class CustomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color btnBack = buttonBackColor;
+    Color btnBack = AppStyle.buttonBackColor;
     if (btnBackground != Colors.black) {
       btnBack = btnBackground;
     }
@@ -28,7 +28,7 @@ class CustomButton extends StatelessWidget {
           backgroundColor: btnBack, // Sử dụng giá trị buttonBackColor
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(5),
-            side: BorderSide(color: primaryColor, width: 2),
+            side: BorderSide(color: AppStyle.primaryColor, width: 2),
           ),
         ),
         child: Text(

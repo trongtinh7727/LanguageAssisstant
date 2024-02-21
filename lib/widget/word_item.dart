@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:languageassistant/model/models/word_model.dart';
-import 'package:languageassistant/utils/app_color.dart';
+
 import 'package:languageassistant/utils/app_style.dart';
 import 'package:languageassistant/view_model/topic_view_model.dart';
 
@@ -66,7 +66,7 @@ class WordItem extends StatelessWidget {
                     },
                     child: Icon(
                       Icons.star_purple500_sharp,
-                      color: redColor,
+                      color: AppStyle.redColor,
                     ),
                   )
                 else

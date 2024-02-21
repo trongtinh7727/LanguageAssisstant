@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:languageassistant/model/repository/topic_repository.dart';
-import 'package:languageassistant/utils/app_color.dart';
+
 import 'package:languageassistant/utils/app_style.dart';
 
 class UserLeaderBoardItem extends StatelessWidget {
@@ -17,9 +17,9 @@ class UserLeaderBoardItem extends StatelessWidget {
       padding: EdgeInsets.all(8.0),
       margin: EdgeInsets.symmetric(horizontal: 5),
       decoration: BoxDecoration(
-        color: tabUnselectedColor,
+        color: AppStyle.tabUnselectedColor,
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: primaryColor, width: 1),
+        border: Border.all(color: AppStyle.primaryColor, width: 1),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.5),
@@ -52,7 +52,7 @@ class UserLeaderBoardItem extends StatelessWidget {
             children: [
               Icon(
                 Icons.timer_outlined,
-                color: primaryColor,
+                color: AppStyle.primaryColor,
               ),
               Text(
                 userRank.time + "s",

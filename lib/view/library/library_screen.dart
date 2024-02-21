@@ -1,10 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:languageassistant/routes/name_routes.dart';
-import 'package:languageassistant/utils/app_color.dart';
+
 import 'package:languageassistant/utils/app_enum.dart';
+import 'package:languageassistant/utils/app_style.dart';
 import 'package:languageassistant/view_model/topic_view_model.dart';
-import 'package:languageassistant/widget/custom_button.dart';
 import 'package:languageassistant/widget/personal_topic_card.dart';
 import 'package:provider/provider.dart';
 
@@ -154,7 +154,9 @@ class _LibraryScreenState extends State<LibraryScreen> {
               width: 150,
               height: 40,
               decoration: BoxDecoration(
-                color: current == index ? primaryColor : tabUnselectedColor,
+                color: current == index
+                    ? AppStyle.primaryColor
+                    : AppStyle.tabUnselectedColor,
                 borderRadius: BorderRadius.circular(5),
                 border: Border.all(color: Colors.blue, width: 2.5),
               ),
@@ -164,7 +166,8 @@ class _LibraryScreenState extends State<LibraryScreen> {
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
-                    color: current == index ? Colors.white : primaryColor,
+                    color:
+                        current == index ? Colors.white : AppStyle.primaryColor,
                   ),
                 ),
               ),

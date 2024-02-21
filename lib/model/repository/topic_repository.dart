@@ -6,7 +6,6 @@ import 'package:languageassistant/model/models/user_topic_ref.dart';
 import 'package:languageassistant/model/models/word_model.dart';
 import 'package:languageassistant/model/repository/base_repository.dart';
 import 'package:languageassistant/model/repository/user_repository.dart';
-import 'package:languageassistant/model/repository/word_repository.dart';
 import 'package:languageassistant/utils/date_time_util.dart';
 
 class TopicRepository extends BaseRepository<TopicModel> {
@@ -74,7 +73,7 @@ class TopicRepository extends BaseRepository<TopicModel> {
         // Fetch author data if necessary, similar to the Kotlin code
         final authorSnapshot = await topic.authorRef?.get();
         final author = UserModel.fromMap(
-            authorSnapshot!.data() as Map<String, dynamic>, authorSnapshot!.id);
+            authorSnapshot!.data() as Map<String, dynamic>, authorSnapshot.id);
         topic.authorName = author.name;
         topic.authoravatar = author.avatarUrl;
         topic.lastAccess = topicRef['lastAccess'];

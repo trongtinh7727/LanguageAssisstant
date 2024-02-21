@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:languageassistant/routes/name_routes.dart';
-import 'package:languageassistant/utils/app_color.dart';
+
 import 'package:languageassistant/utils/app_enum.dart';
 import 'package:languageassistant/utils/app_style.dart';
 import 'package:languageassistant/view_model/home_view_model.dart';
@@ -96,7 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return ElevatedButton(
       onPressed: _onClick,
       style: ElevatedButton.styleFrom(
-        primary: tabUnselectedColor, // Background color
+        primary: AppStyle.tabUnselectedColor, // Background color
         onPrimary: Colors.black, // Text color
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         shape: RoundedRectangleBorder(

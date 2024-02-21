@@ -5,10 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:languageassistant/model/models/topic_model.dart';
 import 'package:languageassistant/model/models/word_model.dart';
 import 'package:languageassistant/routes/name_routes.dart';
-import 'package:languageassistant/utils/app_color.dart';
+
 import 'package:languageassistant/utils/app_enum.dart';
 import 'package:languageassistant/utils/app_style.dart';
 import 'package:languageassistant/view_model/topic_view_model.dart';
+import 'package:languageassistant/widget/bottomsheet_widget.dart';
 import 'package:languageassistant/widget/custom_button.dart';
 import 'package:languageassistant/widget/text_field_widget.dart';
 import 'package:languageassistant/widget/word_input_field.dart';
@@ -54,10 +55,32 @@ class _AddTopicScreenState extends State<AddTopicScreen> {
   @override
   Widget build(BuildContext context) {
     final topicViewModel = Provider.of<TopicViewModel>(context);
+    bool _show = true;
+    void _showButton(bool value) {
+      setState(() {
+        _show = value;
+      });
+    }
+
+    void _showModalBottomSheet(BuildContext context) {
+      showModalBottomSheet<void>(
+        context: context,
+        builder: (context) {
+          return BottomSheetWidget();
+        },
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(
         title: Text('Thêm Topic'),
+        actions: [
+          IconButton(
+              onPressed: () {
+                _showModalBottomSheet(context);
+              },
+              icon: Icon(Icons.more_vert_rounded))
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -74,7 +97,7 @@ class _AddTopicScreenState extends State<AddTopicScreen> {
               ],
             ),
             TextFieldWidget(
-                fillColor: tabUnselectedColor,
+                fillColor: AppStyle.tabUnselectedColor,
                 paddingH: 5,
                 hint: 'Tiêu đề',
                 textEditingController: _titleController),
@@ -107,16 +130,16 @@ class _AddTopicScreenState extends State<AddTopicScreen> {
             ElevatedButton(
               onPressed: () => _saveAndShowWords(topicViewModel),
               style: ElevatedButton.styleFrom(
-                backgroundColor: primaryColor,
+                backgroundColor: AppStyle.primaryColor,
                 fixedSize: Size(295, 50),
                 padding:
                     const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
               ),
               child: topicViewModel.isLoading
                   ? CircularProgressIndicator(
-                      color: whiteColor,
+                      color: Colors.white,
                     )
-                  : Text('Lưu', style: TextStyle(color: whiteColor)),
+                  : Text('Lưu', style: TextStyle(color: Colors.white)),
             ),
           ],
         ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:languageassistant/routes/name_routes.dart';
-import 'package:languageassistant/utils/app_color.dart';
+
+import 'package:languageassistant/utils/app_style.dart';
 import 'package:languageassistant/utils/app_toast.dart';
 import 'package:languageassistant/view_model/auth_provider.dart';
 import 'package:languageassistant/widget/text_field_widget.dart';
@@ -32,7 +33,7 @@ class LoginScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 30,
-                    color: primaryColor,
+                    color: AppStyle.primaryColor,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -79,16 +80,17 @@ class LoginScreen extends StatelessWidget {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: primaryColor,
+                    backgroundColor: AppStyle.primaryColor,
                     fixedSize: Size(295, 50),
                     padding: const EdgeInsets.symmetric(
                         horizontal: 40, vertical: 15),
                   ),
                   child: authProvider.isLoading
                       ? CircularProgressIndicator(
-                          color: whiteColor,
+                          color: Colors.white,
                         )
-                      : Text('Đăng nhập', style: TextStyle(color: whiteColor)),
+                      : Text('Đăng nhập',
+                          style: TextStyle(color: Colors.white)),
                 ),
                 if (authProvider.errorMessage.isNotEmpty)
                   Text(
@@ -111,7 +113,7 @@ class LoginScreen extends StatelessWidget {
                         },
                         child: Text(
                           'Đăng ký',
-                          style: TextStyle(color: lightBlueColor),
+                          style: TextStyle(color: AppStyle.activeText),
                         ),
                       ),
                     ],

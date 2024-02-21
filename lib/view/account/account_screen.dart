@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:languageassistant/model/models/user_model.dart';
 import 'package:languageassistant/routes/name_routes.dart';
-import 'package:languageassistant/utils/app_color.dart';
+
 import 'package:languageassistant/utils/app_enum.dart';
 import 'package:languageassistant/utils/app_style.dart';
 import 'package:languageassistant/view_model/home_view_model.dart';
@@ -52,7 +52,7 @@ class _AccountScreenState extends State<AccountScreen> {
                           Positioned(
                             bottom: 0,
                             right: 4,
-                            child: buildEditIcon(primaryColor, true),
+                            child: buildEditIcon(AppStyle.primaryColor, true),
                           ),
                       ]
                     : [],

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:languageassistant/model/models/topic_model.dart';
-import 'package:languageassistant/utils/app_color.dart';
+
 import 'package:languageassistant/utils/app_style.dart';
 import 'package:languageassistant/utils/date_time_util.dart';
 import 'package:languageassistant/widget/custom_button.dart';
@@ -29,7 +29,7 @@ class TopicCard extends StatelessWidget {
     return Card(
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
-          side: BorderSide(color: primaryColor, width: 2)),
+          side: BorderSide(color: AppStyle.primaryColor, width: 2)),
       elevation: 4,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -73,7 +73,7 @@ class TopicCard extends StatelessWidget {
                 if (topic.wordLearned < 0)
                   Icon(
                     Icons.remove_red_eye_outlined,
-                    color: primaryColor,
+                    color: AppStyle.primaryColor,
                     size: 16,
                   ),
                 if (topic.wordLearned < 0)
