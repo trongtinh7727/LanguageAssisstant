@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:languageassistant/model/models/topic_model.dart';
 import 'package:languageassistant/routes/name_routes.dart';
 import 'package:languageassistant/utils/app_enum.dart';
 import 'package:languageassistant/utils/app_icons.dart';
@@ -12,6 +13,9 @@ import 'package:languageassistant/widget/word_input_field.dart';
 import 'package:provider/provider.dart';
 
 class AddTopicScreen extends StatefulWidget {
+  final TopicModel? editTopicModel;
+
+  const AddTopicScreen({super.key, this.editTopicModel});
   @override
   _AddTopicScreenState createState() => _AddTopicScreenState();
 }
@@ -25,7 +29,11 @@ class _AddTopicScreenState extends State<AddTopicScreen> {
   void initState() {
     super.initState();
     _addTopicViewModel = Provider.of<AddTopicViewModel>(context, listen: false);
-    _addTopicViewModel.clearWords();
+    if (widget.editTopicModel == null) {
+      _addTopicViewModel.clearWords();
+    } else {
+      _titleController.text = widget.editTopicModel!.title;
+    }
   }
 
   @override
@@ -142,14 +150,23 @@ class _AddTopicScreenState extends State<AddTopicScreen> {
 
   void _saveAndShowWords(AddTopicViewModel addTopicViewModel) async {
     try {
-      final addedTopic = await addTopicViewModel.saveAndShowWords(
-          _titleController.value.text, _auth.currentUser!.uid);
+      var addedTopic;
+      if (widget.editTopicModel != null) {
+        addedTopic = await addTopicViewModel.saveAndShowWords(
+            _titleController.value.text,
+            _auth.currentUser!.uid,
+            widget.editTopicModel);
+      } else {
+        addedTopic = await addTopicViewModel.saveAndShowWords(
+            _titleController.value.text, _auth.currentUser!.uid, null);
+      }
       final topicViewModel =
           Provider.of<TopicViewModel>(context, listen: false);
       if (addedTopic != null) {
         topicViewModel.fetchWordsByStatus(
             _auth.currentUser!.uid, addedTopic.id, WordStatus.ALL);
         topicViewModel.fetchLeaderBoard(addedTopic.id);
+        Navigator.pop(context);
         Navigator.pushReplacementNamed(context, RouteName.topicDetailScreen,
             arguments: addedTopic);
       }

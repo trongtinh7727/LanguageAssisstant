@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:languageassistant/model/models/topic_model.dart';
 import 'package:languageassistant/model/models/word_model.dart';
 import 'package:languageassistant/model/repository/topic_repository.dart';
+import 'package:languageassistant/routes/name_routes.dart';
 
 import 'package:languageassistant/utils/app_enum.dart';
 import 'package:languageassistant/utils/app_icons.dart';
@@ -11,6 +12,7 @@ import 'package:languageassistant/utils/date_time_util.dart';
 import 'package:languageassistant/view/topic_detail/components/topic_information.dart';
 import 'package:languageassistant/view/topic_detail/components/topics_words.dart';
 import 'package:languageassistant/view/topic_detail/components/toppic_leader_board.dart';
+import 'package:languageassistant/view_model/add_topic_view_model.dart';
 import 'package:languageassistant/view_model/topic_view_model.dart';
 import 'package:languageassistant/widget/bottomsheet_widget.dart';
 import 'package:languageassistant/widget/custom_button.dart';
@@ -128,7 +130,12 @@ class _TopicDetailScreenState extends State<TopicDetailScreen> {
     BottomSheetItem _editTopic = BottomSheetItem(
       icon: Icon(Icons.edit_note_rounded, color: Colors.black),
       onTap: () {
+        final _addTopicViewModel =
+            Provider.of<AddTopicViewModel>(context, listen: false);
+        _addTopicViewModel.setWords(topicViewModel.words);
         Navigator.pop(context);
+        Navigator.pushNamed(context, RouteName.updateTopicScreen,
+            arguments: widget.topic);
       },
       text: "Chỉnh sửa",
     );

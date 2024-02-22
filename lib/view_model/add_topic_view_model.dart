@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:languageassistant/model/models/topic_model.dart';
 import 'package:languageassistant/model/models/word_model.dart';
 import 'package:languageassistant/model/repository/topic_repository.dart';
+import 'package:languageassistant/model/repository/word_repository.dart';
+import 'package:languageassistant/utils/app_enum.dart';
 import 'package:languageassistant/utils/app_toast.dart';
 import 'package:languageassistant/utils/app_validator.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -15,8 +17,10 @@ import 'package:timezone/timezone.dart' as tz;
 class AddTopicViewModel extends ChangeNotifier {
   List<TopicModel> _topics = [];
   List<WordModel> _words = [];
+  List<WordModel> _removedWords = [];
 
   final TopicRepository _topicRepository = TopicRepository();
+  final WordRepository _wordRepository = WordRepository();
   final Random _random = Random();
   bool _isLoading = false; // Thêm biến này
 
@@ -92,7 +96,13 @@ class AddTopicViewModel extends ChangeNotifier {
   }
 
   void removeWord(WordModel wordModel) {
+    _removedWords.add(wordModel);
     _words.removeWhere((word) => word.id == wordModel.id);
+    notifyListeners();
+  }
+
+  void setWords(List<WordModel> words) {
+    _words = words;
     notifyListeners();
   }
 
@@ -115,7 +125,41 @@ class AddTopicViewModel extends ChangeNotifier {
     }
   }
 
-  Future<TopicModel?> saveAndShowWords(String title, String userID) async {
+  Future<TopicModel> updateTopic(
+      TopicModel topic, List<WordModel> words) async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      final addedTopic = await _topicRepository.updateTopicWithWords(
+          topic, words, _removedWords);
+      _isLoading = false;
+      notifyListeners();
+      return addedTopic;
+    } catch (e) {
+      _isLoading = false;
+      print('Error creating topic: $e');
+      notifyListeners();
+      return topic;
+    }
+  }
+
+  void fetchWordsByStatus(
+      String userId, String topicId, WordStatus status) async {
+    _isLoading = true;
+    notifyListeners();
+
+    _wordRepository.getAllByStatus(userId, topicId, status,
+        (List<WordModel> words) {
+      // This is the onComplete callback
+      _words = words; // Update the _words list with the fetched words
+      _isLoading = false;
+      notifyListeners();
+    });
+  }
+
+  Future<TopicModel?> saveAndShowWords(
+      String title, String userID, TopicModel? editTopic) async {
     final validators = [
       Validator.required(
           value: title, message: "Vui lòng không bỏ trống tiêu đề!"),
@@ -146,19 +190,28 @@ class AddTopicViewModel extends ChangeNotifier {
     tz.TZDateTime nowInTimeZone =
         tz.TZDateTime.now(tz.getLocation('Asia/Ho_Chi_Minh'));
     int currentTimesnap = nowInTimeZone.millisecondsSinceEpoch ~/ 1000;
-    TopicModel _topic = TopicModel(
-        id: "",
-        title: title,
-        description: '',
-        wordCount: _words.length,
-        viewCount: 0,
-        public: false,
-        author: userID,
-        createTime: currentTimesnap,
-        updateTime: currentTimesnap);
+
     try {
-      final addedTopic = await createTopic(_topic, _words);
-      return addedTopic;
+      if (editTopic != null) {
+        editTopic.title = title;
+        editTopic.updateTime = currentTimesnap;
+        editTopic.wordCount = _words.length;
+        final addedTopic = await updateTopic(editTopic, _words);
+        return addedTopic;
+      } else {
+        TopicModel _topic = TopicModel(
+            id: "",
+            title: title,
+            description: '',
+            wordCount: _words.length,
+            viewCount: 0,
+            public: false,
+            author: userID,
+            createTime: currentTimesnap,
+            updateTime: currentTimesnap);
+        final addedTopic = await createTopic(_topic, _words);
+        return addedTopic;
+      }
     } catch (e) {
       print("Error saving topic: $e");
       return null;

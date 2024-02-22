@@ -23,6 +23,12 @@ class Routes {
         return MaterialPageRoute(builder: (context) => RegisterScreen());
       case RouteName.addTopicScreen:
         return MaterialPageRoute(builder: (context) => AddTopicScreen());
+      case RouteName.updateTopicScreen:
+        final topic = settings.arguments as TopicModel;
+        return MaterialPageRoute(
+            builder: (context) => AddTopicScreen(
+                  editTopicModel: topic,
+                ));
       case RouteName.topicDetailScreen:
         final topic = settings.arguments as TopicModel;
         return MaterialPageRoute(

@@ -46,6 +46,29 @@ class TopicRepository extends BaseRepository<TopicModel> {
     return topic;
   }
 
+  Future<TopicModel> updateTopicWithWords(TopicModel topic,
+      List<WordModel> words, List<WordModel> removedWords) async {
+    // Create the topic and get its ID
+    await update(topic.id, topic);
+    // Using a batch to perform all writes as a single transaction
+    WriteBatch batch = _firestore.batch();
+
+    // Add each word to the batch
+    final _wordCollection = _firestore.collection('topics/${topic.id}/words');
+    for (var word in words) {
+      DocumentReference docRef = _wordCollection.doc(word.id);
+      batch.set(docRef, word.toMap(), SetOptions(merge: true));
+    }
+    for (var word in removedWords) {
+      DocumentReference docRef = _wordCollection.doc(word.id);
+      batch.delete(docRef);
+    }
+    // Commit the batch
+    await batch.commit();
+
+    return topic;
+  }
+
   Future<Pair<List<TopicModel>, Pair<bool, DocumentSnapshot?>>> getUserTopics(
     String userId, {
     DocumentSnapshot? lastDocument,
