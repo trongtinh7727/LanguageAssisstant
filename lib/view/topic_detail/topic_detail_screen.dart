@@ -143,6 +143,8 @@ class _TopicDetailScreenState extends State<TopicDetailScreen> {
       icon: Icon(Icons.delete_outline_rounded, color: Colors.black),
       onTap: () {
         Navigator.pop(context);
+        topicViewModel.delete(widget.topic.id);
+        Navigator.pop(context);
       },
       text: "Xóa",
     );

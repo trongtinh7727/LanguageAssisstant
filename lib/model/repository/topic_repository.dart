@@ -69,6 +69,46 @@ class TopicRepository extends BaseRepository<TopicModel> {
     return topic;
   }
 
+  Future<bool> deleteCollection(Query collection) async {
+    QuerySnapshot querySnapshot = await collection.get();
+    for (DocumentSnapshot documentSnapshot in querySnapshot.docs) {
+      try {
+        await documentSnapshot.reference.delete();
+      } catch (e) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  Future<void> deleteTopic(String topicID) async {
+    try {
+      bool success1 = await deleteCollection(_firestore
+          .collectionGroup("topics")
+          .where("topicRef",
+              isEqualTo: _firestore.collection("topics").doc(topicID)));
+      if (!success1) {
+        return;
+      }
+      bool success2 = await deleteCollection(_firestore
+          .collection("topics")
+          .doc(topicID)
+          .collection("leaderBoard"));
+      if (!success2) {
+        return;
+      }
+      bool success3 = await deleteCollection(
+          _firestore.collection("topics").doc(topicID).collection("words"));
+      if (!success3) {
+        return;
+      }
+
+      await _firestore.collection("topics").doc(topicID).delete();
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
   Future<Pair<List<TopicModel>, Pair<bool, DocumentSnapshot?>>> getUserTopics(
     String userId, {
     DocumentSnapshot? lastDocument,
