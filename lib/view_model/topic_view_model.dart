@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:languageassistant/model/models/topic_model.dart';
@@ -10,6 +12,7 @@ class TopicViewModel extends ChangeNotifier {
   List<TopicModel> _topics = [];
   List<WordModel> _words = [];
   List<RankItem> _ranks = [];
+
   final TopicRepository _topicRepository = TopicRepository();
   final WordRepository _wordRepository = WordRepository();
   bool _isLoading = false; // Thêm biến này
@@ -134,6 +137,48 @@ class TopicViewModel extends ChangeNotifier {
       print('Error creating topic: $e');
       notifyListeners();
       return topic;
+    }
+  }
+
+  Future<void> setPublic(String topicID, bool isPublic) async {
+    _isLoading = true;
+    notifyListeners();
+    _topicRepository.setPublic(topicID, isPublic).whenComplete(() {
+      _isLoading = false;
+      notifyListeners();
+    });
+  }
+
+  void fillter(String filter, String userID, String topicID) {
+    switch (filter) {
+      case "Tất cả":
+        fetchWordsByStatus(
+          userID,
+          topicID,
+          WordStatus.ALL,
+        );
+        break;
+      case "Đã học":
+        fetchWordsByStatus(
+          userID,
+          topicID,
+          WordStatus.LEARNED,
+        );
+        break;
+      case "Chưa học":
+        fetchWordsByStatus(
+          userID,
+          topicID,
+          WordStatus.NOT_LEARNED,
+        );
+        break;
+      case "Đã thành thạo":
+        fetchWordsByStatus(
+          userID,
+          topicID,
+          WordStatus.MASTERED,
+        );
+        break;
     }
   }
 }

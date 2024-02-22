@@ -16,6 +16,7 @@ class AppStyle {
   static const Color tabUnselectedColor = Color(0xFFDFE9F8);
   static const Color greyColor_100 = Color(0xFFDEE0E5);
   static const Color redColor = Color(0xFFFF0000);
+  static const Color successColor = Color(0xFF05B305);
 
   static const TextTheme textTheme = TextTheme(
     headline4: display1,
@@ -78,7 +79,7 @@ class AppStyle {
     fontFamily: fontName,
     fontWeight: FontWeight.w600,
     fontSize: 14,
-    letterSpacing: 0.2,
+    // letterSpacing: 0.2,
     color: activeText,
   );
 

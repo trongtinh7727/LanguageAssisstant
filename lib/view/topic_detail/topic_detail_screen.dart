@@ -5,9 +5,14 @@ import 'package:languageassistant/model/models/word_model.dart';
 import 'package:languageassistant/model/repository/topic_repository.dart';
 
 import 'package:languageassistant/utils/app_enum.dart';
+import 'package:languageassistant/utils/app_icons.dart';
 import 'package:languageassistant/utils/app_style.dart';
 import 'package:languageassistant/utils/date_time_util.dart';
+import 'package:languageassistant/view/topic_detail/components/topic_information.dart';
+import 'package:languageassistant/view/topic_detail/components/topics_words.dart';
+import 'package:languageassistant/view/topic_detail/components/toppic_leader_board.dart';
 import 'package:languageassistant/view_model/topic_view_model.dart';
+import 'package:languageassistant/widget/bottomsheet_widget.dart';
 import 'package:languageassistant/widget/custom_button.dart';
 import 'package:languageassistant/widget/personal_topic_card.dart';
 import 'package:languageassistant/widget/user_leaderboard_item.dart';
@@ -61,17 +66,10 @@ class _TopicDetailScreenState extends State<TopicDetailScreen> {
     String wordProgress = "$wordCount";
     topicViewModel = Provider.of<TopicViewModel>(context, listen: true);
 
-    const List<String> list = <String>[
-      'Tất cả',
-      'Đã học',
-      'Chưa học',
-      'Đã thành thạo'
-    ];
-
-    String dropdownValue = list.first;
     if (widget.topic.wordLearned >= 0) {
       wordProgress = "$wordLearned/$wordCount";
     }
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: true,
@@ -80,6 +78,7 @@ class _TopicDetailScreenState extends State<TopicDetailScreen> {
             icon: Icon(Icons.more_vert_rounded),
             onPressed: () {
               // Handle add button
+              _showModalBottomSheet(context);
             },
           ),
         ],
@@ -93,262 +92,113 @@ class _TopicDetailScreenState extends State<TopicDetailScreen> {
                 padding: EdgeInsets.symmetric(horizontal: 5),
                 child: Column(
                   children: [
-                    topicInforSection(viewCount, wordProgress),
+                    TopicInformation(
+                        widget: widget,
+                        viewCount: viewCount,
+                        wordProgress: wordProgress),
                     SizedBox(
                       height: 8,
                     ),
-                    leaderBoardSection(),
-                    wordSection(list, dropdownValue),
+                    TopicsLeaderBoard(topicViewModel: topicViewModel),
+                    TopicsWords(
+                        topicViewModel: topicViewModel,
+                        userID: _auth.currentUser!.uid,
+                        topicID: widget.topic.id),
                   ],
                 ),
               ),
             ),
           ),
-          if (topicViewModel.isLoading)
-            Container(
-              color: Colors.black45,
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
-            ),
         ],
       ),
     );
   }
 
-  Column wordSection(List<String> list, String dropdownValue) {
-    return Column(
-      children: [
-        Row(
-          children: [
-            Text('Các thuật ngữ trong chủ đề',
-                style: AppStyle.textTheme.headline6),
-            Expanded(
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: DropdownMenu<String>(
-                  initialSelection: list.first,
-                  width: 150,
-                  inputDecorationTheme: InputDecorationTheme(
-                    isDense: true,
-                    floatingLabelAlignment: FloatingLabelAlignment.center,
-                    constraints: const BoxConstraints(maxHeight: 40),
-                  ),
-                  onSelected: (String? value) {
-                    // This is called when the user selects an item.
-                    setState(() {
-                      dropdownValue = value!;
-                      switch (value) {
-                        case "Tất cả":
-                          topicViewModel.fetchWordsByStatus(
-                            _auth.currentUser!.uid,
-                            widget.topic.id,
-                            WordStatus.ALL,
-                          );
-                          break;
-                        case "Đã học":
-                          topicViewModel.fetchWordsByStatus(
-                            _auth.currentUser!.uid,
-                            widget.topic.id,
-                            WordStatus.LEARNED,
-                          );
-                          break;
-                        case "Chưa học":
-                          topicViewModel.fetchWordsByStatus(
-                            _auth.currentUser!.uid,
-                            widget.topic.id,
-                            WordStatus.NOT_LEARNED,
-                          );
-                          break;
-                        case "Đã thành thạo":
-                          topicViewModel.fetchWordsByStatus(
-                            _auth.currentUser!.uid,
-                            widget.topic.id,
-                            WordStatus.MASTERED,
-                          );
-                          break;
-                      }
-                    });
-                  },
-                  dropdownMenuEntries: list
-                      .map<DropdownMenuEntry<String>>(
-                        (String value) => DropdownMenuEntry<String>(
-                          value: value,
-                          label: value,
-                        ),
-                      )
-                      .toList(),
-                  textStyle: AppStyle.body2,
-                ),
-              ),
-            ),
-          ],
-        ),
-        SizedBox(
-          height: 8,
-        ),
-        ListView.builder(
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
-          itemCount: topicViewModel.words.length,
-          itemBuilder: (context, index) {
-            final word = topicViewModel.words[index];
-            final userID = _auth.currentUser!.uid;
-            final topicID = widget.topic.id;
+  final MaterialStateProperty<Icon?> thumbIcon =
+      MaterialStateProperty.resolveWith<Icon?>(
+    (Set<MaterialState> states) {
+      if (states.contains(MaterialState.selected)) {
+        return const Icon(Icons.check);
+      }
+      return const Icon(Icons.close);
+    },
+  );
 
-            return WordItem(
-              word: word,
-              topicID: topicID,
-              userID: userID,
-              topicViewModel: topicViewModel,
-              backgroundColor: index % 2 == 0
-                  ? AppStyle.greyColor_100
-                  : AppStyle.tabUnselectedColor,
-            );
-          },
-        ),
-      ],
+  void _showModalBottomSheet(BuildContext context) {
+    BottomSheetItem _editTopic = BottomSheetItem(
+      icon: Icon(Icons.edit_note_rounded, color: Colors.black),
+      onTap: () {
+        Navigator.pop(context);
+      },
+      text: "Chỉnh sửa",
     );
-  }
-
-  Column leaderBoardSection() {
-    return Column(
-      children: [
-        Text(
-          'Bảng Xếp Hạng',
-          style: AppStyle.title,
-        ),
-        SizedBox(
-          height: 8,
-        ),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 5),
-          height: 200, // Adjust height accordingly
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: topicViewModel
-                .ranks.length, // Replace with the actual number of items
-            itemBuilder: (context, index) {
-              final item = topicViewModel.ranks[index];
-              return UserLeaderBoardItem(
-                userRank: item,
-              );
-            },
-          ),
-        ),
-      ],
+    BottomSheetItem _deleteTopic = BottomSheetItem(
+      icon: Icon(Icons.delete_outline_rounded, color: Colors.black),
+      onTap: () {
+        Navigator.pop(context);
+      },
+      text: "Xóa",
     );
-  }
-
-  // topicInforSection
-  Container topicInforSection(int viewCount, String wordProgress) {
-    return Container(
-      padding: EdgeInsets.all(5.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    BottomSheetItem _addToFolder = BottomSheetItem(
+      icon: Icon(Icons.add_to_photos_outlined, color: Colors.black),
+      onTap: () {
+        Navigator.pop(context);
+      },
+      text: "Thêm vào folder",
+    );
+    BottomSheetItem _exportCSV = BottomSheetItem(
+      icon: Icon(LAIcons.import, color: Colors.black),
+      onTap: () {
+        Navigator.pop(context);
+      },
+      text: "Xuất ra file CSV",
+    );
+    BottomSheetItem _public = BottomSheetItem(
+      icon: Icon(Icons.public, color: Colors.black),
+      onTap: () {
+        setState(() {
+          widget.topic.public = !widget.topic.public;
+          topicViewModel.setPublic(widget.topic.id, widget.topic.public);
+          Navigator.pop(context);
+          _showModalBottomSheet(context);
+        });
+      },
+      isLoading: topicViewModel.isLoading,
+      child: Row(
         children: [
           Text(
-            widget.topic.title,
-            maxLines: 5,
-            style: AppStyle.headline,
-          ),
-          Row(
-            children: [
-              Text(
-                '${DateTimeUtil.format(widget.topic.createTime)}',
-                style: AppStyle.caption,
-              ),
-              SizedBox(
-                width: 20,
-              ),
-              Icon(
-                Icons.remove_red_eye_outlined,
-                color: AppStyle.primaryColor,
-                size: 16,
-              ),
-              Text(
-                '$viewCount',
-                style: AppStyle.caption,
-              ),
-            ],
+            'Trạng thái: ',
+            style: AppStyle.title,
           ),
           SizedBox(
-            height: 8,
+            width: 8,
           ),
           Text(
-            '$wordProgress words',
-            style: AppStyle.caption,
-          ),
-          SizedBox(
-            height: 8,
-          ),
-          if (widget.topic.wordLearned >= 0)
-            SizedBox(
-              width: 150,
-              child: ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-                child: LinearProgressIndicator(
-                  value: widget.topic.wordLearned / widget.topic.wordCount,
-                  minHeight: 7,
-                  backgroundColor: Colors.blue[100],
-                  color: Colors.blue,
-                ),
-              ),
-            ),
-          SizedBox(
-            height: 8,
-          ),
-          Row(
-            children: [
-              CircleAvatar(
-                radius: 16,
-                backgroundImage: NetworkImage(widget.topic.authoravatar ??
-                    'https://firebasestorage.googleapis.com/v0/b/language-assistant-7727.appspot.com/o/Users%2FAvatars%2Favatar_default.png?alt=media&token=490b3731-c6a2-4d1b-a75a-4902372c307b'),
-                onBackgroundImageError: (exception, stackTrace) {
-                  // Log the error, show a dialog, or use a fallback image
-                  print('Error loading background image: $exception');
-                },
-                child: widget.topic.authoravatar == null
-                    ? Icon(
-                        Icons.person) // Fallback icon in case the URL is null
-                    : null,
-              ),
-              SizedBox(width: 8),
-              Text(
-                widget.topic.authorName ?? "",
-                style: AppStyle.caption,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 8,
-          ),
-          Row(
-            mainAxisAlignment:
-                MainAxisAlignment.spaceBetween, // Căn giữa và đều các nút
-
-            children: [
-              CustomButton(
-                onContinue: () {},
-                word: "Flashcard",
-                btnBackground: Colors.white,
-              ),
-              CustomButton(
-                onContinue: () {},
-                word: "Điền từ",
-                btnBackground: Colors.white,
-              ),
-              CustomButton(
-                onContinue: () {},
-                word: "Trắc nghiệm",
-                btnBackground: Colors.white,
-              ),
-            ],
+            widget.topic.public ? 'Công khai' : 'Riêng tư',
+            style: TextStyle(
+                color: widget.topic.public
+                    ? AppStyle.successColor
+                    : AppStyle.redColor),
           ),
         ],
       ),
     );
+
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (context) {
+        return BottomSheetWidget(
+          menuItemCount: 3,
+          bottomSheetItems: Column(children: [
+            _editTopic,
+            _deleteTopic,
+            _addToFolder,
+            _exportCSV,
+            _public
+          ]),
+        );
+      },
+    );
   }
+  // topicInforSection
 }

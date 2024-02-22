@@ -4,8 +4,9 @@ import 'package:languageassistant/utils/app_style.dart';
 class BottomSheetWidget extends StatefulWidget {
   // const BottomSheetWidget({Key key}) : super(key: key);
   final Widget bottomSheetItems;
-
-  const BottomSheetWidget({super.key, required this.bottomSheetItems});
+  final double menuItemCount;
+  const BottomSheetWidget(
+      {super.key, required this.bottomSheetItems, required this.menuItemCount});
 
   @override
   _BottomSheetWidgetState createState() => _BottomSheetWidgetState();
@@ -16,7 +17,8 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(top: 5, left: 15, right: 15),
-      height: 160,
+      // height: widget.menuItemCount,
+      height: 100 * widget.menuItemCount,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.max,
@@ -43,13 +45,17 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
 class BottomSheetItem extends StatelessWidget {
   final Icon icon;
   final String text;
+  final Widget child;
   final VoidCallback onTap;
+  final bool isLoading; // Thêm trường này
 
   const BottomSheetItem({
     Key? key,
     required this.icon,
-    required this.text,
+    this.child = const Text(""),
+    this.text = "",
     required this.onTap,
+    this.isLoading = false, // Khởi tạo giá trị mặc định cho trường isLoading
   }) : super(key: key);
 
   @override
@@ -57,21 +63,27 @@ class BottomSheetItem extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
-          alignment: Alignment.topLeft,
-          padding: EdgeInsets.symmetric(horizontal: 10),
-          child: TextButton(
-            child: Row(children: [
+        alignment: Alignment.topLeft,
+        padding: EdgeInsets.symmetric(horizontal: 10),
+        child: TextButton(
+          onPressed: onTap,
+          child: Row(
+            children: [
               icon,
               SizedBox(
                 width: 8,
               ),
-              Text(
-                text,
-                style: AppStyle.title,
-              ),
-            ]),
-            onPressed: onTap,
-          )),
+              if (text.isNotEmpty)
+                Text(
+                  text,
+                  style: AppStyle.title,
+                )
+              else
+                child,
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

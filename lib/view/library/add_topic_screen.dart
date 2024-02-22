@@ -37,6 +37,7 @@ class _AddTopicScreenState extends State<AddTopicScreen> {
   @override
   Widget build(BuildContext context) {
     _addTopicViewModel = Provider.of<AddTopicViewModel>(context);
+
     void _showModalBottomSheet(BuildContext context) {
       BottomSheetItem _bottomSheet = BottomSheetItem(
         icon: Icon(LAIcons.import, color: Colors.black),
@@ -52,6 +53,7 @@ class _AddTopicScreenState extends State<AddTopicScreen> {
         builder: (context) {
           return BottomSheetWidget(
             bottomSheetItems: Column(children: [_bottomSheet]),
+            menuItemCount: 1,
           );
         },
       );

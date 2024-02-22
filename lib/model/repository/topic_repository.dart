@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:languageassistant/model/models/topic_model.dart';
@@ -177,6 +179,11 @@ class TopicRepository extends BaseRepository<TopicModel> {
       // Handle errors or return an appropriate error state
       return Pair([], Pair(false, null));
     }
+  }
+
+  Future<void> setPublic(String topicID, bool isPublic) async {
+    final topicDoc = _firestore.collection("topics").doc(topicID);
+    await topicDoc.set({'public': isPublic}, SetOptions(merge: true));
   }
 
   Future<List<RankItem>> getLeaderBoard(String topicID) async {
