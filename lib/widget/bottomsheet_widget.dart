@@ -41,7 +41,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
 }
 
 class BottomSheetItem extends StatelessWidget {
-  final IconData icon;
+  final Icon icon;
   final String text;
   final VoidCallback onTap;
 
@@ -61,7 +61,7 @@ class BottomSheetItem extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 10),
           child: TextButton(
             child: Row(children: [
-              Icon(icon),
+              icon,
               SizedBox(
                 width: 8,
               ),

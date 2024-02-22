@@ -39,7 +39,7 @@ class _AddTopicScreenState extends State<AddTopicScreen> {
     _addTopicViewModel = Provider.of<AddTopicViewModel>(context);
     void _showModalBottomSheet(BuildContext context) {
       BottomSheetItem _bottomSheet = BottomSheetItem(
-        icon: LAIcons.import,
+        icon: Icon(LAIcons.import, color: Colors.black),
         onTap: () {
           _addTopicViewModel.pickFile();
           Navigator.pop(context);
@@ -144,11 +144,13 @@ class _AddTopicScreenState extends State<AddTopicScreen> {
           _titleController.value.text, _auth.currentUser!.uid);
       final topicViewModel =
           Provider.of<TopicViewModel>(context, listen: false);
-      topicViewModel.fetchWordsByStatus(
-          _auth.currentUser!.uid, addedTopic.id, WordStatus.ALL);
-      topicViewModel.fetchLeaderBoard(addedTopic.id);
-      Navigator.pushReplacementNamed(context, RouteName.topicDetailScreen,
-          arguments: addedTopic);
+      if (addedTopic != null) {
+        topicViewModel.fetchWordsByStatus(
+            _auth.currentUser!.uid, addedTopic.id, WordStatus.ALL);
+        topicViewModel.fetchLeaderBoard(addedTopic.id);
+        Navigator.pushReplacementNamed(context, RouteName.topicDetailScreen,
+            arguments: addedTopic);
+      }
     } catch (e) {
       print("Error saving topic: $e");
       // Handle the error, maybe show a dialog to the user.

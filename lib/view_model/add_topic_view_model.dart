@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:languageassistant/model/models/topic_model.dart';
 import 'package:languageassistant/model/models/word_model.dart';
 import 'package:languageassistant/model/repository/topic_repository.dart';
+import 'package:languageassistant/utils/app_toast.dart';
+import 'package:languageassistant/utils/app_validator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
@@ -35,6 +37,8 @@ class AddTopicViewModel extends ChangeNotifier {
         (nowInTimeZone.millisecondsSinceEpoch / 1000).toInt();
     _words.add(WordModel(
         id: _generateUniqueId(),
+        vietnamese: "",
+        english: "",
         createTime: currentTimestamp,
         updateTime: currentTimestamp));
     notifyListeners();
@@ -111,7 +115,34 @@ class AddTopicViewModel extends ChangeNotifier {
     }
   }
 
-  Future<TopicModel> saveAndShowWords(String title, String userID) async {
+  Future<TopicModel?> saveAndShowWords(String title, String userID) async {
+    final validators = [
+      Validator.required(
+          value: title, message: "Vui lòng không bỏ trống tiêu đề!"),
+      Validator.min(
+          min: 4,
+          value: _words.length,
+          message: "Chủ đề phải có ít nhất 4 từ vựng!"),
+    ];
+
+    for (var word in _words) {
+      validators.addAll([
+        Validator.required(
+            value: word.english!,
+            message: "Vui lòng không bỏ trống từ tiếng Anh!"),
+        Validator.required(
+            value: word.vietnamese!,
+            message: "Vui lòng không bỏ trống từ tiếng Việt!"),
+      ]);
+    }
+
+    final errorMessages =
+        validators.where((validator) => validator != null).toList();
+    if (errorMessages.isNotEmpty) {
+      errorToast(errorMessages.first!);
+      return null;
+    }
+
     tz.TZDateTime nowInTimeZone =
         tz.TZDateTime.now(tz.getLocation('Asia/Ho_Chi_Minh'));
     int currentTimesnap = nowInTimeZone.millisecondsSinceEpoch ~/ 1000;
@@ -130,7 +161,7 @@ class AddTopicViewModel extends ChangeNotifier {
       return addedTopic;
     } catch (e) {
       print("Error saving topic: $e");
-      return _topic;
+      return null;
     }
   }
 
