@@ -142,9 +142,27 @@ class _TopicDetailScreenState extends State<TopicDetailScreen> {
     BottomSheetItem _deleteTopic = BottomSheetItem(
       icon: Icon(Icons.delete_outline_rounded, color: Colors.black),
       onTap: () {
-        Navigator.pop(context);
-        topicViewModel.delete(widget.topic.id);
-        Navigator.pop(context);
+        showDialog<String>(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+            title: const Text('Xóa topic này?'),
+            content: const Text('Sau khi xóa sẽ không thể khôi phục được'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.pop(context, 'Hủy'),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () {
+                  topicViewModel.delete(widget.topic.id);
+                  Navigator.pop(context, 'Xác nhận');
+                  Navigator.pop(context);
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
       },
       text: "Xóa",
     );
@@ -158,6 +176,7 @@ class _TopicDetailScreenState extends State<TopicDetailScreen> {
     BottomSheetItem _exportCSV = BottomSheetItem(
       icon: Icon(LAIcons.import, color: Colors.black),
       onTap: () {
+        topicViewModel.createAndSaveCSVFile();
         Navigator.pop(context);
       },
       text: "Xuất ra file CSV",

@@ -60,30 +60,16 @@ class BottomSheetItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return ListTile(
       onTap: onTap,
-      child: Container(
-        alignment: Alignment.topLeft,
-        padding: EdgeInsets.symmetric(horizontal: 10),
-        child: TextButton(
-          onPressed: onTap,
-          child: Row(
-            children: [
-              icon,
-              SizedBox(
-                width: 8,
-              ),
-              if (text.isNotEmpty)
-                Text(
-                  text,
-                  style: AppStyle.title,
-                )
-              else
-                child,
-            ],
-          ),
-        ),
-      ),
+      leading: icon,
+      // subtitle: Text('dsjagdgsa'),
+      title: text.isNotEmpty
+          ? Text(
+              text,
+              style: AppStyle.title,
+            )
+          : child,
     );
   }
 }

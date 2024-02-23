@@ -1,12 +1,19 @@
-import 'dart:ffi';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
+import 'package:csv/csv.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
+import 'package:intl/intl.dart';
 import 'package:languageassistant/model/models/topic_model.dart';
 import 'package:languageassistant/model/models/word_model.dart';
 import 'package:languageassistant/model/repository/topic_repository.dart';
 import 'package:languageassistant/model/repository/word_repository.dart';
 import 'package:languageassistant/utils/app_enum.dart';
+import 'package:languageassistant/utils/app_toast.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:file_saver/file_saver.dart';
 
 class TopicViewModel extends ChangeNotifier {
   List<TopicModel> _topics = [];
@@ -193,6 +200,36 @@ class TopicViewModel extends ChangeNotifier {
           WordStatus.MASTERED,
         );
         break;
+    }
+  }
+
+  Future<bool> checkPermissions() async {
+    var status = await Permission.storage.status;
+    if (!status.isGranted) {
+      await Permission.storage.request();
+      return false;
+    }
+    return true;
+  }
+
+  Future<void> createAndSaveCSVFile() async {
+    if (await checkPermissions()) {
+      List<List<dynamic>> rows = [
+        ..._words.map((word) => [word.english, word.vietnamese]).toList(),
+      ];
+
+      String csv = const ListToCsvConverter().convert(rows);
+      String fileName =
+          "words_${DateFormat('yyyyMMdd_HHmmss').format(DateTime.now())}.csv";
+      String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
+      if (selectedDirectory != null) {
+        final file = File('$selectedDirectory/$fileName');
+        await file.writeAsString(csv);
+        successToast('Saved to: ' + file.path);
+      }
+    } else {
+      // Handle the case where permission is not granted
+      errorToast('Need permission to access storage');
     }
   }
 }
