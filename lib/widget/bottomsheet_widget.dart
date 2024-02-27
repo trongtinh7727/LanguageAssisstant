@@ -43,7 +43,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
 }
 
 class BottomSheetItem extends StatelessWidget {
-  final Icon icon;
+  final Icon? icon;
   final String text;
   final Widget child;
   final VoidCallback onTap;
@@ -51,7 +51,7 @@ class BottomSheetItem extends StatelessWidget {
 
   const BottomSheetItem({
     Key? key,
-    required this.icon,
+    this.icon,
     this.child = const Text(""),
     this.text = "",
     required this.onTap,

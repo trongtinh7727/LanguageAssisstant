@@ -84,6 +84,14 @@ class AppStyle {
     color: activeText,
   );
 
+  static const TextStyle activeWhite = TextStyle(
+    fontFamily: fontName,
+    fontWeight: FontWeight.w600,
+    fontSize: 14,
+    // letterSpacing: 0.2,
+    color: Colors.white,
+  );
+
   static const TextStyle body1 = TextStyle(
     fontFamily: fontName,
     fontWeight: FontWeight.w400,

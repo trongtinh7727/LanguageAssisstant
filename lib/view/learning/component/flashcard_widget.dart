@@ -11,11 +11,9 @@ class FlashCardWidget extends StatelessWidget {
       {super.key,
       required this.learningViewModel,
       required bool this.isFont,
-      required bool this.isEngMode,
       this.backgroundColor = Colors.black});
   final LearningViewModel learningViewModel;
   final bool isFont;
-  final bool isEngMode;
   final Color backgroundColor;
   final FlutterTts flutterTts = FlutterTts();
   Future<void> speak() async {
@@ -30,7 +28,7 @@ class FlashCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String textContent = isEngMode
+    String textContent = learningViewModel.isEnglishMode
         ? (isFont
             ? learningViewModel.currentWord.english ?? ""
             : learningViewModel.currentWord.vietnamese ?? "")

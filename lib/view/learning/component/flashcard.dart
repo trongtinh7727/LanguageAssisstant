@@ -46,15 +46,15 @@ class _FlashCardScreenState extends State<FlashCardScreen> {
       rotateSide: RotateSide.right,
       controller: flipCardController,
       frontWidget: FlashCardWidget(
-          backgroundColor: cardColor, // S
-          learningViewModel: learningViewModel,
-          isFont: true,
-          isEngMode: true),
+        backgroundColor: cardColor, // S
+        learningViewModel: learningViewModel,
+        isFont: true,
+      ),
       backWidget: FlashCardWidget(
-          backgroundColor: cardColor, // S
-          learningViewModel: learningViewModel,
-          isFont: false,
-          isEngMode: true),
+        backgroundColor: cardColor, // S
+        learningViewModel: learningViewModel,
+        isFont: false,
+      ),
     ));
 
     void showNextCard({required int isMastered}) {
@@ -116,10 +116,10 @@ class _FlashCardScreenState extends State<FlashCardScreen> {
                         },
                         data: 10,
                         feedback: FlashCardWidget(
-                            backgroundColor: AppStyle.tabUnselectedColor, // S
-                            learningViewModel: learningViewModel,
-                            isFont: true,
-                            isEngMode: true),
+                          backgroundColor: AppStyle.tabUnselectedColor, // S
+                          learningViewModel: learningViewModel,
+                          isFont: true,
+                        ),
                         childWhenDragging: Container(),
                         child: flipCardContainer,
                       ),

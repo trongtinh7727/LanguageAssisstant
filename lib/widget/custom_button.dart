@@ -37,7 +37,9 @@ class CustomButton extends StatelessWidget {
         ),
         child: Text(
           word,
-          style: AppStyle.active,
+          style: (btnBack == AppStyle.activeText)
+              ? AppStyle.activeWhite
+              : AppStyle.active,
         ),
       ),
     );

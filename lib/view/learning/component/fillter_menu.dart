@@ -7,6 +7,8 @@ import 'package:languageassistant/utils/app_icons.dart';
 import 'package:languageassistant/utils/app_style.dart';
 import 'package:languageassistant/view_model/learning_view_model.dart';
 import 'package:languageassistant/widget/bottomsheet_widget.dart';
+import 'package:languageassistant/widget/custom_button.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 
 class FillterMenu extends StatelessWidget {
   final LearningViewModel learningViewModel;
@@ -62,13 +64,13 @@ class FillterMenu extends StatelessWidget {
     ];
 
     BottomSheetItem _fillter = BottomSheetItem(
-      icon: Icon(Icons.volume_up_rounded, color: Colors.black),
       onTap: () {
         learningViewModel.toggleAutoPlayVoice();
         Navigator.pop(context);
         _showModalBottomSheet(context);
       },
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Text('Bộ lọc: ', style: AppStyle.title),
           SizedBox(
@@ -101,13 +103,75 @@ class FillterMenu extends StatelessWidget {
       ),
     );
 
+    BottomSheetItem _learninggMode = BottomSheetItem(
+      onTap: () {
+        learningViewModel.toggleAutoPlayVoice();
+        Navigator.pop(context);
+        _showModalBottomSheet(context);
+      },
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text('Câu hỏi bằng: ', style: AppStyle.title),
+            ],
+          ),
+          SizedBox(
+            height: 8,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              ToggleSwitch(
+                initialLabelIndex: learningViewModel.isEnglishMode ? 0 : 1,
+                activeBorders: [
+                  Border.all(
+                    color: AppStyle.activeText,
+                    width: 1.0,
+                  ),
+                  Border.all(
+                    color: AppStyle.activeText,
+                    width: 1.0,
+                  )
+                ],
+                activeFgColor: Colors.white,
+                inactiveBgColor: AppStyle.tabUnselectedColor,
+                inactiveFgColor: AppStyle.activeText,
+                isVertical: false,
+                minWidth: 150.0,
+                borderWidth: 1,
+                borderColor: [AppStyle.activeText],
+                fontSize: 14,
+                radiusStyle: true,
+                cornerRadius: 20.0,
+                activeBgColors: [
+                  [
+                    AppStyle.activeText,
+                  ],
+                  [AppStyle.activeText]
+                ],
+                labels: [
+                  'English',
+                  'Vietnamese',
+                ],
+                onToggle: (index) {
+                  learningViewModel.switchMode(index == 0);
+                },
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+
     showModalBottomSheet<void>(
       context: context,
       builder: (context) {
         return BottomSheetWidget(
-          bottomSheetItems:
-              Column(children: [_shuffle, _autoPlayVoice, _fillter]),
-          menuItemCount: 2,
+          bottomSheetItems: Column(
+              children: [_shuffle, _autoPlayVoice, _fillter, _learninggMode]),
+          menuItemCount: 4,
         );
       },
     );

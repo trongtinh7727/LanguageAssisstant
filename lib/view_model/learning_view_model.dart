@@ -14,7 +14,6 @@ class LearningViewModel extends ChangeNotifier {
   List<WordModel> _learnedWords = [];
   List<WordModel> _masteredWords = [];
   int _currentIndex = 0;
-  // WordModel _currentWord = _words[0];
   String _currentFillter = "Tất cả";
 
   final TopicRepository _topicRepository = TopicRepository();
@@ -22,6 +21,7 @@ class LearningViewModel extends ChangeNotifier {
   final Random _random = Random();
   bool _isLoading = false;
   bool _autoPlayVoice = false;
+  bool _isEnglishMode = true;
 
   TopicModel get topic => _topic;
   List<WordModel> get words => _words;
@@ -33,6 +33,7 @@ class LearningViewModel extends ChangeNotifier {
   int get currentIndex => _currentIndex;
   bool get isLoading => _isLoading;
   bool get autoPlayVoice => _autoPlayVoice;
+  bool get isEnglishMode => _isEnglishMode;
   String get currentFillter => _currentFillter;
 
   String _generateUniqueId() {
@@ -89,6 +90,11 @@ class LearningViewModel extends ChangeNotifier {
 
       notifyListeners();
     }
+  }
+
+  void switchMode(bool state) {
+    _isEnglishMode = state;
+    notifyListeners();
   }
 
   Future<void> markWord(String userId) async {
