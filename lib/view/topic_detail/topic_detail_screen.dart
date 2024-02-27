@@ -1,24 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:languageassistant/model/models/topic_model.dart';
-import 'package:languageassistant/model/models/word_model.dart';
-import 'package:languageassistant/model/repository/topic_repository.dart';
 import 'package:languageassistant/routes/name_routes.dart';
-
-import 'package:languageassistant/utils/app_enum.dart';
 import 'package:languageassistant/utils/app_icons.dart';
 import 'package:languageassistant/utils/app_style.dart';
-import 'package:languageassistant/utils/date_time_util.dart';
 import 'package:languageassistant/view/topic_detail/components/topic_information.dart';
 import 'package:languageassistant/view/topic_detail/components/topics_words.dart';
 import 'package:languageassistant/view/topic_detail/components/toppic_leader_board.dart';
 import 'package:languageassistant/view_model/add_topic_view_model.dart';
 import 'package:languageassistant/view_model/topic_view_model.dart';
 import 'package:languageassistant/widget/bottomsheet_widget.dart';
-import 'package:languageassistant/widget/custom_button.dart';
-import 'package:languageassistant/widget/personal_topic_card.dart';
-import 'package:languageassistant/widget/user_leaderboard_item.dart';
-import 'package:languageassistant/widget/word_item.dart';
 import 'package:provider/provider.dart';
 
 class TopicDetailScreen extends StatefulWidget {
@@ -95,6 +86,7 @@ class _TopicDetailScreenState extends State<TopicDetailScreen> {
                 child: Column(
                   children: [
                     TopicInformation(
+                        topicViewModel: topicViewModel,
                         widget: widget,
                         viewCount: viewCount,
                         wordProgress: wordProgress),

@@ -3,6 +3,7 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:languageassistant/model/models/word_model.dart';
 
 import 'package:languageassistant/utils/app_style.dart';
+import 'package:languageassistant/utils/app_tts.dart';
 import 'package:languageassistant/view_model/topic_view_model.dart';
 
 class WordItem extends StatelessWidget {
@@ -24,9 +25,7 @@ class WordItem extends StatelessWidget {
   final FlutterTts flutterTts = FlutterTts();
 
   Future<void> _speak() async {
-    await flutterTts.setLanguage(
-        "en-US"); // Set the language to Vietnamese (adjust as needed)
-    await flutterTts.speak(word.english ?? "vietnamese");
+    AppTTS.speak(word.english ?? "vietnamese");
   }
 
   Future<void> _mark() async {
@@ -59,23 +58,18 @@ class WordItem extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                if (word.isMarked)
-                  InkWell(
-                    onTap: () {
-                      _mark();
-                    },
-                    child: Icon(
-                      Icons.star_purple500_sharp,
-                      color: AppStyle.redColor,
-                    ),
-                  )
-                else
-                  InkWell(
-                    onTap: () {
-                      _mark();
-                    },
-                    child: const Icon(Icons.star_border_outlined),
+                InkWell(
+                  onTap: () {
+                    _mark();
+                  },
+                  child: Icon(
+                    word.isMarked
+                        ? Icons.star_purple500_sharp
+                        : Icons.star_border_outlined,
+                    color:
+                        word.isMarked ? AppStyle.redColor : AppStyle.darkText,
                   ),
+                ),
                 InkWell(
                   onTap: _speak, // Call the speak method when tapped
                   child: const Icon(Icons.volume_up_rounded),

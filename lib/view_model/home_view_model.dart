@@ -1,17 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:languageassistant/model/models/topic_model.dart';
-import 'package:languageassistant/model/models/word_model.dart';
 import 'package:languageassistant/model/repository/topic_repository.dart';
 import 'package:languageassistant/model/repository/word_repository.dart';
-import 'package:languageassistant/utils/app_enum.dart';
 
 class HomeViewModel extends ChangeNotifier {
   List<TopicModel> _topics = [];
   List<TopicModel> _topicLearderboard = [];
   List<TopicModel> _recentTopics = [];
   final TopicRepository _topicRepository = TopicRepository();
-  final WordRepository _wordRepository = WordRepository();
+
   bool _isLoading = false; // Thêm biến này
 
   List<TopicModel> get topics => _topics;

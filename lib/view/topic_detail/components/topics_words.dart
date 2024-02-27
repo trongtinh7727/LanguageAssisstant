@@ -24,7 +24,6 @@ class TopicsWords extends StatelessWidget {
       'Đã thành thạo'
     ];
 
-    String dropdownValue = list.first;
     return Column(
       children: [
         Row(
@@ -43,9 +42,7 @@ class TopicsWords extends StatelessWidget {
                     constraints: const BoxConstraints(maxHeight: 40),
                   ),
                   onSelected: (String? value) {
-                    // This is called when the user selects an item.
-                    dropdownValue = value!;
-                    topicViewModel.fillter(value, userID, topicID);
+                    topicViewModel.fillter(value!, userID, topicID);
                   },
                   dropdownMenuEntries: list
                       .map<DropdownMenuEntry<String>>(

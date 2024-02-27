@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:languageassistant/routes/name_routes.dart';
-import 'package:languageassistant/view_model/auth_provider.dart';
-import 'package:provider/provider.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -23,11 +21,10 @@ class _SplashScreenState extends State<SplashScreen> {
 
       if (_user == null) {
         // If the user is not authenticated, navigate to the login screen.
-        Navigator.pushReplacementNamed(context, RouteName.loginScreen);
+        Navigator.popAndPushNamed(context, RouteName.loginScreen);
       } else {
         // If the user is authenticated, navigate to the home screen.
-
-        Navigator.pushReplacementNamed(context, RouteName.mainLayout);
+        Navigator.popAndPushNamed(context, RouteName.mainLayout);
       }
     });
   }

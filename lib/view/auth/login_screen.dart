@@ -73,7 +73,8 @@ class LoginScreen extends StatelessWidget {
                         password.text.toString(),
                       );
                       if (result) {
-                        Navigator.pushNamed(context, RouteName.mainLayout);
+                        Navigator.pushReplacementNamed(
+                            context, RouteName.mainLayout);
                       } else {
                         // Maybe show an error message
                       }

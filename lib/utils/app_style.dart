@@ -17,6 +17,7 @@ class AppStyle {
   static const Color greyColor_100 = Color(0xFFDEE0E5);
   static const Color redColor = Color(0xFFFF0000);
   static const Color successColor = Color(0xFF05B305);
+  static const Color warningColor = Color(0xFFD4B511);
 
   static const TextTheme textTheme = TextTheme(
     headline4: display1,

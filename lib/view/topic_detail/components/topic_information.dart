@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:languageassistant/routes/name_routes.dart';
 import 'package:languageassistant/utils/app_style.dart';
 import 'package:languageassistant/utils/date_time_util.dart';
 import 'package:languageassistant/view/topic_detail/topic_detail_screen.dart';
+import 'package:languageassistant/view_model/learning_view_model.dart';
+import 'package:languageassistant/view_model/topic_view_model.dart';
 import 'package:languageassistant/widget/custom_button.dart';
+import 'package:provider/provider.dart';
 
 class TopicInformation extends StatelessWidget {
   const TopicInformation({
@@ -10,9 +14,11 @@ class TopicInformation extends StatelessWidget {
     required this.widget,
     required this.viewCount,
     required this.wordProgress,
+    required this.topicViewModel,
   });
 
   final TopicDetailScreen widget;
+  final TopicViewModel topicViewModel;
   final int viewCount;
   final String wordProgress;
 
@@ -106,7 +112,13 @@ class TopicInformation extends StatelessWidget {
                 MainAxisAlignment.spaceBetween, // Căn giữa và đều các nút
             children: [
               CustomButton(
-                onContinue: () {},
+                onContinue: () {
+                  final learningViewModel =
+                      Provider.of<LearningViewModel>(context, listen: false);
+                  learningViewModel.setTopic(widget.topic);
+                  learningViewModel.setWords(topicViewModel.words);
+                  Navigator.pushNamed(context, RouteName.flashCardScreen);
+                },
                 word: "Flashcard",
                 btnBackground: Colors.white,
               ),

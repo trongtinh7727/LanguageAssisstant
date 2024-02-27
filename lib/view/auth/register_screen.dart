@@ -86,7 +86,8 @@ class RegisterScreen extends StatelessWidget {
                         password.text.toString(),
                       );
                       if (result) {
-                        Navigator.pushNamed(context, RouteName.homeScreen);
+                        Navigator.popAndPushNamed(
+                            context, RouteName.homeScreen);
                       } else {
                         // Maybe show an error message
                       }
@@ -121,7 +122,7 @@ class RegisterScreen extends StatelessWidget {
                       ),
                       TextButton(
                         onPressed: () {
-                          Navigator.pushNamed(context, RouteName.loginScreen);
+                          Navigator.pop(context);
                         },
                         child: Text(
                           'Đăng nhập',

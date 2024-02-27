@@ -8,6 +8,7 @@ import 'package:languageassistant/routes/routes.dart';
 import 'package:languageassistant/utils/app_style.dart';
 import 'package:languageassistant/view_model/add_topic_view_model.dart';
 import 'package:languageassistant/view_model/home_view_model.dart';
+import 'package:languageassistant/view_model/learning_view_model.dart';
 import 'package:languageassistant/view_model/topic_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:languageassistant/view_model/auth_provider.dart';
@@ -63,6 +64,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => TopicViewModel()),
         ChangeNotifierProvider(create: (_) => HomeViewModel()),
         ChangeNotifierProvider(create: (_) => AddTopicViewModel()),
+        ChangeNotifierProvider(create: (_) => LearningViewModel()),
         // Add other providers here
       ],
       child: MaterialApp(

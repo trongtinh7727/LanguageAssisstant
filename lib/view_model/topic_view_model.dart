@@ -11,9 +11,7 @@ import 'package:languageassistant/model/repository/topic_repository.dart';
 import 'package:languageassistant/model/repository/word_repository.dart';
 import 'package:languageassistant/utils/app_enum.dart';
 import 'package:languageassistant/utils/app_toast.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:file_saver/file_saver.dart';
 
 class TopicViewModel extends ChangeNotifier {
   List<TopicModel> _topics = [];
