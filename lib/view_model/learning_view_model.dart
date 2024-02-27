@@ -27,7 +27,9 @@ class LearningViewModel extends ChangeNotifier {
   List<WordModel> get words => _words;
   List<WordModel> get learnedWords => _learnedWords;
   List<WordModel> get masteredWords => _masteredWords;
-  WordModel get currentWord => _words[_currentIndex];
+  WordModel get currentWord => (_words.length > 0)
+      ? _words[_currentIndex]
+      : WordModel(createTime: 0, updateTime: 0);
   int get currentIndex => _currentIndex;
   bool get isLoading => _isLoading;
   bool get autoPlayVoice => _autoPlayVoice;

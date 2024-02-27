@@ -70,7 +70,10 @@ class FillterMenu extends StatelessWidget {
       },
       child: Row(
         children: [
-          Text('Bộ lọc: ', style: AppStyle.textTheme.headline6),
+          Text('Bộ lọc: ', style: AppStyle.title),
+          SizedBox(
+            width: 8,
+          ),
           DropdownMenu<String>(
             initialSelection: learningViewModel.currentFillter,
             width: 150,
@@ -82,6 +85,7 @@ class FillterMenu extends StatelessWidget {
             onSelected: (String? value) {
               learningViewModel.fillter(
                   value!, FirebaseAuth.instance.currentUser!.uid);
+              Navigator.pop(context);
             },
             dropdownMenuEntries: list
                 .map<DropdownMenuEntry<String>>(

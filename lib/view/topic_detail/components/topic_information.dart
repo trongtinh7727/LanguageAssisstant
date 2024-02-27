@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:languageassistant/routes/name_routes.dart';
+import 'package:languageassistant/utils/app_enum.dart';
 import 'package:languageassistant/utils/app_style.dart';
 import 'package:languageassistant/utils/date_time_util.dart';
 import 'package:languageassistant/view/topic_detail/topic_detail_screen.dart';
@@ -116,7 +118,10 @@ class TopicInformation extends StatelessWidget {
                   final learningViewModel =
                       Provider.of<LearningViewModel>(context, listen: false);
                   learningViewModel.setTopic(widget.topic);
-                  learningViewModel.setWords(topicViewModel.words);
+                  learningViewModel.fetchWordsByStatus(
+                      FirebaseAuth.instance.currentUser!.uid,
+                      widget.topic.id,
+                      WordStatus.ALL);
                   Navigator.pushNamed(context, RouteName.flashCardScreen);
                 },
                 word: "Flashcard",
