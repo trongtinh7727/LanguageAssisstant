@@ -73,9 +73,7 @@ class TopicsWords extends StatelessWidget {
               topicID: topicID,
               userID: userID,
               topicViewModel: topicViewModel,
-              backgroundColor: index % 2 == 0
-                  ? AppStyle.greyColor_100
-                  : AppStyle.tabUnselectedColor,
+              backgroundColor: Colors.white,
             );
           },
         ),

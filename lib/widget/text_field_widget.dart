@@ -9,6 +9,7 @@ class TextFieldWidget extends StatelessWidget {
   final Color fillColor;
   final Color textColor;
   final double paddingH;
+  final bool isEnabled;
   final TextEditingController textEditingController;
 
   const TextFieldWidget({
@@ -20,6 +21,7 @@ class TextFieldWidget extends StatelessWidget {
     this.paddingH = 20.0,
     required this.textEditingController,
     this.isPassword = false,
+    this.isEnabled = true,
   }) : super(key: key);
 
   @override
@@ -30,10 +32,17 @@ class TextFieldWidget extends StatelessWidget {
         constraints: const BoxConstraints(
             maxWidth: 500), // Set your desired max width here
         child: TextField(
+          enabled: isEnabled,
           controller: textEditingController,
           maxLines: 1,
           obscureText: isPassword,
-          style: AppStyle.body2,
+          style: TextStyle(
+            fontFamily: 'WorkSans',
+            fontWeight: FontWeight.w400,
+            fontSize: 14,
+            letterSpacing: 0.2,
+            color: textColor,
+          ),
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: AppStyle.caption,

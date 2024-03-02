@@ -47,6 +47,7 @@ dependencies:
   permission_handler: ^11.3.0
   flutter_flip_card: ^0.0.5
   toggle_switch: ^2.1.0
+  percent_indicator: ^4.2.3
 
 
 

@@ -4,11 +4,14 @@ import 'package:languageassistant/model/models/topic_model.dart';
 import 'package:languageassistant/model/models/word_model.dart';
 import 'package:languageassistant/model/repository/topic_repository.dart';
 import 'package:languageassistant/model/repository/word_repository.dart';
+import 'package:languageassistant/routes/name_routes.dart';
 import 'package:languageassistant/utils/app_enum.dart';
 import 'package:languageassistant/utils/app_toast.dart';
 import 'package:languageassistant/utils/app_tts.dart';
 
 class LearningViewModel extends ChangeNotifier {
+  LearningMode _learningMode = LearningMode.FlashCard;
+
   late TopicModel _topic;
   List<WordModel> _words = [];
   List<WordModel> _learnedWords = [];
@@ -24,12 +27,13 @@ class LearningViewModel extends ChangeNotifier {
   bool _isEnglishMode = true;
 
   TopicModel get topic => _topic;
+  LearningMode get learningMode => _learningMode;
   List<WordModel> get words => _words;
   List<WordModel> get learnedWords => _learnedWords;
   List<WordModel> get masteredWords => _masteredWords;
   WordModel get currentWord => (_words.length > 0)
       ? _words[_currentIndex]
-      : WordModel(createTime: 0, updateTime: 0);
+      : WordModel(vietnamese: '', english: '', createTime: 0, updateTime: 0);
   int get currentIndex => _currentIndex;
   bool get isLoading => _isLoading;
   bool get autoPlayVoice => _autoPlayVoice;
@@ -42,25 +46,21 @@ class LearningViewModel extends ChangeNotifier {
     return 'w$timestamp$randomValue';
   }
 
-  void setWords(List<WordModel> words) {
-    _words = words;
-    _learnedWords.clear();
-    _masteredWords.clear();
-    _currentIndex = 0;
-    notifyListeners();
-  }
-
   void toggleAutoPlayVoice() {
     _autoPlayVoice = !_autoPlayVoice;
     notifyListeners();
   }
 
-  void setTopic(TopicModel topic) {
+  void setTopic(TopicModel topic, LearningMode learningMode) {
     _topic = topic;
+    _learnedWords.clear();
+    _masteredWords.clear();
+    _learningMode = learningMode;
+    _currentIndex = 0;
     notifyListeners();
   }
 
-  void showNextCard({required bool isMastered}) {
+  void showNextCard({required bool isMastered, required BuildContext context}) {
     if (_currentIndex < _words.length - 1) {
       if (isMastered) {
         _masteredWords.add(currentWord);
@@ -74,6 +74,13 @@ class LearningViewModel extends ChangeNotifier {
             : "text to speak");
       }
       notifyListeners();
+    } else {
+      if (isMastered) {
+        _masteredWords.add(currentWord);
+      } else {
+        _learnedWords.add(currentWord);
+      }
+      Navigator.pushReplacementNamed(context, RouteName.resultScreen);
     }
   }
 
@@ -121,9 +128,11 @@ class LearningViewModel extends ChangeNotifier {
         (List<WordModel> words) {
       if (words.length > 0) {
         _words = words;
+        _currentIndex = 0;
       } else {
         commonToast('Không có từ nào phù hợp!');
       }
+
       _isLoading = false;
       notifyListeners();
     });

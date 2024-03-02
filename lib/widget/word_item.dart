@@ -38,6 +38,8 @@ class WordItem extends StatelessWidget {
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
+        side: BorderSide(
+            color: AppStyle.activeText, width: 1.5), // Đặt màu viền và độ dày
       ),
       color: backgroundColor,
       elevation: 4,
@@ -78,10 +80,23 @@ class WordItem extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              word.vietnamese ?? "vietnamese",
+              word.answer ?? word.vietnamese ?? "vietnamese",
               style: AppStyle.body2,
             ),
             const SizedBox(height: 8),
+            if (word.answer != null)
+              Row(
+                children: [
+                  Text(
+                    'Đáp án: ',
+                    style: AppStyle.body2,
+                  ),
+                  Text(
+                    word.vietnamese ?? '',
+                    style: AppStyle.successText,
+                  )
+                ],
+              )
           ],
         ),
       ),

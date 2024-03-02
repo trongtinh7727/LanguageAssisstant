@@ -14,10 +14,13 @@ class AppStyle {
   static const Color buttonTextColor = Color(0xFF004AB9);
   static const Color textFieldColor = Color(0xFFD1D1D1);
   static const Color tabUnselectedColor = Color(0xFFDFE9F8);
+  static const Color greenBlurColor = Color.fromARGB(255, 193, 253, 191);
   static const Color greyColor_100 = Color(0xFFDEE0E5);
   static const Color redColor = Color(0xFFFF0000);
   static const Color successColor = Color(0xFF05B305);
   static const Color warningColor = Color(0xFFD4B511);
+  static const Color failedColor = Color(0xFFFBD6D8);
+  static final Color passColor = Color(0xffd7fdd8);
 
   static const TextTheme textTheme = TextTheme(
     headline4: display1,
@@ -91,7 +94,13 @@ class AppStyle {
     // letterSpacing: 0.2,
     color: Colors.white,
   );
-
+  static const TextStyle successText = TextStyle(
+    fontFamily: fontName,
+    fontWeight: FontWeight.w600,
+    fontSize: 14,
+    // letterSpacing: 0.2,
+    color: successColor,
+  );
   static const TextStyle body1 = TextStyle(
     fontFamily: fontName,
     fontWeight: FontWeight.w400,
@@ -107,6 +116,7 @@ class AppStyle {
     letterSpacing: 0.2,
     color: lightText,
   );
+
   static const TextStyle dateTime = TextStyle(
     fontFamily: fontName,
     fontWeight: FontWeight.w400,

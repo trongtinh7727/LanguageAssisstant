@@ -85,8 +85,7 @@ class TopicLeaderBoardItem extends StatelessWidget {
                         print('Error loading background image: $exception');
                       },
                       child: topic.authoravatar == null
-                          ? const Icon(Icons
-                              .person) // Fallback icon in case the URL is null
+                          ? const Icon(Icons.person)
                           : null,
                     ),
                     const SizedBox(width: 8),

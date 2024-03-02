@@ -58,7 +58,7 @@ class MainLayoutState extends State<MainLayout> {
         ],
       ),
       bottomNavigationBar: Container(
-        margin: EdgeInsets.all(displayWidth * .05),
+        // margin: EdgeInsets.all(displayWidth * .05),
         height: displayWidth * .155,
         width: displayWidth,
         decoration: BoxDecoration(
@@ -70,7 +70,7 @@ class MainLayoutState extends State<MainLayout> {
               offset: Offset(0, 10),
             ),
           ],
-          borderRadius: BorderRadius.circular(50),
+          borderRadius: BorderRadius.circular(0),
         ),
         child: Center(
           child: ListView.builder(

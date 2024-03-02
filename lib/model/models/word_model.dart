@@ -2,6 +2,8 @@ class WordModel {
   String? id;
   String? english;
   String? vietnamese;
+  String? answer;
+  bool? isCorrect;
   bool isMarked;
   int createTime;
   int updateTime;
@@ -13,6 +15,8 @@ class WordModel {
     this.id,
     this.english,
     this.vietnamese,
+    this.answer,
+    this.isCorrect,
     this.isMarked = false,
     required this.createTime,
     required this.updateTime,

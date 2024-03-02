@@ -3,25 +3,30 @@ import 'package:flutter/material.dart';
 import 'package:languageassistant/utils/app_style.dart';
 
 class CustomButton extends StatelessWidget {
-  const CustomButton({
-    Key? key,
-    this.width = 120,
-    this.height = 40,
-    required this.onContinue,
-    required this.word,
-    this.btnBackground = Colors.black, // Giá trị mặc định cho buttonBackColor
-  });
+  const CustomButton(
+      {Key? key,
+      this.width = 120,
+      this.height = 40,
+      required this.onContinue,
+      required this.word,
+      this.btnBackground = Colors.black,
+      this.textColor = Colors.black});
   final double width;
   final double height;
   final VoidCallback onContinue;
   final String word;
-  final Color btnBackground; // Tham số tùy chọn cho màu nền của nút
+  final Color btnBackground;
+  final Color textColor;
 
   @override
   Widget build(BuildContext context) {
     Color btnBack = AppStyle.buttonBackColor;
+    Color textFillColor = AppStyle.darkText;
     if (btnBackground != Colors.black) {
       btnBack = btnBackground;
+    }
+    if (textColor != Colors.black) {
+      textFillColor = textColor;
     }
     return SizedBox(
       width: width,
@@ -37,9 +42,12 @@ class CustomButton extends StatelessWidget {
         ),
         child: Text(
           word,
-          style: (btnBack == AppStyle.activeText)
-              ? AppStyle.activeWhite
-              : AppStyle.active,
+          style: TextStyle(
+            color: textFillColor,
+            fontFamily: 'WorkSans',
+            fontWeight: FontWeight.w600,
+            fontSize: 14,
+          ),
         ),
       ),
     );

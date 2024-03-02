@@ -63,7 +63,8 @@ class _FlashCardScreenState extends State<FlashCardScreen> {
       });
       Future.delayed(Duration(milliseconds: 400), () {
         setState(() {
-          learningViewModel.showNextCard(isMastered: isMastered == 1);
+          learningViewModel.showNextCard(
+              isMastered: isMastered == 1, context: context);
           x = initial_x;
         });
       });

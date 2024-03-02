@@ -125,7 +125,11 @@ class TopicCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                CustomButton(onContinue: onContinue, word: word),
+                CustomButton(
+                  onContinue: onContinue,
+                  word: word,
+                  textColor: AppStyle.activeText,
+                ),
               ],
             ),
           ],

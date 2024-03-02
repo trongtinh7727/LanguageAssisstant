@@ -117,7 +117,9 @@ class TopicInformation extends StatelessWidget {
                 onContinue: () {
                   final learningViewModel =
                       Provider.of<LearningViewModel>(context, listen: false);
-                  learningViewModel.setTopic(widget.topic);
+                  learningViewModel.setTopic(
+                      widget.topic, LearningMode.FlashCard);
+
                   learningViewModel.fetchWordsByStatus(
                       FirebaseAuth.instance.currentUser!.uid,
                       widget.topic.id,
@@ -126,16 +128,29 @@ class TopicInformation extends StatelessWidget {
                 },
                 word: "Flashcard",
                 btnBackground: Colors.white,
+                textColor: AppStyle.activeText,
               ),
               CustomButton(
-                onContinue: () {},
+                onContinue: () {
+                  final learningViewModel =
+                      Provider.of<LearningViewModel>(context, listen: false);
+                  learningViewModel.setTopic(
+                      widget.topic, LearningMode.WordType);
+                  learningViewModel.fetchWordsByStatus(
+                      FirebaseAuth.instance.currentUser!.uid,
+                      widget.topic.id,
+                      WordStatus.ALL);
+                  Navigator.pushNamed(context, RouteName.wordTypeScreen);
+                },
                 word: "Điền từ",
                 btnBackground: Colors.white,
+                textColor: AppStyle.activeText,
               ),
               CustomButton(
                 onContinue: () {},
                 word: "MCQ",
                 btnBackground: Colors.white,
+                textColor: AppStyle.activeText,
               ),
             ],
           ),
