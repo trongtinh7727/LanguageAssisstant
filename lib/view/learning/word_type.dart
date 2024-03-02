@@ -31,28 +31,6 @@ class _WordTypeScreenState extends State<WordTypeScreen> {
         ? learningViewModel.currentWord.english ?? ""
         : learningViewModel.currentWord.vietnamese ?? "";
 
-    final bool isNextButtonEnabled =
-        (learningViewModel.currentIndex < learningViewModel.words.length) &&
-            (learningViewModel.currentWord.isCorrect != null);
-
-    Color getIconColor() {
-      return isNextButtonEnabled ? AppStyle.activeText : AppStyle.lightText;
-    }
-
-    void handleNextButtonTap() {
-      if (learningViewModel.currentWord.isCorrect != null) {
-        learningViewModel.currentWord.isCorrect!
-            ? learningViewModel.showNextCard(
-                isMastered: true,
-                context: context,
-              )
-            : learningViewModel.showNextCard(
-                isMastered: false,
-                context: context,
-              );
-      }
-    }
-
     return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
@@ -71,35 +49,6 @@ class _WordTypeScreenState extends State<WordTypeScreen> {
                   learningViewModel: learningViewModel,
                   textContent: textContent,
                   textEditingController: textEditingController),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Row(
-                    children: [
-                      InkWell(
-                        onTap: learningViewModel.showPreviousCard,
-                        child: Icon(
-                          Icons.arrow_circle_left_outlined,
-                          color: learningViewModel.currentIndex > 0
-                              ? AppStyle.activeText
-                              : AppStyle.lightText,
-                          size: 35,
-                        ),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          handleNextButtonTap();
-                        },
-                        child: Icon(
-                          Icons.arrow_circle_right_outlined,
-                          color: getIconColor(),
-                          size: 35,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.1,
               ),

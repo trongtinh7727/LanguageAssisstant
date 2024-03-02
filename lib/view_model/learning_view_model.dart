@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:languageassistant/model/models/topic_model.dart';
 import 'package:languageassistant/model/models/word_model.dart';
@@ -8,6 +9,7 @@ import 'package:languageassistant/routes/name_routes.dart';
 import 'package:languageassistant/utils/app_enum.dart';
 import 'package:languageassistant/utils/app_toast.dart';
 import 'package:languageassistant/utils/app_tts.dart';
+import 'package:languageassistant/utils/date_time_util.dart';
 
 class LearningViewModel extends ChangeNotifier {
   LearningMode _learningMode = LearningMode.FlashCard;
@@ -80,6 +82,9 @@ class LearningViewModel extends ChangeNotifier {
       } else {
         _learnedWords.add(currentWord);
       }
+      if (learningMode != LearningMode.FlashCard) {
+        updateLearningStatus(FirebaseAuth.instance.currentUser!.uid);
+      }
       Navigator.pushReplacementNamed(context, RouteName.resultScreen);
     }
   }
@@ -104,12 +109,36 @@ class LearningViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> updateLearningStatus(String userID) async {
+    int wordLearned = 0;
+    List<WordModel> updatedWords = [];
+
+    learnedWords.forEach((word) {
+      word.statusByUser[userID] = WordStatus.LEARNED.name;
+      updatedWords.add(word);
+    });
+
+    masteredWords.forEach((word) {
+      word.statusByUser[userID] = WordStatus.MASTERED.name;
+      wordLearned++;
+      updatedWords.add(word);
+    });
+
+    await _topicRepository.updateLearningStatus(
+      userID,
+      topic,
+      updatedWords,
+      wordLearned,
+      DateTimeUtil.getCurrentTimestamp(),
+    );
+  }
+
   Future<void> markWord(String userId) async {
     _isLoading = true;
     notifyListeners();
     try {
       final result = await _wordRepository.mark(
-          topic.id, currentWord.id!, userId, !currentWord.isMarked);
+          topic.id, currentWord.id!, userId, currentWord.isMarked);
       _isLoading = false; // Cập nhật lại trạng thái sau khi tải xong
       notifyListeners();
     } catch (e) {
@@ -148,6 +177,14 @@ class LearningViewModel extends ChangeNotifier {
           topicID,
           WordStatus.ALL,
         );
+        break;
+      case "Đã đánh dấu":
+        fetchWordsByStatus(
+          userID,
+          topicID,
+          WordStatus.MARKED,
+        );
+
         break;
       case "Đã học":
         fetchWordsByStatus(

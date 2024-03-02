@@ -24,7 +24,7 @@ class WordRepository extends BaseRepository<WordModel> {
         .collection("words");
 
     Query query;
-    if (status == WordStatus.ALL) {
+    if (status == WordStatus.ALL || status == WordStatus.MARKED) {
       query = wordCollection;
     } else if (status == WordStatus.NOT_LEARNED) {
       query = wordCollection;
@@ -46,8 +46,13 @@ class WordRepository extends BaseRepository<WordModel> {
         if (word.bookmarkByUser[userID] ?? false) {
           word.isMarked = true;
         }
+
         if (status == WordStatus.NOT_LEARNED) {
           if (word.statusByUser[userID] == null) {
+            words.add(word);
+          }
+        } else if (status == WordStatus.MARKED) {
+          if (word.isMarked) {
             words.add(word);
           }
         } else {

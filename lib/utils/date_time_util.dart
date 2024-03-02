@@ -8,6 +8,14 @@ class DateTimeUtil {
         .add(Duration(milliseconds: _offset));
   }
 
+  static int getCurrentTimestamp() {
+    return DateTime.now()
+            .toUtc()
+            .add(Duration(milliseconds: _offset))
+            .millisecondsSinceEpoch ~/
+        1000; // chia cho 1000 để chuyển từ mili giây sang giây
+  }
+
   static String getDateFromTimestamp(int timestamp) {
     DateTime timestampDateTime = timestampToDateTime(timestamp);
     DateTime now = DateTime.now().toUtc().add(Duration(milliseconds: _offset));

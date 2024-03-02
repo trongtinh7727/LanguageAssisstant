@@ -69,6 +69,29 @@ class TopicRepository extends BaseRepository<TopicModel> {
     return topic;
   }
 
+  Future<TopicModel> updateLearningStatus(String userID, TopicModel topic,
+      List<WordModel> words, int wordLearned, int updateTime) async {
+    WriteBatch batch = _firestore.batch();
+    final _wordCollection = _firestore.collection('topics/${topic.id}/words');
+    for (var word in words) {
+      DocumentReference docRef = _wordCollection.doc(word.id);
+      batch.set(docRef, word.toMap(), SetOptions(merge: true));
+    }
+
+    // Commit the batch
+    await batch.commit();
+
+    final _topicReference = UserTopicRef(
+      lastAccess: updateTime,
+      topicRef: _firestore.collection("topics").doc(topic.id),
+      wordLearned: wordLearned,
+    );
+    final _userRepository = UserRepository();
+    _userRepository.addTopicToUser(userID, topic.id, _topicReference);
+
+    return topic;
+  }
+
   Future<bool> deleteCollection(Query collection) async {
     QuerySnapshot querySnapshot = await collection.get();
     for (DocumentSnapshot documentSnapshot in querySnapshot.docs) {

@@ -20,7 +20,7 @@ class ResultScreen extends StatefulWidget {
 class _ResultScreenState extends State<ResultScreen> {
   late LearningViewModel learningViewModel;
   final flipCardController = FlipCardController();
-  Color cardColor = Colors.white; // Màu ban đầu của card
+  Color cardColor = Colors.white;
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +64,7 @@ class _ResultScreenState extends State<ResultScreen> {
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
                 ),
                 circularStrokeCap: CircularStrokeCap.round,
-                progressColor: percent > 0.5
+                progressColor: percent >= 0.5
                     ? AppStyle.successColor
                     : AppStyle.warningColor,
               ),
