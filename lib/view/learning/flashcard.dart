@@ -33,7 +33,54 @@ class _FlashCardScreenState extends State<FlashCardScreen> {
   double initial_y = 8;
   late double x = initial_x;
   late double y = initial_y;
-  bool isDragging = true;
+  bool isAutoPlay = false;
+  Timer? autoPlayTimer;
+
+  void showNextCard({required int isMastered}) {
+    setState(() {
+      x += 300 * isMastered;
+    });
+    Future.delayed(Duration(milliseconds: 400), () {
+      setState(() {
+        learningViewModel.showNextCard(
+            isMastered: isMastered == 1, context: context);
+        x = initial_x;
+      });
+    });
+  }
+
+  void autoPlayCards() {
+    autoPlayTimer = Timer.periodic(Duration(seconds: 4), (timer) {
+      if (isAutoPlay) {
+        flipCardController.flipcard();
+
+        Timer(Duration(seconds: 2), () {
+          flipCardController.flipcard();
+          showNextCard(isMastered: 1);
+        });
+      } else {
+        timer.cancel();
+      }
+    });
+  }
+
+  void toggleAutoPlay() {
+    setState(() {
+      isAutoPlay = !isAutoPlay;
+      if (isAutoPlay) {
+        autoPlayCards();
+      } else {
+        autoPlayTimer?.cancel();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    autoPlayTimer?.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     learningViewModel = Provider.of<LearningViewModel>(context);
@@ -56,19 +103,6 @@ class _FlashCardScreenState extends State<FlashCardScreen> {
         isFont: false,
       ),
     ));
-
-    void showNextCard({required int isMastered}) {
-      setState(() {
-        x += 300 * isMastered;
-      });
-      Future.delayed(Duration(milliseconds: 400), () {
-        setState(() {
-          learningViewModel.showNextCard(
-              isMastered: isMastered == 1, context: context);
-          x = initial_x;
-        });
-      });
-    }
 
     return Scaffold(
         appBar: AppBar(
@@ -178,8 +212,11 @@ class _FlashCardScreenState extends State<FlashCardScreen> {
                               ),
                             ),
                             InkWell(
+                              onTap: toggleAutoPlay,
                               child: Icon(
-                                Icons.play_circle_outline,
+                                isAutoPlay
+                                    ? Icons.pause_circle_outline
+                                    : Icons.play_circle_outline,
                                 color: AppStyle.activeText,
                                 size: 35,
                               ),

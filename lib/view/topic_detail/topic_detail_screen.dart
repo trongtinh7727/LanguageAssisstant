@@ -53,9 +53,9 @@ class _TopicDetailScreenState extends State<TopicDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final int viewCount = widget.topic.viewCount;
-    final int wordLearned = widget.topic.wordLearned;
-    final int wordCount = widget.topic.wordCount;
+    int viewCount = widget.topic.viewCount;
+    int wordLearned = widget.topic.wordLearned;
+    int wordCount = widget.topic.wordCount;
     String wordProgress = "$wordCount";
     topicViewModel = Provider.of<TopicViewModel>(context, listen: true);
 
