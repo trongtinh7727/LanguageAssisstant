@@ -39,20 +39,6 @@ class TopicViewModel extends ChangeNotifier {
     _topic = model;
   }
 
-  void fetchTopics() async {
-    _isLoading = true; // Cập nhật trạng thái tải
-    notifyListeners();
-    try {
-      _topics = await _topicRepository.readAll();
-      _isLoading = false; // Cập nhật lại trạng thái sau khi tải xong
-      notifyListeners();
-    } catch (e) {
-      _isLoading = false; // Cập nhật lại trạng thái nếu có lỗi
-      print('Error fetching topics: $e');
-      notifyListeners();
-    }
-  }
-
   void fetchTopic(String userID, String topicID) async {
     _isLoading = true; // Cập nhật trạng thái tải
     notifyListeners();

@@ -1,11 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:languageassistant/routes/name_routes.dart';
-
-import 'package:languageassistant/utils/app_enum.dart';
 import 'package:languageassistant/utils/app_style.dart';
+import 'package:languageassistant/view/library/components/lib_folder_widget.dart';
+import 'package:languageassistant/view/library/components/lib_topic_widget.dart';
+import 'package:languageassistant/view_model/folder_view_model.dart';
 import 'package:languageassistant/view_model/topic_view_model.dart';
-import 'package:languageassistant/widget/personal_topic_card.dart';
 import 'package:provider/provider.dart';
 
 class LibraryScreen extends StatefulWidget {
@@ -17,6 +17,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
   late PageController pageController;
   late ScrollController _scrollController;
   late TopicViewModel topicViewModel;
+  late FolderViewModel folderViewModel;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -30,6 +31,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
 
     pageController = PageController();
     topicViewModel = Provider.of<TopicViewModel>(context, listen: false);
+    folderViewModel = Provider.of<FolderViewModel>(context, listen: false);
   }
 
   void _scrollListener() {
@@ -90,34 +92,16 @@ class _LibraryScreenState extends State<LibraryScreen> {
                 // Your Tab Contents
                 if (index == 0) {
                   // First tab content: Topic
-                  return ListView.builder(
-                    controller: _scrollController,
-                    itemCount: topicViewModel.topics.length,
-                    itemBuilder: (context, index) {
-                      final topic = topicViewModel.topics[index];
-                      return TopicCard(
-                        topic: topic,
-                        onContinue: () {
-                          // Handle continue action here
-                          topicViewModel.setTopic(topic);
-                          topicViewModel.fetchTopic(
-                              _auth.currentUser!.uid, topic.id);
-                          topicViewModel.fetchWordsByStatus(
-                              _auth.currentUser!.uid, topic.id, WordStatus.ALL);
-                          topicViewModel.fetchLeaderBoard(topic.id);
-                          Navigator.pushNamed(
-                            context,
-                            RouteName.topicDetailScreen,
-                          );
-                        },
-                      );
-                    },
-                  );
+                  return LibTopicWidget(
+                      scrollController: _scrollController,
+                      topicViewModel: topicViewModel,
+                      auth: _auth);
                 } else {
                   // Second tab content: Folder
-                  return Center(
-                    child: Text('Folder content goes here'),
-                  );
+                  return LibFolderWidget(
+                      scrollController: _scrollController,
+                      folderViewModel: folderViewModel,
+                      auth: _auth);
                 }
               },
             ),

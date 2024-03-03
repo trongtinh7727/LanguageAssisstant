@@ -7,6 +7,7 @@ import 'package:languageassistant/routes/name_routes.dart';
 import 'package:languageassistant/routes/routes.dart';
 import 'package:languageassistant/utils/app_style.dart';
 import 'package:languageassistant/view_model/add_topic_view_model.dart';
+import 'package:languageassistant/view_model/folder_view_model.dart';
 import 'package:languageassistant/view_model/home_view_model.dart';
 import 'package:languageassistant/view_model/learning_view_model.dart';
 import 'package:languageassistant/view_model/topic_view_model.dart';
@@ -62,6 +63,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthenticationProvider()),
         ChangeNotifierProvider(create: (_) => TopicViewModel()),
+        ChangeNotifierProvider(create: (_) => FolderViewModel()),
         ChangeNotifierProvider(create: (_) => HomeViewModel()),
         ChangeNotifierProvider(create: (_) => AddTopicViewModel()),
         ChangeNotifierProvider(create: (_) => LearningViewModel()),

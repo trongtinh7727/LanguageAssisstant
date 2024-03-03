@@ -8,6 +8,7 @@ class RouteName {
 
   //----------------------------------------------------------------
   static const String topicDetailScreen = "/topic_detail_screen";
+  static const String folderDetailScreen = "/folder_detail_screen";
   static const String addTopicScreen = "/add_topic_screen";
   static const String updateTopicScreen = "/update_topic_screen";
   //----------------------------------------------------------------

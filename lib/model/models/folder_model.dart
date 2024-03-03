@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class FolderModel {
   String? id;
   String? title;
   int topicCount;
-  List<dynamic> topicRefs;
+  List<DocumentReference> topicRefs;
   int createTime;
   int updateTime;
 
@@ -30,7 +32,7 @@ class FolderModel {
       id: id,
       title: map['title'],
       topicCount: map['topicCount'],
-      topicRefs: List<dynamic>.from(map['topicRefs']),
+      topicRefs: List<DocumentReference>.from(map['topicRefs']),
       createTime: map['createTime'],
       updateTime: map['updateTime'],
     );

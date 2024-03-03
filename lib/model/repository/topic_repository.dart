@@ -2,12 +2,14 @@ import 'dart:ffi';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:languageassistant/model/models/folder_model.dart';
 import 'package:languageassistant/model/models/topic_model.dart';
 import 'package:languageassistant/model/models/user_model.dart';
 import 'package:languageassistant/model/models/user_topic_ref.dart';
 import 'package:languageassistant/model/models/word_model.dart';
 import 'package:languageassistant/model/repository/base_repository.dart';
 import 'package:languageassistant/model/repository/user_repository.dart';
+import 'package:languageassistant/utils/app_enum.dart';
 import 'package:languageassistant/utils/date_time_util.dart';
 
 class TopicRepository extends BaseRepository<TopicModel> {
@@ -175,6 +177,53 @@ class TopicRepository extends BaseRepository<TopicModel> {
       final newLastDocument =
           querySnapshot.docs.isNotEmpty ? querySnapshot.docs.last : null;
 
+      return Pair(topics, Pair(hasNextPage, newLastDocument));
+    } catch (e) {
+      // Handle errors or return an appropriate error state
+      return Pair([], Pair(false, null));
+    }
+  }
+
+  Future<Pair<List<TopicModel>, Pair<bool, DocumentSnapshot?>>>
+      getUserTopicsOfFolder(
+    String userId, {
+    DocumentSnapshot? lastDocument,
+    required FolderModel folderModel,
+    required int pageSize,
+  }) async {
+    var result = await _firestore
+        .collection('users')
+        .doc(userId)
+        .collection('topics')
+        .where(FieldPath.documentId,
+            whereIn: folderModel.topicRefs.map((ref) => ref.id))
+        .limit(pageSize)
+        .get();
+
+    try {
+      final topics = <TopicModel>[];
+      bool hasNextPage = false;
+
+      for (var topicRefDocument in result.docs) {
+        final topicRef = topicRefDocument.data();
+        final topicSnapshot = await topicRef['topicRef'].get();
+        final topic = TopicModel.fromMap(
+            topicSnapshot.data() as Map<String, dynamic>, topicSnapshot.id);
+        // Fetch author data if necessary, similar to the Kotlin code
+        final authorSnapshot = await topic.authorRef?.get();
+        final author = UserModel.fromMap(
+            authorSnapshot!.data() as Map<String, dynamic>, authorSnapshot.id);
+        topic.authorName = author.name;
+        topic.authoravatar = author.avatarUrl;
+        topic.lastAccess = topicRef['lastAccess'];
+        topic.wordLearned = topicRef['wordLearned'];
+
+        topics.add(topic);
+      }
+
+      hasNextPage = result.docs.length >= pageSize;
+      final newLastDocument = result.docs.isNotEmpty ? result.docs.last : null;
+      topics.sort((a, b) => b.lastAccess - a.lastAccess);
       return Pair(topics, Pair(hasNextPage, newLastDocument));
     } catch (e) {
       // Handle errors or return an appropriate error state
@@ -358,29 +407,4 @@ class TopicRepository extends BaseRepository<TopicModel> {
       throw Exception('Failed to fetch user topic: $e');
     }
   }
-}
-
-class Pair<T1, T2> {
-  final T1 first;
-  final T2 second;
-
-  Pair(this.first, this.second);
-}
-
-class RankItem {
-  final String avatarUrl;
-  final String name;
-  final String time;
-  final String date;
-  final String rank;
-
-  RankItem({
-    required this.avatarUrl,
-    required this.name,
-    required this.time,
-    required this.date,
-    required this.rank,
-  });
-
-  // Add a fromMap constructor if needed
 }

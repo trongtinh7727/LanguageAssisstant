@@ -8,6 +8,7 @@ import 'package:languageassistant/view/discovery/discovery_screen.dart';
 import 'package:languageassistant/view/home/home_screen.dart';
 import 'package:languageassistant/view/library/library_screen.dart';
 import 'package:languageassistant/view_model/auth_provider.dart';
+import 'package:languageassistant/view_model/folder_view_model.dart';
 import 'package:languageassistant/view_model/home_view_model.dart';
 import 'package:languageassistant/view_model/topic_view_model.dart';
 import 'package:provider/provider.dart';
@@ -83,6 +84,8 @@ class MainLayoutState extends State<MainLayout> {
                   currentIndex = index;
                   final topicViewModel =
                       Provider.of<TopicViewModel>(context, listen: false);
+                  final folderViewModel =
+                      Provider.of<FolderViewModel>(context, listen: false);
                   final homeViewModel =
                       Provider.of<HomeViewModel>(context, listen: false);
                   switch (currentIndex) {
@@ -95,7 +98,8 @@ class MainLayoutState extends State<MainLayout> {
                     case 1:
                       topicViewModel.fetchTopicsByUser(
                           _auth.currentUser!.uid, 5);
-
+                      folderViewModel.fetchFoldersByUser(
+                          _auth.currentUser!.uid, 5);
                       break;
 
                     default:
