@@ -13,5 +13,6 @@ class RouteName {
   //----------------------------------------------------------------
   static const String flashCardScreen = "/flash_card_screen";
   static const String wordTypeScreen = "/word_type_screen";
+  static const String multipleChoiceScreen = "/multiple_choice_screen";
   static const String resultScreen = "/result_screen";
 }

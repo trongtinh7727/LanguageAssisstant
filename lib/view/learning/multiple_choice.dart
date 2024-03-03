@@ -3,19 +3,20 @@ import 'package:flutter_flip_card/controllers/flip_card_controllers.dart';
 import 'package:languageassistant/model/models/topic_model.dart';
 import 'package:languageassistant/view/learning/component/fillter_menu.dart';
 import 'package:languageassistant/view/learning/component/learning_progress.dart';
+import 'package:languageassistant/view/learning/component/multiple_choice_widget.dart';
 import 'package:languageassistant/view/learning/component/word_type_widget.dart';
 import 'package:languageassistant/view_model/learning_view_model.dart';
 import 'package:provider/provider.dart';
 
-class WordTypeScreen extends StatefulWidget {
+class MultipleChoice extends StatefulWidget {
   final TopicModel? editTopicModel;
 
-  const WordTypeScreen({super.key, this.editTopicModel});
+  const MultipleChoice({super.key, this.editTopicModel});
   @override
-  _WordTypeScreenState createState() => _WordTypeScreenState();
+  _MultipleChoiceState createState() => _MultipleChoiceState();
 }
 
-class _WordTypeScreenState extends State<WordTypeScreen> {
+class _MultipleChoiceState extends State<MultipleChoice> {
   late LearningViewModel learningViewModel;
   final flipCardController = FlipCardController();
   Color cardColor = Colors.white; // Màu ban đầu của card
@@ -42,7 +43,7 @@ class _WordTypeScreenState extends State<WordTypeScreen> {
               SizedBox(
                 height: 30,
               ),
-              WordTypeWidget(
+              MultipleChoiceWidget(
                   learningViewModel: learningViewModel,
                   textContent: textContent,
                   textEditingController: textEditingController),

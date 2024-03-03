@@ -25,8 +25,9 @@ class _ResultScreenState extends State<ResultScreen> {
   @override
   Widget build(BuildContext context) {
     learningViewModel = Provider.of<LearningViewModel>(context);
-    final percent =
-        learningViewModel.masteredWords.length / learningViewModel.words.length;
+    final percent = learningViewModel.masteredWords.length /
+        (learningViewModel.masteredWords.length +
+            learningViewModel.learnedWords.length);
     return Scaffold(
       appBar: AppBar(
         title: Text('Đánh giá'),

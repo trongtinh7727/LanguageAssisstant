@@ -71,6 +71,8 @@ class TopicRepository extends BaseRepository<TopicModel> {
 
   Future<TopicModel> updateLearningStatus(String userID, TopicModel topic,
       List<WordModel> words, int wordLearned, int updateTime) async {
+    await update(topic.id, topic);
+
     WriteBatch batch = _firestore.batch();
     final _wordCollection = _firestore.collection('topics/${topic.id}/words');
     for (var word in words) {
@@ -88,7 +90,6 @@ class TopicRepository extends BaseRepository<TopicModel> {
     );
     final _userRepository = UserRepository();
     _userRepository.addTopicToUser(userID, topic.id, _topicReference);
-
     return topic;
   }
 

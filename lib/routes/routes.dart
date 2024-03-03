@@ -5,6 +5,7 @@ import 'package:languageassistant/view/auth/login_screen.dart';
 import 'package:languageassistant/view/auth/register_screen.dart';
 import 'package:languageassistant/view/home/home_screen.dart';
 import 'package:languageassistant/view/learning/flashcard.dart';
+import 'package:languageassistant/view/learning/multiple_choice.dart';
 import 'package:languageassistant/view/learning/result_screen.dart';
 import 'package:languageassistant/view/learning/word_type.dart';
 import 'package:languageassistant/view/library/add_topic_screen.dart';
@@ -45,6 +46,8 @@ class Routes {
         return MaterialPageRoute(builder: (context) => FlashCardScreen());
       case RouteName.wordTypeScreen:
         return MaterialPageRoute(builder: (context) => WordTypeScreen());
+      case RouteName.multipleChoiceScreen:
+        return MaterialPageRoute(builder: (context) => MultipleChoice());
       case RouteName.resultScreen:
         return MaterialPageRoute(builder: (context) => ResultScreen());
       case RouteName.loginScreen:

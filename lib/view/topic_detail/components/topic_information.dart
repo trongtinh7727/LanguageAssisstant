@@ -147,7 +147,18 @@ class TopicInformation extends StatelessWidget {
                 textColor: AppStyle.activeText,
               ),
               CustomButton(
-                onContinue: () {},
+                onContinue: () {
+                  final learningViewModel =
+                      Provider.of<LearningViewModel>(context, listen: false);
+                  learningViewModel.setTopic(
+                      widget.topic, LearningMode.MultipleChoice);
+                  learningViewModel.fetchWordsByStatus(
+                      FirebaseAuth.instance.currentUser!.uid,
+                      widget.topic.id,
+                      WordStatus.ALL);
+
+                  Navigator.pushNamed(context, RouteName.multipleChoiceScreen);
+                },
                 word: "MCQ",
                 btnBackground: Colors.white,
                 textColor: AppStyle.activeText,

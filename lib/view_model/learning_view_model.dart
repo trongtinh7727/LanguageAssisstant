@@ -16,6 +16,7 @@ class LearningViewModel extends ChangeNotifier {
 
   late TopicModel _topic;
   List<WordModel> _words = [];
+  List<WordModel> _currentOptions = [];
   List<WordModel> _learnedWords = [];
   List<WordModel> _masteredWords = [];
   int _currentIndex = 0;
@@ -31,6 +32,7 @@ class LearningViewModel extends ChangeNotifier {
   TopicModel get topic => _topic;
   LearningMode get learningMode => _learningMode;
   List<WordModel> get words => _words;
+  List<WordModel> get currentOptions => _currentOptions;
   List<WordModel> get learnedWords => _learnedWords;
   List<WordModel> get masteredWords => _masteredWords;
   WordModel get currentWord => (_words.length > 0)
@@ -123,6 +125,8 @@ class LearningViewModel extends ChangeNotifier {
       wordLearned++;
       updatedWords.add(word);
     });
+    _topic.wordLearned = wordLearned;
+    _topic.viewCount++;
 
     await _topicRepository.updateLearningStatus(
       userID,
@@ -158,6 +162,9 @@ class LearningViewModel extends ChangeNotifier {
       if (words.length > 0) {
         _words = words;
         _currentIndex = 0;
+        if (learningMode == LearningMode.MultipleChoice) {
+          setCurrenOption();
+        }
       } else {
         commonToast('Không có từ nào phù hợp!');
       }
@@ -219,5 +226,32 @@ class LearningViewModel extends ChangeNotifier {
     sublist.shuffle();
     _words.replaceRange(currentIndex, _words.length, sublist);
     notifyListeners();
+  }
+
+  void setCurrenOption() {
+    _currentOptions = getRandomWords();
+  }
+
+  List<WordModel> getRandomWords() {
+    List<WordModel> randomWords = [];
+    Random random = Random();
+
+    if (_words.length <= 4) {
+      List<WordModel> randomWords = [..._words];
+      randomWords.shuffle();
+      return randomWords;
+    }
+
+    while (randomWords.length < 3) {
+      int randomIndex = random.nextInt(_words.length);
+      if (randomIndex != _currentIndex &&
+          !randomWords.contains(_words[randomIndex])) {
+        randomWords.add(_words[randomIndex]);
+      }
+    }
+    randomWords.add(_words[currentIndex]);
+    randomWords.shuffle();
+
+    return randomWords;
   }
 }
