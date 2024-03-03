@@ -97,11 +97,15 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
               topic: topic,
               onContinue: () {
                 // Handle continue action here
+                _topicViewModel.setTopic(topic);
+                _topicViewModel.fetchTopic(_auth.currentUser!.uid, topic.id);
                 _topicViewModel.fetchWordsByStatus(
                     _auth.currentUser!.uid, topic.id, WordStatus.ALL);
                 _topicViewModel.fetchLeaderBoard(topic.id);
-                Navigator.pushNamed(context, RouteName.topicDetailScreen,
-                    arguments: topic);
+                Navigator.pushNamed(
+                  context,
+                  RouteName.topicDetailScreen,
+                );
               },
             ),
           ),
@@ -134,11 +138,15 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
               topic: topic,
               onContinue: () {
                 // Handle continue action here
+                _topicViewModel.setTopic(topic);
+                _topicViewModel.fetchTopic(_auth.currentUser!.uid, topic.id);
                 _topicViewModel.fetchWordsByStatus(
                     _auth.currentUser!.uid, topic.id, WordStatus.ALL);
                 _topicViewModel.fetchLeaderBoard(topic.id);
-                Navigator.pushNamed(context, RouteName.topicDetailScreen,
-                    arguments: topic);
+                Navigator.pushNamed(
+                  context,
+                  RouteName.topicDetailScreen,
+                );
               },
             ),
           );

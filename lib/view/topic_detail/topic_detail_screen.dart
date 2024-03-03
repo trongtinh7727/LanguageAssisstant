@@ -13,8 +13,7 @@ import 'package:languageassistant/widget/bottomsheet_widget.dart';
 import 'package:provider/provider.dart';
 
 class TopicDetailScreen extends StatefulWidget {
-  final TopicModel topic;
-  const TopicDetailScreen({super.key, required this.topic});
+  const TopicDetailScreen({super.key});
   @override
   _TopicDetailScreenState createState() => _TopicDetailScreenState();
 }
@@ -33,6 +32,7 @@ class _TopicDetailScreenState extends State<TopicDetailScreen> {
     _scrollController = ScrollController();
     _scrollController.addListener(_scrollListener);
     pageController = PageController();
+    topicViewModel = Provider.of<TopicViewModel>(context, listen: false);
   }
 
   void _scrollListener() {
@@ -53,14 +53,130 @@ class _TopicDetailScreenState extends State<TopicDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    int viewCount = widget.topic.viewCount;
-    int wordLearned = widget.topic.wordLearned;
-    int wordCount = widget.topic.wordCount;
+    int viewCount = topicViewModel.topic!.viewCount;
+    int wordLearned = topicViewModel.topic!.wordLearned;
+    int wordCount = topicViewModel.topic!.wordCount;
     String wordProgress = "$wordCount";
     topicViewModel = Provider.of<TopicViewModel>(context, listen: true);
 
-    if (widget.topic.wordLearned >= 0) {
+    if (topicViewModel.topic!.wordLearned >= 0) {
       wordProgress = "$wordLearned/$wordCount";
+    }
+
+    bool isAuthor =
+        topicViewModel.topic!.author == FirebaseAuth.instance.currentUser!.uid;
+    final MaterialStateProperty<Icon?> thumbIcon =
+        MaterialStateProperty.resolveWith<Icon?>(
+      (Set<MaterialState> states) {
+        if (states.contains(MaterialState.selected)) {
+          return const Icon(Icons.check);
+        }
+        return const Icon(Icons.close);
+      },
+    );
+
+    void _showModalBottomSheet(BuildContext context) {
+      BottomSheetItem _editTopic = BottomSheetItem(
+        icon: Icon(Icons.edit_note_rounded, color: Colors.black),
+        onTap: () {
+          final _addTopicViewModel =
+              Provider.of<AddTopicViewModel>(context, listen: false);
+          _addTopicViewModel.setWords(topicViewModel.words);
+          Navigator.pop(context);
+          Navigator.pushNamed(context, RouteName.updateTopicScreen,
+              arguments: topicViewModel.topic!);
+        },
+        text: "Chỉnh sửa",
+      );
+      BottomSheetItem _deleteTopic = BottomSheetItem(
+        icon: Icon(Icons.delete_outline_rounded, color: Colors.black),
+        onTap: () {
+          showDialog<String>(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+              title: const Text('Xóa topic này?'),
+              content: const Text('Sau khi xóa sẽ không thể khôi phục được'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () => Navigator.pop(context, 'Hủy'),
+                  child: const Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    topicViewModel.delete(topicViewModel.topic!.id);
+                    Navigator.pop(context, 'Xác nhận');
+                    Navigator.pop(context);
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
+          );
+        },
+        text: "Xóa",
+      );
+      BottomSheetItem _addToFolder = BottomSheetItem(
+        icon: Icon(Icons.add_to_photos_outlined, color: Colors.black),
+        onTap: () {
+          Navigator.pop(context);
+        },
+        text: "Thêm vào folder",
+      );
+      BottomSheetItem _exportCSV = BottomSheetItem(
+        icon: Icon(LAIcons.import, color: Colors.black),
+        onTap: () {
+          topicViewModel.createAndSaveCSVFile();
+          Navigator.pop(context);
+        },
+        text: "Xuất ra file CSV",
+      );
+      BottomSheetItem _public = BottomSheetItem(
+        icon: Icon(Icons.public, color: Colors.black),
+        onTap: () {
+          setState(() {
+            topicViewModel.topic!.public = !topicViewModel.topic!.public;
+            topicViewModel.setPublic(
+                topicViewModel.topic!.id, topicViewModel.topic!.public);
+            Navigator.pop(context);
+            _showModalBottomSheet(context);
+          });
+        },
+        isLoading: topicViewModel.isLoading,
+        child: Row(
+          children: [
+            Text(
+              'Trạng thái: ',
+              style: AppStyle.title,
+            ),
+            SizedBox(
+              width: 8,
+            ),
+            Text(
+              topicViewModel.topic!.public ? 'Công khai' : 'Riêng tư',
+              style: TextStyle(
+                  color: topicViewModel.topic!.public
+                      ? AppStyle.successColor
+                      : AppStyle.redColor),
+            ),
+          ],
+        ),
+      );
+
+      showModalBottomSheet<void>(
+        context: context,
+        builder: (context) {
+          return BottomSheetWidget(
+            menuItemCount: isAuthor ? 3 : 2,
+            bottomSheetItems: Column(children: [
+              if (isAuthor) _editTopic,
+              if (isAuthor) _deleteTopic,
+              _addToFolder,
+              _exportCSV,
+              if (isAuthor) _public
+            ]),
+          );
+        },
+      );
     }
 
     return Scaffold(
@@ -97,7 +213,7 @@ class _TopicDetailScreenState extends State<TopicDetailScreen> {
                     TopicsWords(
                         topicViewModel: topicViewModel,
                         userID: _auth.currentUser!.uid,
-                        topicID: widget.topic.id),
+                        topicID: topicViewModel.topic!.id),
                   ],
                 ),
               ),
@@ -108,117 +224,5 @@ class _TopicDetailScreenState extends State<TopicDetailScreen> {
     );
   }
 
-  final MaterialStateProperty<Icon?> thumbIcon =
-      MaterialStateProperty.resolveWith<Icon?>(
-    (Set<MaterialState> states) {
-      if (states.contains(MaterialState.selected)) {
-        return const Icon(Icons.check);
-      }
-      return const Icon(Icons.close);
-    },
-  );
-
-  void _showModalBottomSheet(BuildContext context) {
-    BottomSheetItem _editTopic = BottomSheetItem(
-      icon: Icon(Icons.edit_note_rounded, color: Colors.black),
-      onTap: () {
-        final _addTopicViewModel =
-            Provider.of<AddTopicViewModel>(context, listen: false);
-        _addTopicViewModel.setWords(topicViewModel.words);
-        Navigator.pop(context);
-        Navigator.pushNamed(context, RouteName.updateTopicScreen,
-            arguments: widget.topic);
-      },
-      text: "Chỉnh sửa",
-    );
-    BottomSheetItem _deleteTopic = BottomSheetItem(
-      icon: Icon(Icons.delete_outline_rounded, color: Colors.black),
-      onTap: () {
-        showDialog<String>(
-          context: context,
-          builder: (BuildContext context) => AlertDialog(
-            title: const Text('Xóa topic này?'),
-            content: const Text('Sau khi xóa sẽ không thể khôi phục được'),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () => Navigator.pop(context, 'Hủy'),
-                child: const Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () {
-                  topicViewModel.delete(widget.topic.id);
-                  Navigator.pop(context, 'Xác nhận');
-                  Navigator.pop(context);
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          ),
-        );
-      },
-      text: "Xóa",
-    );
-    BottomSheetItem _addToFolder = BottomSheetItem(
-      icon: Icon(Icons.add_to_photos_outlined, color: Colors.black),
-      onTap: () {
-        Navigator.pop(context);
-      },
-      text: "Thêm vào folder",
-    );
-    BottomSheetItem _exportCSV = BottomSheetItem(
-      icon: Icon(LAIcons.import, color: Colors.black),
-      onTap: () {
-        topicViewModel.createAndSaveCSVFile();
-        Navigator.pop(context);
-      },
-      text: "Xuất ra file CSV",
-    );
-    BottomSheetItem _public = BottomSheetItem(
-      icon: Icon(Icons.public, color: Colors.black),
-      onTap: () {
-        setState(() {
-          widget.topic.public = !widget.topic.public;
-          topicViewModel.setPublic(widget.topic.id, widget.topic.public);
-          Navigator.pop(context);
-          _showModalBottomSheet(context);
-        });
-      },
-      isLoading: topicViewModel.isLoading,
-      child: Row(
-        children: [
-          Text(
-            'Trạng thái: ',
-            style: AppStyle.title,
-          ),
-          SizedBox(
-            width: 8,
-          ),
-          Text(
-            widget.topic.public ? 'Công khai' : 'Riêng tư',
-            style: TextStyle(
-                color: widget.topic.public
-                    ? AppStyle.successColor
-                    : AppStyle.redColor),
-          ),
-        ],
-      ),
-    );
-
-    showModalBottomSheet<void>(
-      context: context,
-      builder: (context) {
-        return BottomSheetWidget(
-          menuItemCount: 3,
-          bottomSheetItems: Column(children: [
-            _editTopic,
-            _deleteTopic,
-            _addToFolder,
-            _exportCSV,
-            _public
-          ]),
-        );
-      },
-    );
-  }
   // topicInforSection
 }

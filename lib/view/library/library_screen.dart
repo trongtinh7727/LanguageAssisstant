@@ -99,12 +99,16 @@ class _LibraryScreenState extends State<LibraryScreen> {
                         topic: topic,
                         onContinue: () {
                           // Handle continue action here
+                          topicViewModel.setTopic(topic);
+                          topicViewModel.fetchTopic(
+                              _auth.currentUser!.uid, topic.id);
                           topicViewModel.fetchWordsByStatus(
                               _auth.currentUser!.uid, topic.id, WordStatus.ALL);
                           topicViewModel.fetchLeaderBoard(topic.id);
                           Navigator.pushNamed(
-                              context, RouteName.topicDetailScreen,
-                              arguments: topic);
+                            context,
+                            RouteName.topicDetailScreen,
+                          );
                         },
                       );
                     },

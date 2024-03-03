@@ -34,11 +34,7 @@ class Routes {
                   editTopicModel: topic,
                 ));
       case RouteName.topicDetailScreen:
-        final topic = settings.arguments as TopicModel;
-        return MaterialPageRoute(
-            builder: (context) => TopicDetailScreen(
-                  topic: topic,
-                ));
+        return MaterialPageRoute(builder: (context) => TopicDetailScreen());
 
       case RouteName.mainLayout:
         return MaterialPageRoute(builder: (context) => MainLayout());

@@ -322,6 +322,42 @@ class TopicRepository extends BaseRepository<TopicModel> {
       return [];
     }
   }
+
+  Future<TopicModel> getUserTopic(String userId, String topicID) async {
+    try {
+      final userTopicRef = _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('topics')
+          .doc(topicID);
+
+      final userTopicSnapshot = await userTopicRef.get();
+
+      if (userTopicSnapshot.exists) {
+        final topicRef = userTopicSnapshot['topicRef'];
+        final topicSnapshot = await topicRef.get();
+        final authorSnapshot = await topicSnapshot['authorRef'].get();
+
+        final topic = TopicModel.fromMap(
+            topicSnapshot.data() as Map<String, dynamic>, topicSnapshot.id);
+        final author = UserModel.fromMap(
+            authorSnapshot.data() as Map<String, dynamic>, authorSnapshot.id);
+
+        topic.authorName = author.name;
+        topic.authoravatar = author.avatarUrl;
+        topic.lastAccess = userTopicSnapshot['lastAccess'];
+        topic.wordLearned = userTopicSnapshot['wordLearned'];
+
+        return topic;
+      } else {
+        // Handle the case where the user topic does not exist
+        throw Exception('User topic not found');
+      }
+    } catch (e) {
+      // Handle errors or return an appropriate error state
+      throw Exception('Failed to fetch user topic: $e');
+    }
+  }
 }
 
 class Pair<T1, T2> {

@@ -32,14 +32,14 @@ class TopicInformation extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            widget.topic.title,
+            topicViewModel.topic!.title,
             maxLines: 5,
             style: AppStyle.headline,
           ),
           Row(
             children: [
               Text(
-                '${DateTimeUtil.format(widget.topic.createTime)}',
+                '${DateTimeUtil.format(topicViewModel.topic!.createTime)}',
                 style: AppStyle.caption,
               ),
               SizedBox(
@@ -66,13 +66,14 @@ class TopicInformation extends StatelessWidget {
           SizedBox(
             height: 8,
           ),
-          if (widget.topic.wordLearned >= 0)
+          if (topicViewModel.topic!.wordLearned >= 0)
             SizedBox(
               width: 150,
               child: ClipRRect(
                 borderRadius: BorderRadius.all(Radius.circular(10)),
                 child: LinearProgressIndicator(
-                  value: widget.topic.wordLearned / widget.topic.wordCount,
+                  value: topicViewModel.topic!.wordLearned /
+                      topicViewModel.topic!.wordCount,
                   minHeight: 7,
                   backgroundColor: Colors.blue[100],
                   color: Colors.blue,
@@ -86,20 +87,21 @@ class TopicInformation extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 16,
-                backgroundImage: NetworkImage(widget.topic.authoravatar ??
+                backgroundImage: NetworkImage(topicViewModel
+                        .topic!.authoravatar ??
                     'https://firebasestorage.googleapis.com/v0/b/language-assistant-7727.appspot.com/o/Users%2FAvatars%2Favatar_default.png?alt=media&token=490b3731-c6a2-4d1b-a75a-4902372c307b'),
                 onBackgroundImageError: (exception, stackTrace) {
                   // Log the error, show a dialog, or use a fallback image
                   print('Error loading background image: $exception');
                 },
-                child: widget.topic.authoravatar == null
+                child: topicViewModel.topic!.authoravatar == null
                     ? Icon(
                         Icons.person) // Fallback icon in case the URL is null
                     : null,
               ),
               SizedBox(width: 8),
               Text(
-                widget.topic.authorName ?? "",
+                topicViewModel.topic!.authorName ?? "",
                 style: AppStyle.caption,
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
@@ -118,11 +120,11 @@ class TopicInformation extends StatelessWidget {
                   final learningViewModel =
                       Provider.of<LearningViewModel>(context, listen: false);
                   learningViewModel.setTopic(
-                      widget.topic, LearningMode.FlashCard);
+                      topicViewModel.topic!, LearningMode.FlashCard);
 
                   learningViewModel.fetchWordsByStatus(
                       FirebaseAuth.instance.currentUser!.uid,
-                      widget.topic.id,
+                      topicViewModel.topic!.id,
                       WordStatus.ALL);
                   Navigator.pushNamed(context, RouteName.flashCardScreen);
                 },
@@ -135,10 +137,10 @@ class TopicInformation extends StatelessWidget {
                   final learningViewModel =
                       Provider.of<LearningViewModel>(context, listen: false);
                   learningViewModel.setTopic(
-                      widget.topic, LearningMode.WordType);
+                      topicViewModel.topic!, LearningMode.WordType);
                   learningViewModel.fetchWordsByStatus(
                       FirebaseAuth.instance.currentUser!.uid,
-                      widget.topic.id,
+                      topicViewModel.topic!.id,
                       WordStatus.ALL);
                   Navigator.pushNamed(context, RouteName.wordTypeScreen);
                 },
@@ -151,10 +153,10 @@ class TopicInformation extends StatelessWidget {
                   final learningViewModel =
                       Provider.of<LearningViewModel>(context, listen: false);
                   learningViewModel.setTopic(
-                      widget.topic, LearningMode.MultipleChoice);
+                      topicViewModel.topic!, LearningMode.MultipleChoice);
                   learningViewModel.fetchWordsByStatus(
                       FirebaseAuth.instance.currentUser!.uid,
-                      widget.topic.id,
+                      topicViewModel.topic!.id,
                       WordStatus.ALL);
 
                   Navigator.pushNamed(context, RouteName.multipleChoiceScreen);

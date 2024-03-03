@@ -15,6 +15,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 class TopicViewModel extends ChangeNotifier {
   List<TopicModel> _topics = [];
+  TopicModel? _topic;
   List<WordModel> _words = [];
   List<RankItem> _ranks = [];
 
@@ -28,17 +29,36 @@ class TopicViewModel extends ChangeNotifier {
 
   bool _hasNextPage = false;
   DocumentSnapshot? _lastDocument;
+  TopicModel? get topic => _topic;
 
   bool get hasNextPage => _hasNextPage;
   DocumentSnapshot? get lastDocument => _lastDocument;
   bool get isLoading => _isLoading; // Thêm getter này
 
+  void setTopic(TopicModel model) {
+    _topic = model;
+  }
+
   void fetchTopics() async {
+    _isLoading = true; // Cập nhật trạng thái tải
+    notifyListeners();
+    try {
+      _topics = await _topicRepository.readAll();
+      _isLoading = false; // Cập nhật lại trạng thái sau khi tải xong
+      notifyListeners();
+    } catch (e) {
+      _isLoading = false; // Cập nhật lại trạng thái nếu có lỗi
+      print('Error fetching topics: $e');
+      notifyListeners();
+    }
+  }
+
+  void fetchTopic(String userID, String topicID) async {
     _isLoading = true; // Cập nhật trạng thái tải
     notifyListeners();
 
     try {
-      _topics = await _topicRepository.readAll();
+      _topic = await _topicRepository.getUserTopic(userID, topicID);
       _isLoading = false; // Cập nhật lại trạng thái sau khi tải xong
       notifyListeners();
     } catch (e) {
@@ -63,7 +83,6 @@ class TopicViewModel extends ChangeNotifier {
 
     _wordRepository.getAllByStatus(userId, topicId, status,
         (List<WordModel> words) {
-      // This is the onComplete callback
       _words = words; // Update the _words list with the fetched words
       _isLoading = false;
       notifyListeners();
