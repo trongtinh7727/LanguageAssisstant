@@ -26,58 +26,73 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
     _homeViewModel = Provider.of<HomeViewModel>(context, listen: false);
   }
 
+  bool _isScrollAtBottom(ScrollNotification notification) {
+    return notification.metrics.pixels == notification.metrics.maxScrollExtent;
+  }
+
   @override
   Widget build(BuildContext context) {
     final _homeViewModel = Provider.of<HomeViewModel>(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('IIEX'),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () {
-              // Implement your search action
-            },
-          ),
-        ],
-      ),
-      body: ListView(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('TOP 10', style: AppStyle.title),
-                _topTopics(),
-                Text('Bài viết mới', style: AppStyle.title),
-                _newTopics(),
-                if (_homeViewModel.isLoading)
-                  Text('Đang load', style: AppStyle.title),
-              ],
+        appBar: AppBar(
+          title: Text('IIEX'),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.search),
+              onPressed: () {
+                // Implement your search action
+              },
             ),
+          ],
+        ),
+        body: NotificationListener<ScrollNotification>(
+          onNotification: (notification) {
+            if (_isScrollAtBottom(notification)) {
+              if (!_homeViewModel.isLoading) {
+                _homeViewModel.fetchNewTopicMore(5);
+              }
+            }
+            return false;
+          },
+          child: ListView(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('TOP 10', style: AppStyle.title),
+                    if (_homeViewModel.topicLeaderboard.length < 1)
+                      Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    else
+                      _topTopics(),
+                    Text('Bài viết mới', style: AppStyle.title),
+                    if (_homeViewModel.topics.length < 1)
+                      Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    else
+                      _newTopics(),
+                  ],
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
-    );
+        ));
   }
 
   Widget _newTopics() {
     final _homeViewModel = Provider.of<HomeViewModel>(context);
     final _topicViewModel = Provider.of<TopicViewModel>(context);
-    return SizedBox(
-      height: 500, // Chiều cao cố định cho ListView.builder
-      width: MediaQuery.of(context).size.width - 20,
-      child: ListView.builder(
-        // scrollDirection: Axis.vertical,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: _homeViewModel.topics.length,
-        itemBuilder: (context, index) {
-          final topic = _homeViewModel.topics[index];
-          return SizedBox(
-            width: 320,
-            height: 125,
+    return Column(
+      children: [
+        for (final topic in _homeViewModel.topics)
+          SizedBox(
+            // width: 320,
+            height: 130,
             child: TopicCard(
               topic: topic,
               onContinue: () {
@@ -89,9 +104,12 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
                     arguments: topic);
               },
             ),
-          );
-        },
-      ),
+          ),
+        if (_homeViewModel.isLoading)
+          Center(
+            child: CircularProgressIndicator(),
+          )
+      ],
     );
   }
 

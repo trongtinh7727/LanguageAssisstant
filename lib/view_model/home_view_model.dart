@@ -82,15 +82,16 @@ class HomeViewModel extends ChangeNotifier {
   }
 
   Future<void> fetchNewTopicMore(int pageSize) async {
-    // _isLoading = true; // Cập nhật trạng thái tải
+    _isLoading = true; // Cập nhật trạng thái tải
     notifyListeners();
     try {
-      final result = await _topicRepository.getNewTopics(
-          lastDocument: _lastDocument, pageSize: pageSize);
-      _topics.addAll(result.first);
-      _hasNextPage = result.second.first;
-      _lastDocument = result.second.second;
-
+      if (_hasNextPage) {
+        final result = await _topicRepository.getNewTopics(
+            lastDocument: _lastDocument, pageSize: pageSize);
+        _topics.addAll(result.first);
+        _hasNextPage = result.second.first;
+        _lastDocument = result.second.second;
+      }
       _isLoading = false; // Cập nhật lại trạng thái sau khi tải xong
       notifyListeners();
     } catch (e) {

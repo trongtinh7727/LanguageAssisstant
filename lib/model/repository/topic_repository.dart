@@ -214,7 +214,9 @@ class TopicRepository extends BaseRepository<TopicModel> {
         topics.add(topic);
       }
 
-      hasNextPage = querySnapshot.docs.length >= pageSize;
+      hasNextPage = querySnapshot.docs.length > 0 &&
+          querySnapshot.docs.length >= pageSize;
+
       final newLastDocument =
           querySnapshot.docs.isNotEmpty ? querySnapshot.docs.last : null;
 

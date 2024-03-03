@@ -45,7 +45,7 @@ class MainLayoutState extends State<MainLayout> {
     authProvider.setUserModel();
 
     return Scaffold(
-      // extendBody: true,
+      extendBody: true,
       body: IndexedStack(
         index: currentIndex,
         children: [
