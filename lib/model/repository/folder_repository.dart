@@ -3,6 +3,7 @@ import 'package:languageassistant/model/models/folder_model.dart';
 import 'package:languageassistant/model/models/topic_model.dart';
 import 'package:languageassistant/model/repository/base_repository.dart';
 import 'package:languageassistant/utils/app_enum.dart';
+import 'package:languageassistant/utils/app_toast.dart';
 
 class FolderRepository extends BaseRepository<FolderModel> {
   FolderRepository()
@@ -48,6 +49,39 @@ class FolderRepository extends BaseRepository<FolderModel> {
     } catch (e) {
       // Handle errors or return an appropriate error state
       return Pair([], Pair(false, null));
+    }
+  }
+
+  Future<void> updateFolder(String userId, FolderModel folderModel) async {
+    try {
+      final CollectionReference folderCollection = FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .collection('folders');
+
+      final folderDocRef = folderCollection.doc(folderModel.id);
+
+      await folderDocRef.set(folderModel.toMap(), SetOptions(merge: true));
+
+      successToast('Cập nhật thành công');
+    } catch (e) {
+      errorToast('Có lỗi xảy ra: ${e.toString()}');
+    }
+  }
+
+  Future<void> createFolder(String userId, FolderModel folderModel) async {
+    try {
+      final CollectionReference folderCollection = FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .collection('folders');
+      final newFolderDocRef = folderCollection.doc();
+      folderModel.id = newFolderDocRef.id;
+
+      await newFolderDocRef.set(folderModel.toMap());
+      successToast('Tạo thành công');
+    } catch (e) {
+      errorToast('Có lỗi xảy ra: ${e.toString()}');
     }
   }
 }

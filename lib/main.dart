@@ -73,7 +73,6 @@ class MyApp extends StatelessWidget {
         title: 'Flutter Firebase Auth',
         theme: AppStyle.getTheme(),
         debugShowCheckedModeBanner: false,
-        initialRoute: RouteName.splashScreen,
         onGenerateRoute: Routes.generateRoute,
       ),
     );

@@ -19,7 +19,7 @@ class Routes {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case RouteName.splashScreen:
-        return MaterialPageRoute(builder: (context) => const SplashScreen());
+        return MaterialPageRoute(builder: (context) => SplashScreen());
       case RouteName.homeScreen:
         return MaterialPageRoute(builder: (context) => HomeScreen());
       case RouteName.introScreen:
@@ -52,7 +52,7 @@ class Routes {
       case RouteName.loginScreen:
         return MaterialPageRoute(builder: (context) => LoginScreen());
       default:
-        return MaterialPageRoute(builder: (context) => const SplashScreen());
+        return MaterialPageRoute(builder: (context) => SplashScreen());
     }
   }
 }

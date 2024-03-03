@@ -28,7 +28,7 @@ class FolderViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void fetchFoldersByUser(String userId, int pageSize) async {
+  Future<void> fetchFoldersByUser(String userId, int pageSize) async {
     _isLoading = true; // Cập nhật trạng thái tải
     notifyListeners();
 
@@ -47,7 +47,19 @@ class FolderViewModel extends ChangeNotifier {
     }
   }
 
-  void fetchUserTopicsByFolder(
+  Future<void> createFolder(String userId, FolderModel folderModel) async {
+    await _folderRepository.createFolder(userId, folderModel);
+    _folders.insert(0, folderModel);
+    notifyListeners();
+  }
+
+  Future<void> updateFolder(String userId, FolderModel folderModel) async {
+    await _folderRepository.updateFolder(userId, folderModel);
+
+    notifyListeners();
+  }
+
+  Future<void> fetchUserTopicsByFolder(
       String userId, FolderModel folder, int pageSize) async {
     _isLoading = true; // Cập nhật trạng thái tải
     notifyListeners();

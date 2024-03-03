@@ -1,11 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:languageassistant/model/models/folder_model.dart';
 import 'package:languageassistant/routes/name_routes.dart';
 import 'package:languageassistant/utils/app_style.dart';
+import 'package:languageassistant/utils/date_time_util.dart';
 import 'package:languageassistant/view/library/components/lib_folder_widget.dart';
 import 'package:languageassistant/view/library/components/lib_topic_widget.dart';
 import 'package:languageassistant/view_model/folder_view_model.dart';
 import 'package:languageassistant/view_model/topic_view_model.dart';
+import 'package:languageassistant/widget/text_field_widget.dart';
 import 'package:provider/provider.dart';
 
 class LibraryScreen extends StatefulWidget {
@@ -22,6 +25,8 @@ class _LibraryScreenState extends State<LibraryScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   int current = 0;
+
+  var _floderTextEditingController = TextEditingController();
 
   @override
   void initState() {
@@ -51,8 +56,47 @@ class _LibraryScreenState extends State<LibraryScreen> {
   void dispose() {
     _scrollController.removeListener(_scrollListener);
     _scrollController.dispose();
+    _floderTextEditingController.dispose();
     pageController.dispose();
     super.dispose();
+  }
+
+  void showAddFolderDialog() {
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: Center(child: const Text('Nhập tên folder')),
+        content: TextFieldWidget(
+            textEditingController: _floderTextEditingController),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context, 'Hủy'),
+            child: const Text('Hủy'),
+          ),
+          TextButton(
+            onPressed: () async {
+              FolderModel folderModel = FolderModel(
+                  title: _floderTextEditingController.text,
+                  createTime: DateTimeUtil.getCurrentTimestamp(),
+                  updateTime: DateTimeUtil.getCurrentTimestamp());
+              await folderViewModel.createFolder(
+                  _auth.currentUser!.uid, folderModel);
+              _floderTextEditingController.text = '';
+
+              folderViewModel.setFolder(folderModel);
+              folderViewModel.fetchUserTopicsByFolder(
+                  _auth.currentUser!.uid, folderModel, 200);
+              Navigator.pop(context, 'Xác nhận');
+              Navigator.pushNamed(
+                context,
+                RouteName.folderDetailScreen,
+              );
+            },
+            child: const Text('Xác nhận'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -67,7 +111,10 @@ class _LibraryScreenState extends State<LibraryScreen> {
           IconButton(
             icon: Icon(Icons.add),
             onPressed: () {
-              Navigator.pushNamed(context, RouteName.addTopicScreen);
+              if (current == 1) {
+                showAddFolderDialog();
+              } else
+                Navigator.pushNamed(context, RouteName.addTopicScreen);
             },
           ),
         ],
@@ -91,7 +138,6 @@ class _LibraryScreenState extends State<LibraryScreen> {
               itemBuilder: (context, index) {
                 // Your Tab Contents
                 if (index == 0) {
-                  // First tab content: Topic
                   return LibTopicWidget(
                       scrollController: _scrollController,
                       topicViewModel: topicViewModel,

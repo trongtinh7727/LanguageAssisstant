@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FolderModel {
   String? id;
-  String? title;
+  String title;
   int topicCount;
   List<DocumentReference> topicRefs;
   int createTime;
@@ -10,7 +10,7 @@ class FolderModel {
 
   FolderModel({
     this.id,
-    this.title,
+    required this.title,
     this.topicCount = 0,
     this.topicRefs = const [],
     required this.createTime,

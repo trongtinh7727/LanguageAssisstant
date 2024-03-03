@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:languageassistant/routes/name_routes.dart';
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({Key? key}) : super(key: key);
+  // const SplashScreen({Key? key}) : super(key: key);
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -15,16 +15,17 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _checkUser();
-    Future.delayed(const Duration(seconds: 3), () {
-      // Navigator.pushReplacementNamed(context, RouteName.mainLayout);
+    _initializeApp();
+  }
 
+  Future<void> _initializeApp() async {
+    await _checkUser();
+
+    Future.delayed(const Duration(seconds: 3), () {
       if (_user == null) {
-        // If the user is not authenticated, navigate to the login screen.
-        Navigator.popAndPushNamed(context, RouteName.loginScreen);
+        Navigator.pushReplacementNamed(context, RouteName.loginScreen);
       } else {
-        // If the user is authenticated, navigate to the home screen.
-        Navigator.popAndPushNamed(context, RouteName.mainLayout);
+        Navigator.pushReplacementNamed(context, RouteName.mainLayout);
       }
     });
   }

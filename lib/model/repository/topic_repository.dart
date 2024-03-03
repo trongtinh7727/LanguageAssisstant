@@ -191,16 +191,18 @@ class TopicRepository extends BaseRepository<TopicModel> {
     required FolderModel folderModel,
     required int pageSize,
   }) async {
-    var result = await _firestore
-        .collection('users')
-        .doc(userId)
-        .collection('topics')
-        .where(FieldPath.documentId,
-            whereIn: folderModel.topicRefs.map((ref) => ref.id))
-        .limit(pageSize)
-        .get();
-
+    if (folderModel.topicRefs.isEmpty) {
+      return Pair([], Pair(false, null));
+    }
     try {
+      var result = await _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('topics')
+          .where(FieldPath.documentId,
+              whereIn: folderModel.topicRefs.map((ref) => ref.id))
+          .limit(pageSize)
+          .get();
       final topics = <TopicModel>[];
       bool hasNextPage = false;
 

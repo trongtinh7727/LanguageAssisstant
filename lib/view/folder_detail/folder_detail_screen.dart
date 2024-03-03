@@ -1,13 +1,17 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:languageassistant/model/models/folder_model.dart';
 import 'package:languageassistant/routes/name_routes.dart';
 
 import 'package:languageassistant/utils/app_enum.dart';
 import 'package:languageassistant/utils/app_style.dart';
+import 'package:languageassistant/utils/date_time_util.dart';
 import 'package:languageassistant/view_model/folder_view_model.dart';
 import 'package:languageassistant/view_model/home_view_model.dart';
 import 'package:languageassistant/view_model/topic_view_model.dart';
+import 'package:languageassistant/widget/bottomsheet_widget.dart';
 import 'package:languageassistant/widget/personal_topic_card.dart';
+import 'package:languageassistant/widget/text_field_widget.dart';
 import 'package:languageassistant/widget/topic_leaderboard_item.dart';
 import 'package:provider/provider.dart';
 
@@ -20,15 +24,112 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
   late FolderViewModel _folderViewModel;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
+  var _floderTextEditingController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
-
     _folderViewModel = Provider.of<FolderViewModel>(context, listen: false);
+  }
+
+  void showUpdateFolderDialog() {
+    _floderTextEditingController.text = _folderViewModel.folder!.title;
+
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: Center(child: const Text('Nhập tên folder')),
+        content: TextFieldWidget(
+            textEditingController: _floderTextEditingController),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context, 'Hủy'),
+            child: const Text('Hủy'),
+          ),
+          TextButton(
+            onPressed: () async {
+              _folderViewModel.folder!.updateTime =
+                  DateTimeUtil.getCurrentTimestamp();
+              _folderViewModel.folder!.title =
+                  _floderTextEditingController.text;
+
+              await _folderViewModel.updateFolder(
+                  _auth.currentUser!.uid, _folderViewModel.folder!);
+              _floderTextEditingController.text = '';
+
+              _folderViewModel.setFolder(_folderViewModel.folder!);
+              // _folderViewModel.fetchUserTopicsByFolder(
+              //     _auth.currentUser!.uid, folderModel, 200);
+              Navigator.pop(context, 'Xác nhận');
+              Navigator.pop(context);
+            },
+            child: const Text('Xác nhận'),
+          ),
+        ],
+      ),
+    );
   }
 
   bool _isScrollAtBottom(ScrollNotification notification) {
     return notification.metrics.pixels == notification.metrics.maxScrollExtent;
+  }
+
+  void _showModalBottomSheet(BuildContext context) {
+    BottomSheetItem _editTopic = BottomSheetItem(
+      icon: Icon(Icons.edit_note_rounded, color: Colors.black),
+      onTap: () {
+        showUpdateFolderDialog();
+      },
+      text: "Chỉnh sửa",
+    );
+    BottomSheetItem _deleteTopic = BottomSheetItem(
+      icon: Icon(Icons.delete_outline_rounded, color: Colors.black),
+      onTap: () {
+        showDialog<String>(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+            title: const Text('Xóa topic này?'),
+            content: const Text('Sau khi xóa sẽ không thể khôi phục được'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.pop(context, 'Hủy'),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () {
+                  // topicViewModel.delete(topicViewModel.topic!.id);
+                  Navigator.pop(context, 'Xác nhận');
+                  Navigator.pop(context);
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+      },
+      text: "Xóa",
+    );
+    BottomSheetItem _addToFolder = BottomSheetItem(
+      icon: Icon(Icons.add_to_photos_outlined, color: Colors.black),
+      onTap: () {
+        Navigator.pop(context);
+      },
+      text: "Thêm topics",
+    );
+
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (context) {
+        return BottomSheetWidget(
+          menuItemCount: 2,
+          bottomSheetItems: Column(children: [
+            _editTopic,
+            _deleteTopic,
+            _addToFolder,
+          ]),
+        );
+      },
+    );
   }
 
   @override
@@ -40,9 +141,9 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
           title: Text('IIEX'),
           actions: <Widget>[
             IconButton(
-              icon: Icon(Icons.search),
+              icon: Icon(Icons.more_vert_rounded),
               onPressed: () {
-                // Implement your search action
+                _showModalBottomSheet(context);
               },
             ),
           ],
@@ -77,12 +178,12 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
                           fontSize: 14,
                           letterSpacing: 0.18,
                         )),
-                    if (_folderViewModel.topics.length < 1)
+                    if (!_folderViewModel.isLoading)
+                      _listTopics()
+                    else
                       Center(
                         child: CircularProgressIndicator(),
-                      )
-                    else
-                      _listTopics(),
+                      ),
                   ],
                 ),
               ),
