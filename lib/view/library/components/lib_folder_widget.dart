@@ -4,42 +4,53 @@ import 'package:languageassistant/routes/name_routes.dart';
 import 'package:languageassistant/view_model/folder_view_model.dart';
 import 'package:languageassistant/widget/folder_card_widget.dart';
 
-class LibFolderWidget extends StatelessWidget {
+class LibFolderWidget extends StatefulWidget {
   const LibFolderWidget({
-    super.key,
-    required ScrollController scrollController,
+    Key? key,
+    required this.scrollController,
     required this.folderViewModel,
-    required FirebaseAuth auth,
-  })  : _scrollController = scrollController,
-        _auth = auth;
+    required this.auth,
+  }) : super(key: key);
 
-  final ScrollController _scrollController;
+  final ScrollController scrollController;
   final FolderViewModel folderViewModel;
-  final FirebaseAuth _auth;
+  final FirebaseAuth auth;
 
   @override
+  _LibFolderWidgetState createState() => _LibFolderWidgetState();
+}
+
+class _LibFolderWidgetState extends State<LibFolderWidget> {
+  @override
   Widget build(BuildContext context) {
-    if (folderViewModel.folders.length < 1) {
+    if (widget.folderViewModel.isLoading &&
+        widget.folderViewModel.folders.isEmpty) {
       return Center(
         child: CircularProgressIndicator(),
       );
     }
+
     return ListView.builder(
-      controller: _scrollController,
-      itemCount: folderViewModel.folders.length,
+      controller: widget.scrollController,
+      itemCount: widget.folderViewModel.folders.length,
       itemBuilder: (context, index) {
-        final folder = folderViewModel.folders[index];
+        final folder = widget.folderViewModel.folders[index];
         return FolderCard(
-          foler: folder,
+          folder: folder,
           onContinue: () {
-            folderViewModel.setFolder(folder);
-            folderViewModel.fetchUserTopicsByFolder(
-                _auth.currentUser!.uid, folder, 200);
+            widget.folderViewModel.setFolder(folder);
+            widget.folderViewModel.fetchUserTopicsByFolder(
+              widget.auth.currentUser!.uid,
+              folder,
+              200,
+            );
 
             Navigator.pushNamed(
               context,
               RouteName.folderDetailScreen,
-            );
+            ).then((_) {
+              setState(() {});
+            });
           },
         );
       },

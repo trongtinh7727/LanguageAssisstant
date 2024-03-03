@@ -7,12 +7,12 @@ import 'package:languageassistant/utils/date_time_util.dart';
 import 'package:languageassistant/widget/custom_button.dart';
 
 class FolderCard extends StatelessWidget {
-  final FolderModel foler;
+  final FolderModel folder;
   final VoidCallback onContinue;
 
   const FolderCard({
     Key? key,
-    required this.foler,
+    required this.folder,
     required this.onContinue,
   }) : super(key: key);
 
@@ -40,7 +40,7 @@ class FolderCard extends StatelessWidget {
                         width: 8,
                       ),
                       Text(
-                        foler.title!,
+                        folder.title!,
                         style: AppStyle.body2_bold,
                         softWrap: false,
                         maxLines: 1,
@@ -50,7 +50,7 @@ class FolderCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  DateTimeUtil.getDateFromTimestamp(foler.updateTime),
+                  DateTimeUtil.getDateFromTimestamp(folder.updateTime),
                   style: AppStyle.caption,
                 ),
               ],
@@ -59,7 +59,7 @@ class FolderCard extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  '${foler.topicCount} topics',
+                  '${folder.topicCount} topics',
                   style: AppStyle.caption,
                 ),
               ],

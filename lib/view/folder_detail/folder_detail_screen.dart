@@ -88,7 +88,7 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
         showDialog<String>(
           context: context,
           builder: (BuildContext context) => AlertDialog(
-            title: const Text('Xóa topic này?'),
+            title: const Text('Xóa folder này?'),
             content: const Text('Sau khi xóa sẽ không thể khôi phục được'),
             actions: <Widget>[
               TextButton(
@@ -97,8 +97,10 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
               ),
               TextButton(
                 onPressed: () {
-                  // topicViewModel.delete(topicViewModel.topic!.id);
-                  Navigator.pop(context, 'Xác nhận');
+                  _folderViewModel.deleteFolder(
+                      _auth.currentUser!.uid, _folderViewModel.folder!.id!);
+                  Navigator.pop(context);
+                  Navigator.pop(context);
                   Navigator.pop(context);
                 },
                 child: const Text('OK'),
@@ -134,7 +136,7 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final _folderViewModel = Provider.of<FolderViewModel>(context);
+    _folderViewModel = Provider.of<FolderViewModel>(context);
 
     return Scaffold(
         appBar: AppBar(

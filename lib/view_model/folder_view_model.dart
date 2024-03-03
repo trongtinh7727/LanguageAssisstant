@@ -55,7 +55,13 @@ class FolderViewModel extends ChangeNotifier {
 
   Future<void> updateFolder(String userId, FolderModel folderModel) async {
     await _folderRepository.updateFolder(userId, folderModel);
+    notifyListeners();
+  }
 
+  Future<void> deleteFolder(String userID, String folderID) async {
+    notifyListeners();
+    await _folderRepository.deleteFolder(userID, folderID);
+    _folders.remove(_folder);
     notifyListeners();
   }
 

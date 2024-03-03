@@ -143,7 +143,6 @@ class _LibraryScreenState extends State<LibraryScreen> {
                       topicViewModel: topicViewModel,
                       auth: _auth);
                 } else {
-                  // Second tab content: Folder
                   return LibFolderWidget(
                       scrollController: _scrollController,
                       folderViewModel: folderViewModel,

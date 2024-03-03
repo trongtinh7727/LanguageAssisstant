@@ -52,6 +52,22 @@ class FolderRepository extends BaseRepository<FolderModel> {
     }
   }
 
+  Future<void> deleteFolder(String userId, String folderId) async {
+    try {
+      final DocumentReference folderDocRef = FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .collection('folders')
+          .doc(folderId); // Lấy tham chiếu đến tài liệu cần xóa
+
+      await folderDocRef.delete(); // Xóa tài liệu
+
+      successToast('Xóa thành công');
+    } catch (e) {
+      errorToast('Có lỗi xảy ra: ${e.toString()}');
+    }
+  }
+
   Future<void> updateFolder(String userId, FolderModel folderModel) async {
     try {
       final CollectionReference folderCollection = FirebaseFirestore.instance
