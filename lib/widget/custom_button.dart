@@ -37,7 +37,7 @@ class CustomButton extends StatelessWidget {
           backgroundColor: btnBack, // Sử dụng giá trị buttonBackColor
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(5),
-            side: BorderSide(color: AppStyle.primaryColor, width: 2),
+            side: BorderSide(color: textFillColor, width: 2),
           ),
         ),
         child: Text(

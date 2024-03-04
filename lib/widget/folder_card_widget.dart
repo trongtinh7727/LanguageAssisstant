@@ -9,16 +9,17 @@ import 'package:languageassistant/widget/custom_button.dart';
 class FolderCard extends StatelessWidget {
   final FolderModel folder;
   final VoidCallback onContinue;
+  final String word;
 
-  const FolderCard({
-    Key? key,
-    required this.folder,
-    required this.onContinue,
-  }) : super(key: key);
+  const FolderCard(
+      {Key? key,
+      required this.folder,
+      required this.onContinue,
+      this.word = "Chi Tiết"})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    const String word = "Chi Tiết";
     return Card(
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
@@ -40,7 +41,7 @@ class FolderCard extends StatelessWidget {
                         width: 8,
                       ),
                       Text(
-                        folder.title!,
+                        folder.title,
                         style: AppStyle.body2_bold,
                         softWrap: false,
                         maxLines: 1,
@@ -70,8 +71,13 @@ class FolderCard extends StatelessWidget {
               children: [
                 CustomButton(
                   onContinue: onContinue,
+                  btnBackground: word.compareTo('Xóa') == 0
+                      ? AppStyle.failedColor
+                      : Colors.black,
                   word: word,
-                  textColor: AppStyle.activeText,
+                  textColor: word.compareTo('Xóa') == 0
+                      ? AppStyle.redColor
+                      : AppStyle.activeText,
                 ),
               ],
             ),

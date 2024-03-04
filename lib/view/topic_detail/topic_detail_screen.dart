@@ -119,6 +119,8 @@ class _TopicDetailScreenState extends State<TopicDetailScreen> {
         icon: Icon(Icons.add_to_photos_outlined, color: Colors.black),
         onTap: () {
           Navigator.pop(context);
+
+          Navigator.pushNamed(context, RouteName.addFolderToTopic);
         },
         text: "Thêm vào folder",
       );

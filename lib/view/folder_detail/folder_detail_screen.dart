@@ -115,6 +115,8 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
       icon: Icon(Icons.add_to_photos_outlined, color: Colors.black),
       onTap: () {
         Navigator.pop(context);
+        Navigator.pushNamed(context, RouteName.addTopicToFolder);
+        // Navigator.pop(context);
       },
       text: "Thêm topics",
     );
@@ -166,7 +168,7 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(_folderViewModel.folder!.title!,
+                    Text(_folderViewModel.folder!.title,
                         style: const TextStyle(
                           color: AppStyle.activeText,
                           fontWeight: FontWeight.bold,

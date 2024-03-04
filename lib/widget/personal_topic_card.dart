@@ -7,13 +7,15 @@ import 'package:languageassistant/widget/custom_button.dart';
 
 class TopicCard extends StatelessWidget {
   final TopicModel topic;
+  final String word;
   final VoidCallback onContinue;
 
-  const TopicCard({
-    Key? key,
-    required this.topic,
-    required this.onContinue,
-  }) : super(key: key);
+  const TopicCard(
+      {Key? key,
+      required this.topic,
+      required this.onContinue,
+      this.word = 'Chi tiết'})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +27,6 @@ class TopicCard extends StatelessWidget {
     if (topic.wordLearned >= 0) {
       wordProgress = "$wordLearned/$wordCount";
     }
-    const String word = "Chi Tiết";
     return Card(
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
@@ -127,8 +128,13 @@ class TopicCard extends StatelessWidget {
                 ),
                 CustomButton(
                   onContinue: onContinue,
+                  btnBackground: word.compareTo('Xóa') == 0
+                      ? AppStyle.failedColor
+                      : Colors.black,
                   word: word,
-                  textColor: AppStyle.activeText,
+                  textColor: word.compareTo('Xóa') == 0
+                      ? AppStyle.redColor
+                      : AppStyle.activeText,
                 ),
               ],
             ),

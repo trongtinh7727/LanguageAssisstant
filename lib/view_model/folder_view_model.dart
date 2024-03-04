@@ -58,6 +58,31 @@ class FolderViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> addTopicToFolder(
+      String userID, TopicModel topicModel, FolderModel folderModel) async {
+    folderModel.topicRefs.add(
+        FirebaseFirestore.instance.collection('topics').doc(topicModel.id));
+    folderModel.topicCount = folderModel.topicRefs.length;
+    _topics.add(topicModel);
+    notifyListeners();
+    await _folderRepository.updateFolder(userID, folderModel);
+    notifyListeners();
+  }
+
+  Future<void> removeTopicFromFolder(
+      String userID, TopicModel topicModel, FolderModel folderModel) async {
+    folderModel.topicRefs.removeWhere(
+      (element) => element.id == topicModel.id,
+    );
+    folderModel.topicCount = folderModel.topicRefs.length;
+    _topics.removeWhere(
+      (element) => element.id == topicModel.id,
+    );
+    notifyListeners();
+    await _folderRepository.updateFolder(userID, folderModel);
+    notifyListeners();
+  }
+
   Future<void> deleteFolder(String userID, String folderID) async {
     notifyListeners();
     await _folderRepository.deleteFolder(userID, folderID);
