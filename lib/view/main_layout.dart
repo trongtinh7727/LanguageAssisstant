@@ -196,13 +196,13 @@ class MainLayoutState extends State<MainLayout> {
   List<IconData> listOfIcons = [
     LAIcons.home,
     LAIcons.book,
-    LAIcons.discovery,
+    Icons.explore_outlined,
     LAIcons.person,
   ];
   List<IconData> listOfFilledIcons = [
     LAIcons.home_fill,
     CupertinoIcons.book_solid,
-    LAIcons.discovery_fill,
+    Icons.explore_off_sharp,
     LAIcons.person_fill,
   ];
 

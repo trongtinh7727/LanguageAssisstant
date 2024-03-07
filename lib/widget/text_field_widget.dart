@@ -32,7 +32,8 @@ class TextFieldWidget extends StatelessWidget {
         constraints: const BoxConstraints(
             maxWidth: 500), // Set your desired max width here
         child: TextField(
-          enabled: isEnabled,
+          readOnly: !isEnabled,
+          // enabled: ,
           controller: textEditingController,
           maxLines: 1,
           obscureText: isPassword,
@@ -54,7 +55,7 @@ class TextFieldWidget extends StatelessWidget {
             fillColor: fillColor,
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: Colors.transparent),
+              borderSide: const BorderSide(color: Colors.blueAccent),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),

@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:languageassistant/model/models/user_model.dart';
 import 'package:languageassistant/model/repository/user_repository.dart';
 import 'package:languageassistant/routes/name_routes.dart';
+import 'package:languageassistant/utils/app_toast.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
@@ -66,6 +67,12 @@ class AuthenticationProvider with ChangeNotifier {
 
   void setUserModel() async {
     _userModel = await _userRepository.read(_auth.currentUser!.uid);
+  }
+
+  Future<void> updateUser() async {
+    await _userRepository.update(_userModel!.id!, _userModel!);
+    successToast('Cập nhật thành công!');
+    notifyListeners();
   }
 
   Future<bool> signInWithEmailAndPassword(String email, String password) async {

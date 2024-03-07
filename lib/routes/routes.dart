@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:languageassistant/model/models/topic_model.dart';
+import 'package:languageassistant/view/account/components/account_setting_screen.dart';
 import 'package:languageassistant/view/auth/intro_screen.dart';
 import 'package:languageassistant/view/auth/login_screen.dart';
 import 'package:languageassistant/view/auth/register_screen.dart';
@@ -44,6 +45,8 @@ class Routes {
         return MaterialPageRoute(builder: (context) => AddTopicsToFolder());
       case RouteName.addFolderToTopic:
         return MaterialPageRoute(builder: (context) => AddFoldersToTopic());
+      case RouteName.accountSettingScreen:
+        return MaterialPageRoute(builder: (context) => AccountSettingScreen());
 
       case RouteName.mainLayout:
         return MaterialPageRoute(builder: (context) => MainLayout());

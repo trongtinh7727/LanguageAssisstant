@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class Validator {
   static String? min(
       {required int min, required int value, String message = ""}) {
@@ -62,6 +64,12 @@ class Validator {
       return message.isNotEmpty ? message : "Không khớp với mẫu";
     }
     return null;
+  }
+
+  static String? isValidDate({required String value, String message = ""}) {
+    final String regex =
+        r'^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[13-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$';
+    return pattern(pattern: regex, value: value, message: message);
   }
 
   static String? compose(

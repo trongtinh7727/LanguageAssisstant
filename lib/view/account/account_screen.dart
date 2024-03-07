@@ -8,7 +8,6 @@ import 'package:languageassistant/utils/app_style.dart';
 import 'package:languageassistant/view_model/home_view_model.dart';
 import 'package:languageassistant/view_model/topic_view_model.dart';
 import 'package:languageassistant/widget/personal_topic_card.dart';
-import 'package:languageassistant/widget/topic_leaderboard_item.dart';
 import 'package:provider/provider.dart';
 
 class AccountScreen extends StatefulWidget {
@@ -35,8 +34,19 @@ class _AccountScreenState extends State<AccountScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Cá nhân'),
-      ),
+          title: Text('Cá nhân'),
+          actions: [
+            IconButton(
+              onPressed: () => {
+                Navigator.pushNamed(context, RouteName.accountSettingScreen)
+              },
+              icon: Icon(Icons.more_vert_rounded),
+            )
+          ],
+          bottom: const PreferredSize(
+            preferredSize: Size.fromHeight(1),
+            child: Divider(height: 1),
+          )),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: ListView(
@@ -47,12 +57,12 @@ class _AccountScreenState extends State<AccountScreen> {
                 children: widget.userModel != null
                     ? [
                         buildImage(widget.userModel!.avatarUrl!, () => {}),
-                        if (widget.userModel!.id! == _auth.currentUser!.uid)
-                          Positioned(
-                            bottom: 0,
-                            right: 4,
-                            child: buildEditIcon(AppStyle.primaryColor, true),
-                          ),
+                        Positioned(
+                          bottom: 0,
+                          right: 4,
+                          child: buildEditIcon(AppStyle.primaryColor,
+                              widget.userModel!.id! == _auth.currentUser!.uid),
+                        ),
                       ]
                     : [],
               ),
@@ -84,19 +94,23 @@ class _AccountScreenState extends State<AccountScreen> {
     );
   }
 
-  Widget buildEditIcon(Color color, bool isEdit) => buildCircle(
-        color: Colors.white,
-        all: 3,
-        child: buildCircle(
-          color: color,
-          all: 8,
-          child: Icon(
-            isEdit ? Icons.add_a_photo : Icons.edit,
+  Widget buildEditIcon(Color color, bool isEdit) {
+    return isEdit
+        ? buildCircle(
             color: Colors.white,
-            size: 20,
-          ),
-        ),
-      );
+            all: 3,
+            child: buildCircle(
+              color: color,
+              all: 8,
+              child: Icon(
+                Icons.add_a_photo,
+                color: Colors.white,
+                size: 20,
+              ),
+            ),
+          )
+        : Column();
+  }
 
   Widget buildCircle({
     required Widget child,

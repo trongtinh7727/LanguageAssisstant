@@ -1,18 +1,18 @@
 class UserModel {
   String? id;
-  String? email;
-  String? name;
+  String email;
+  String name;
   String? avatarUrl;
-  String? dateOfBirth;
+  String? dataOfBirth;
   int createTime;
   int updateTime;
 
   UserModel({
     this.id,
-    this.email,
-    this.name,
+    this.email = '',
+    this.name = '',
     this.avatarUrl = "default_avatar_url",
-    this.dateOfBirth,
+    this.dataOfBirth,
     required this.createTime,
     required this.updateTime,
   });
@@ -22,7 +22,7 @@ class UserModel {
       'email': email,
       'name': name,
       'avatarUrl': avatarUrl,
-      'dateOfBirth': dateOfBirth,
+      'dataOfBirth': dataOfBirth,
       'createTime': createTime,
       'updateTime': updateTime,
     };
@@ -34,7 +34,7 @@ class UserModel {
       email: map['email'],
       name: map['name'],
       avatarUrl: map['avatarUrl'],
-      dateOfBirth: map['dateOfBirth'],
+      dataOfBirth: map['dataOfBirth'],
       createTime: map['createTime'],
       updateTime: map['updateTime'],
     );
