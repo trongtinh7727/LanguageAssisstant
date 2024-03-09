@@ -5,126 +5,147 @@ import 'package:languageassistant/utils/app_style.dart';
 import 'package:languageassistant/utils/app_toast.dart';
 import 'package:languageassistant/view_model/auth_provider.dart';
 import 'package:languageassistant/widget/text_field_widget.dart';
+import 'package:languageassistant/utils/app_validator.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatelessWidget {
-  TextEditingController email = TextEditingController();
-  TextEditingController password = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  LoginScreen({super.key});
+  LoginScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthenticationProvider>(context);
 
     return Scaffold(
-      body: Container(
-        child: Center(
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                SizedBox(
+      body: Form(
+        key: _formKey,
+        child: Container(
+          child: Center(
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(
                     height: 250,
                     width: 250,
-                    child: Image.asset('assets/images/logo.png')),
-                Text(
-                  'Excellent Experience',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 30,
-                    color: AppStyle.primaryColor,
-                    fontWeight: FontWeight.bold,
+                    child: Image.asset('assets/images/logo.png'),
                   ),
-                ),
-                const SizedBox(height: 48),
-                TextFieldWidget(
-                    hint: 'Nhập email',
-                    icon: Icons.email,
-                    textEditingController: email),
-                const SizedBox(height: 16),
-                TextFieldWidget(
-                    hint: 'Nhập mật khẩu',
-                    icon: Icons.lock,
-                    isPassword: true,
-                    textEditingController: password),
-                const SizedBox(height: 8),
-                Align(
-                  alignment: Alignment.center,
-                  child: TextButton(
-                    onPressed: () {},
-                    child: const Text(
-                      'Quên mật khẩu',
-                      style: TextStyle(color: Colors.lightBlue),
+                  Text(
+                    'Excellent Experience',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 30,
+                      color: AppStyle.primaryColor,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                ),
-                const SizedBox(height: 24),
-                ElevatedButton(
-                  onPressed: () async {
-                    if (email.text.isEmpty) {
-                      commonToast("Please enter email");
-                    } else if (password.text.isEmpty) {
-                      commonToast("Please enter password");
-                    } else {
-                      bool result =
-                          await authProvider.signInWithEmailAndPassword(
-                        email.text.toString(),
-                        password.text.toString(),
-                      );
-                      if (result) {
-                        Navigator.pushReplacementNamed(
-                            context, RouteName.mainLayout);
-                      } else {
-                        // Maybe show an error message
+                  const SizedBox(height: 48),
+                  TextFieldWidget(
+                    hint: 'Nhập email',
+                    validator: (value) => Validator.email(value: value),
+                    icon: Icons.email,
+                    textEditingController: emailController,
+                  ),
+                  const SizedBox(height: 16),
+                  TextFieldWidget(
+                    hint: 'Nhập mật khẩu',
+                    icon: Icons.lock,
+                    validator: (p0) => Validator.required(value: p0),
+                    isPassword: true,
+                    textEditingController: passwordController,
+                  ),
+                  const SizedBox(height: 8),
+                  Align(
+                    alignment: Alignment.center,
+                    child: TextButton(
+                      onPressed: () {},
+                      child: const Text(
+                        'Quên mật khẩu',
+                        style: TextStyle(color: Colors.lightBlue),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  ElevatedButton(
+                    onPressed: () async {
+                      if (_validateForm(context)) {
+                        bool result =
+                            await authProvider.signInWithEmailAndPassword(
+                          emailController.text,
+                          passwordController.text,
+                        );
+                        if (result) {
+                          Navigator.pushReplacementNamed(
+                              context, RouteName.mainLayout);
+                        } else {
+                          // Maybe show an error message
+                        }
                       }
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppStyle.primaryColor,
-                    fixedSize: Size(295, 50),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 40, vertical: 15),
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppStyle.primaryColor,
+                      fixedSize: Size(295, 60),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 40, vertical: 5),
+                    ),
+                    child: authProvider.isLoading
+                        ? CircularProgressIndicator(color: Colors.white)
+                        : Text(
+                            'Đăng nhập',
+                            style: TextStyle(color: Colors.white),
+                          ),
                   ),
-                  child: authProvider.isLoading
-                      ? CircularProgressIndicator(
-                          color: Colors.white,
-                        )
-                      : Text('Đăng nhập',
-                          style: TextStyle(color: Colors.white)),
-                ),
-                if (authProvider.errorMessage.isNotEmpty)
-                  Text(
-                    authProvider.errorMessage,
-                    style: const TextStyle(color: Colors.red),
-                  ),
-                Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment
-                        .center, // This centers the children horizontally
-                    children: [
-                      const Text(
-                        'Bạn chưa có tài khoản?',
-                        style: TextStyle(color: Color.fromARGB(179, 0, 0, 0)),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pushNamed(
-                              context, RouteName.registerScreen);
-                        },
-                        child: Text(
-                          'Đăng ký',
-                          style: TextStyle(color: AppStyle.activeText),
+                  if (authProvider.errorMessage.isNotEmpty)
+                    Text(
+                      authProvider.errorMessage,
+                      style: const TextStyle(color: Colors.red),
+                    ),
+                  Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          'Bạn chưa có tài khoản?',
+                          style: TextStyle(color: Color.fromARGB(179, 0, 0, 0)),
                         ),
-                      ),
-                    ],
-                  ),
-                )
-              ],
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pushNamed(
+                                context, RouteName.registerScreen);
+                          },
+                          child: Text(
+                            'Đăng ký',
+                            style: TextStyle(color: AppStyle.activeText),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ),
       ),
     );
+  }
+
+  bool _validateForm(BuildContext context) {
+    final form = _formKey.currentState;
+
+    form!.validate();
+    if (Validator.email(value: emailController.text) != null) {
+      errorToast("Please enter email");
+      return false;
+    } else if (Validator.required(value: passwordController.text) != null) {
+      errorToast("Please enter password");
+      return false;
+    } else {
+      return true;
+    }
+    // return false;
   }
 }

@@ -54,7 +54,7 @@ class _AccountScreenState extends State<AccountScreen> {
           children: [
             Center(
               child: Stack(
-                children: widget.userModel != null
+                children: widget.userModel != null && _auth.currentUser != null
                     ? [
                         buildImage(widget.userModel!.avatarUrl!, () => {}),
                         Positioned(

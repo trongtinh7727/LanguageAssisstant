@@ -66,7 +66,9 @@ class AuthenticationProvider with ChangeNotifier {
   }
 
   void setUserModel() async {
-    _userModel = await _userRepository.read(_auth.currentUser!.uid);
+    if (_auth.currentUser != null) {
+      _userModel = await _userRepository.read(_auth.currentUser!.uid);
+    }
   }
 
   Future<void> updateUser() async {
@@ -91,9 +93,9 @@ class AuthenticationProvider with ChangeNotifier {
         setErrorMessage('Email and password cannot be empty.');
       }
     } on FirebaseAuthException catch (e) {
-      setErrorMessage(e.message ?? 'An unknown error occurred');
+      setErrorMessage('Tài khoản hoặc mật khẩu không chính xác!');
     } catch (e) {
-      setErrorMessage('An error occurred. Please try again later.');
+      setErrorMessage('Có lỗi xảy ra vui lòng thử lại sau!');
     }
     setLoading(false);
     return false; // Sign-in failed
@@ -102,5 +104,6 @@ class AuthenticationProvider with ChangeNotifier {
   Future<void> signOut() async {
     await _auth.signOut();
     notifyListeners();
+    successToast('Đã đăngg xuất!');
   }
 }

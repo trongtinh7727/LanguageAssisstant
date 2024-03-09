@@ -10,7 +10,7 @@ class CustomButton extends StatelessWidget {
       required this.onContinue,
       required this.word,
       this.btnBackground = Colors.black,
-      this.textColor = Colors.black});
+      this.textColor = AppStyle.activeText});
   final double width;
   final double height;
   final VoidCallback onContinue;
@@ -21,11 +21,11 @@ class CustomButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Color btnBack = AppStyle.buttonBackColor;
-    Color textFillColor = AppStyle.darkText;
+    Color textFillColor = AppStyle.activeText;
     if (btnBackground != Colors.black) {
       btnBack = btnBackground;
     }
-    if (textColor != Colors.black) {
+    if (textColor != AppStyle.activeText) {
       textFillColor = textColor;
     }
     return SizedBox(

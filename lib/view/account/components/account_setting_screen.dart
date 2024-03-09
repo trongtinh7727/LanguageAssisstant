@@ -1,9 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:languageassistant/routes/name_routes.dart';
 import 'package:languageassistant/utils/app_style.dart';
 import 'package:languageassistant/utils/app_toast.dart';
 import 'package:languageassistant/utils/app_validator.dart';
 import 'package:languageassistant/view_model/auth_provider.dart';
+import 'package:languageassistant/widget/custom_button.dart';
 import 'package:languageassistant/widget/text_field_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -99,6 +101,7 @@ class _AccountSettingScreenState extends State<AccountSettingScreen> {
               ),
               TextFieldWidget(
                   paddingH: 8,
+                  validator: (value) => Validator.isValidDate(value: value),
                   hint: 'dd/mm/yyyy',
                   isEnabled: isEditing,
                   textEditingController: birthdayController,
@@ -152,10 +155,31 @@ class _AccountSettingScreenState extends State<AccountSettingScreen> {
                 shape: Border(
                   bottom: BorderSide(),
                 ),
+              ),
+              SizedBox(
+                height: 24,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  CustomButton(
+                      onContinue: () {}, word: 'Đổi mật khẩu', width: 145),
+                  CustomButton(
+                    onContinue: _signOut,
+                    word: 'Đăng xuất',
+                    width: 145,
+                  ),
+                ],
               )
             ],
           ),
         ));
+  }
+
+  _signOut() {
+    authViewModel.signOut();
+    Navigator.pop(context);
+    Navigator.pushReplacementNamed(context, RouteName.loginScreen);
   }
 
   _save() {

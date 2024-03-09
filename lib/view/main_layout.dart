@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:languageassistant/routes/name_routes.dart';
 import 'package:languageassistant/utils/app_icons.dart';
 import 'package:languageassistant/utils/app_style.dart';
 import 'package:languageassistant/view/account/account_screen.dart';
@@ -25,13 +26,19 @@ class MainLayoutState extends State<MainLayout> {
   @override
   void initState() {
     super.initState();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        final homeViewModel =
-            Provider.of<HomeViewModel>(context, listen: false);
-        homeViewModel.fetchRecentTopics(_auth.currentUser!.uid, 10);
-        homeViewModel.fetchNewTopics(5);
-        homeViewModel.fetchTopTopics(10);
+        // Check if currentUser is null and navigate to login screen if necessary
+        if (_auth.currentUser == null) {
+          Navigator.pushReplacementNamed(context, RouteName.loginScreen);
+        } else {
+          final homeViewModel =
+              Provider.of<HomeViewModel>(context, listen: false);
+          homeViewModel.fetchRecentTopics(_auth.currentUser!.uid, 10);
+          homeViewModel.fetchNewTopics(5);
+          homeViewModel.fetchTopTopics(10);
+        }
       }
     });
   }
@@ -81,28 +88,33 @@ class MainLayoutState extends State<MainLayout> {
             itemBuilder: (context, index) => InkWell(
               onTap: () {
                 setState(() {
-                  currentIndex = index;
-                  final topicViewModel =
-                      Provider.of<TopicViewModel>(context, listen: false);
-                  final folderViewModel =
-                      Provider.of<FolderViewModel>(context, listen: false);
-                  final homeViewModel =
-                      Provider.of<HomeViewModel>(context, listen: false);
-                  switch (currentIndex) {
-                    case 0:
-                      homeViewModel.fetchRecentTopics(
-                          _auth.currentUser!.uid, 10);
-                      homeViewModel.fetchNewTopics(5);
-                      homeViewModel.fetchTopTopics(10);
-                      break;
-                    case 1:
-                      topicViewModel.fetchTopicsByUser(
-                          _auth.currentUser!.uid, 5);
-                      folderViewModel.fetchFoldersByUser(
-                          _auth.currentUser!.uid, 5);
-                      break;
+                  if (_auth.currentUser != null) {
+                    currentIndex = index;
+                    final topicViewModel =
+                        Provider.of<TopicViewModel>(context, listen: false);
+                    final folderViewModel =
+                        Provider.of<FolderViewModel>(context, listen: false);
+                    final homeViewModel =
+                        Provider.of<HomeViewModel>(context, listen: false);
+                    switch (currentIndex) {
+                      case 0:
+                        homeViewModel.fetchRecentTopics(
+                            _auth.currentUser!.uid, 10);
+                        homeViewModel.fetchNewTopics(5);
+                        homeViewModel.fetchTopTopics(10);
+                        break;
+                      case 1:
+                        topicViewModel.fetchTopicsByUser(
+                            _auth.currentUser!.uid, 5);
+                        folderViewModel.fetchFoldersByUser(
+                            _auth.currentUser!.uid, 5);
+                        break;
 
-                    default:
+                      default:
+                    }
+                  } else {
+                    Navigator.pushReplacementNamed(
+                        context, RouteName.loginScreen);
                   }
                 });
               },
@@ -202,7 +214,7 @@ class MainLayoutState extends State<MainLayout> {
   List<IconData> listOfFilledIcons = [
     LAIcons.home_fill,
     CupertinoIcons.book_solid,
-    Icons.explore_off_sharp,
+    Icons.explore_sharp,
     LAIcons.person_fill,
   ];
 
