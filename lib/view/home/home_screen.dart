@@ -69,7 +69,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('Tiếp tục bài học trước', style: AppStyle.title),
-                    if (_homeViewModel.recentTopics.length < 1)
+                    if (_homeViewModel.recentTopics.length < 1 &&
+                        _homeViewModel.isLoading)
                       Center(
                         child: CircularProgressIndicator(),
                       )
@@ -96,14 +97,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     Text('Gợi ý cho bạn', style: AppStyle.title),
-                    if (_homeViewModel.topicLeaderboard.length < 1)
+                    if (_homeViewModel.topicLeaderboard.length < 1 &&
+                        _homeViewModel.isLoading)
                       Center(
                         child: CircularProgressIndicator(),
                       )
                     else
                       _topTopics(),
                     Text('Cộng đồng', style: AppStyle.title),
-                    if (_homeViewModel.topics.length < 1)
+                    if (_homeViewModel.topics.length < 1 &&
+                        _homeViewModel.isLoading)
                       Center(
                         child: CircularProgressIndicator(),
                       )

@@ -1,14 +1,21 @@
+import 'dart:io';
+
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:languageassistant/model/repository/user_repository.dart';
+import 'package:languageassistant/utils/app_toast.dart';
+import 'package:path/path.dart' as Path;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:languageassistant/model/models/topic_model.dart';
 import 'package:languageassistant/model/repository/topic_repository.dart';
-import 'package:languageassistant/model/repository/word_repository.dart';
 
 class HomeViewModel extends ChangeNotifier {
   List<TopicModel> _topics = [];
   List<TopicModel> _topicLearderboard = [];
   List<TopicModel> _recentTopics = [];
   final TopicRepository _topicRepository = TopicRepository();
+  final UserRepository _userRepository = UserRepository();
 
   bool _isLoading = false; // Thêm biến này
 
@@ -98,6 +105,23 @@ class HomeViewModel extends ChangeNotifier {
       _isLoading = false; // Cập nhật lại trạng thái nếu có lỗi
       print('Error fetching topics: $e');
       notifyListeners();
+    }
+  }
+
+  void uploadAvatar(File imageFile, String userID) async {
+    Reference storageRef =
+        FirebaseStorage.instance.ref().child("Users/Avatars/$userID");
+    UploadTask uploadTask = storageRef.putFile(imageFile);
+
+    try {
+      await uploadTask.whenComplete(() async {
+        String downloadUrl = await storageRef.getDownloadURL();
+        _userRepository.updateAvatar(userID, downloadUrl);
+      });
+      successToast('Đã upload thành công!');
+    } catch (error) {
+      errorToast('Có lỗi xảy ra!');
+      print("Error uploading avatar: $error");
     }
   }
 }

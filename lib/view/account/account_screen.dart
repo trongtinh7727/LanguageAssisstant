@@ -1,5 +1,8 @@
+import 'dart:io';
+import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:languageassistant/model/models/user_model.dart';
 import 'package:languageassistant/routes/name_routes.dart';
 
@@ -20,6 +23,71 @@ class AccountScreen extends StatefulWidget {
 class _AccountScreenState extends State<AccountScreen> {
   late HomeViewModel _homeViewModel;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  final ImagePicker _picker = ImagePicker();
+  File? _image;
+
+  Future<void> showImagePickerOptions() async {
+    // Display options for the user to select from
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Choose an option"),
+          actions: <Widget>[
+            TextButton(
+              child: Text("Take Photo"),
+              onPressed: () {
+                Navigator.pop(context);
+                takePhotoFromCamera();
+              },
+            ),
+            TextButton(
+              child: Text("Choose from Gallery"),
+              onPressed: () {
+                Navigator.pop(context);
+                choosePhotoFromGallery();
+              },
+            ),
+            TextButton(
+              child: Text("Cancel"),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> takePhotoFromCamera() async {
+    final XFile? image = await _picker.pickImage(
+      source: ImageSource.camera,
+      imageQuality: 50,
+    );
+
+    if (image != null) {
+      setState(() {
+        _image = File(image.path);
+        _homeViewModel.uploadAvatar(_image!, _auth.currentUser!.uid);
+      });
+    }
+  }
+
+  Future<void> choosePhotoFromGallery() async {
+    final XFile? image = await _picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 50,
+    );
+
+    if (image != null) {
+      setState(() {
+        _image = File(image.path);
+        _homeViewModel.uploadAvatar(_image!, _auth.currentUser!.uid);
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -56,7 +124,8 @@ class _AccountScreenState extends State<AccountScreen> {
               child: Stack(
                 children: widget.userModel != null && _auth.currentUser != null
                     ? [
-                        buildImage(widget.userModel!.avatarUrl!, () => {}),
+                        buildImage(widget.userModel!.avatarUrl!,
+                            showImagePickerOptions),
                         Positioned(
                           bottom: 0,
                           right: 4,
@@ -79,7 +148,20 @@ class _AccountScreenState extends State<AccountScreen> {
 
   Widget buildImage(String imagePath, VoidCallback onClicked) {
     final image = NetworkImage(imagePath);
-
+    if (_image != null) {
+      return ClipOval(
+        child: Material(
+          color: Colors.transparent,
+          child: Ink.image(
+            image: FileImage(_image!),
+            fit: BoxFit.cover,
+            width: 128,
+            height: 128,
+            child: InkWell(onTap: onClicked),
+          ),
+        ),
+      );
+    }
     return ClipOval(
       child: Material(
         color: Colors.transparent,

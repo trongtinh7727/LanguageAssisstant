@@ -11,7 +11,8 @@ class UserModel {
     this.id,
     this.email = '',
     this.name = '',
-    this.avatarUrl = "default_avatar_url",
+    this.avatarUrl =
+        "https://firebasestorage.googleapis.com/v0/b/language-assistant-7727.appspot.com/o/Users%2FAvatars%2Favatar_default.png?alt=media&token=490b3731-c6a2-4d1b-a75a-4902372c307b",
     this.dataOfBirth,
     required this.createTime,
     required this.updateTime,

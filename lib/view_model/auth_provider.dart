@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:languageassistant/model/models/user_model.dart';
 import 'package:languageassistant/model/repository/user_repository.dart';
-import 'package:languageassistant/routes/name_routes.dart';
 import 'package:languageassistant/utils/app_toast.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
@@ -30,8 +29,8 @@ class AuthenticationProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> registerWithEmailAndPassword(
-      String email, String password) async {
+  Future<bool> registerWithEmailAndPassword(
+      String fullname, String email, String password) async {
     setLoading(true);
     try {
       if (email.isNotEmpty && password.isNotEmpty) {
@@ -48,14 +47,18 @@ class AuthenticationProvider with ChangeNotifier {
         if (user != null) {
           UserModel newUser = UserModel(
               id: user.uid,
+              name: fullname,
               email: user.email!,
               createTime: nowInTimeZone.millisecondsSinceEpoch,
               updateTime: nowInTimeZone.millisecondsSinceEpoch);
-          await _userRepository.create(newUser);
+          await _userRepository.addUser(user.uid, newUser);
+          setUserModel();
           setErrorMessage(''); // Clear any previous error messages
+          return true;
         }
       } else {
         setErrorMessage('Please fill in all fields.');
+        return false;
       }
     } on FirebaseAuthException catch (e) {
       setErrorMessage(e.message ?? 'An unknown error occurred');
@@ -63,6 +66,7 @@ class AuthenticationProvider with ChangeNotifier {
       setErrorMessage('An error occurred. Please try again later.');
     }
     setLoading(false);
+    return false;
   }
 
   void setUserModel() async {

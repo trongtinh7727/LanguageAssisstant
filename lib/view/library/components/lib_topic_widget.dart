@@ -20,7 +20,7 @@ class LibTopicWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (topicViewModel.topics.length < 1) {
+    if (topicViewModel.topics.length < 1 && topicViewModel.isLoading) {
       return Center(
         child: CircularProgressIndicator(),
       );
