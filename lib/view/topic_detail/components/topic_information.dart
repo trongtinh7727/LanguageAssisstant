@@ -6,6 +6,7 @@ import 'package:languageassistant/utils/app_style.dart';
 import 'package:languageassistant/utils/date_time_util.dart';
 import 'package:languageassistant/view/topic_detail/topic_detail_screen.dart';
 import 'package:languageassistant/view_model/learning_view_model.dart';
+import 'package:languageassistant/view_model/profile_view_model.dart';
 import 'package:languageassistant/view_model/topic_view_model.dart';
 import 'package:languageassistant/widget/custom_button.dart';
 import 'package:provider/provider.dart';
@@ -83,30 +84,40 @@ class TopicInformation extends StatelessWidget {
           SizedBox(
             height: 8,
           ),
-          Row(
-            children: [
-              CircleAvatar(
-                radius: 16,
-                backgroundImage: NetworkImage(topicViewModel
-                        .topic!.authoravatar ??
-                    'https://firebasestorage.googleapis.com/v0/b/language-assistant-7727.appspot.com/o/Users%2FAvatars%2Favatar_default.png?alt=media&token=490b3731-c6a2-4d1b-a75a-4902372c307b'),
-                onBackgroundImageError: (exception, stackTrace) {
-                  // Log the error, show a dialog, or use a fallback image
-                  print('Error loading background image: $exception');
-                },
-                child: topicViewModel.topic!.authoravatar == null
-                    ? Icon(
-                        Icons.person) // Fallback icon in case the URL is null
-                    : null,
-              ),
-              SizedBox(width: 8),
-              Text(
-                topicViewModel.topic!.authorName ?? "",
-                style: AppStyle.caption,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-              ),
-            ],
+          GestureDetector(
+            onTap: () {
+              final profileViewModel =
+                  Provider.of<ProfileViewModel>(context, listen: false);
+              profileViewModel.fetchUser(topicViewModel.topic!.author);
+              profileViewModel.fetchPersonalTopics(
+                  isPublic: true, authorID: topicViewModel.topic!.author);
+              Navigator.pushNamed(context, RouteName.profileScreen);
+            },
+            child: Row(
+              children: [
+                CircleAvatar(
+                  radius: 16,
+                  backgroundImage: NetworkImage(topicViewModel
+                          .topic!.authoravatar ??
+                      'https://firebasestorage.googleapis.com/v0/b/language-assistant-7727.appspot.com/o/Users%2FAvatars%2Favatar_default.png?alt=media&token=490b3731-c6a2-4d1b-a75a-4902372c307b'),
+                  onBackgroundImageError: (exception, stackTrace) {
+                    // Log the error, show a dialog, or use a fallback image
+                    print('Error loading background image: $exception');
+                  },
+                  child: topicViewModel.topic!.authoravatar == null
+                      ? Icon(
+                          Icons.person) // Fallback icon in case the URL is null
+                      : null,
+                ),
+                SizedBox(width: 8),
+                Text(
+                  topicViewModel.topic!.authorName ?? "",
+                  style: AppStyle.caption,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
+              ],
+            ),
           ),
           SizedBox(
             height: 8,

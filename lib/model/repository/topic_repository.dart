@@ -21,6 +21,31 @@ class TopicRepository extends BaseRepository<TopicModel> {
         );
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  Future<List<TopicModel>> searchTopicsByTitle(String query) async {
+    final snapshot = await _firestore
+        .collection('topics')
+        .where('public', isEqualTo: true)
+        .orderBy('createTime', descending: true)
+        .get();
+
+    final List<TopicModel> topics = [];
+    for (var doc in snapshot.docs) {
+      final topic =
+          TopicModel.fromMap(doc.data() as Map<String, dynamic>, doc.id);
+
+      if (topic.title.toLowerCase().contains(query.toLowerCase())) {
+        final authorSnapshot = await topic.authorRef!.get();
+        final author = UserModel.fromMap(
+            authorSnapshot.data() as Map<String, dynamic>, authorSnapshot.id);
+        topic.authorName = author.name;
+        topic.authoravatar = author.avatarUrl;
+        topics.add(topic);
+      }
+    }
+
+    return topics;
+  }
+
   Future<TopicModel> createTopicWithWords(
       TopicModel topic, List<WordModel> words) async {
     // Create the topic and get its ID
@@ -278,6 +303,57 @@ class TopicRepository extends BaseRepository<TopicModel> {
     }
   }
 
+  Future<Pair<List<TopicModel>, Pair<bool, DocumentSnapshot?>>>
+      getTopicsByAuthor({
+    bool isPublic = true,
+    required String authorID,
+    DocumentSnapshot? lastDocument,
+    required int pageSize,
+  }) async {
+    var query = _firestore
+        .collection('topics')
+        .where('author', isEqualTo: authorID)
+        .orderBy('createTime', descending: true)
+        .limit(pageSize);
+    if (isPublic) {
+      query.where('public', isEqualTo: isPublic);
+    }
+
+    if (lastDocument != null) {
+      query = query.startAfterDocument(lastDocument);
+    }
+
+    try {
+      final querySnapshot = await query.get();
+      final topics = <TopicModel>[];
+      bool hasNextPage = false;
+
+      for (var topicSnapshot in querySnapshot.docs) {
+        final topic = TopicModel.fromMap(
+            topicSnapshot.data() as Map<String, dynamic>, topicSnapshot.id);
+        // Fetch author data if necessary, similar to the Kotlin code
+        final authorSnapshot = await topic.authorRef!.get();
+        final author = UserModel.fromMap(
+            authorSnapshot.data() as Map<String, dynamic>, authorSnapshot.id);
+        topic.authorName = author.name;
+        topic.authoravatar = author.avatarUrl;
+
+        topics.add(topic);
+      }
+
+      hasNextPage = querySnapshot.docs.length > 0 &&
+          querySnapshot.docs.length >= pageSize;
+
+      final newLastDocument =
+          querySnapshot.docs.isNotEmpty ? querySnapshot.docs.last : null;
+
+      return Pair(topics, Pair(hasNextPage, newLastDocument));
+    } catch (e) {
+      // Handle errors or return an appropriate error state
+      return Pair([], Pair(false, null));
+    }
+  }
+
   Future<Pair<List<TopicModel>, Pair<bool, DocumentSnapshot?>>> getTopTopics({
     DocumentSnapshot? lastDocument,
     required int pageSize,
@@ -374,7 +450,7 @@ class TopicRepository extends BaseRepository<TopicModel> {
     }
   }
 
-  Future<TopicModel> getUserTopic(String userId, String topicID) async {
+  Future<TopicModel?> getUserTopic(String userId, String topicID) async {
     try {
       final userTopicRef = _firestore
           .collection('users')
@@ -402,11 +478,11 @@ class TopicRepository extends BaseRepository<TopicModel> {
         return topic;
       } else {
         // Handle the case where the user topic does not exist
-        throw Exception('User topic not found');
+        return null;
       }
     } catch (e) {
       // Handle errors or return an appropriate error state
-      throw Exception('Failed to fetch user topic: $e');
+      return null;
     }
   }
 }

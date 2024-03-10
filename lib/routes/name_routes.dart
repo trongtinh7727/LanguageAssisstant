@@ -16,6 +16,7 @@ class RouteName {
   static const String addFolderToTopic = "/add_folder_to_topic";
   static const String addTopicScreen = "/add_topic_screen";
   static const String updateTopicScreen = "/update_topic_screen";
+  static const String profileScreen = "/profile_screen";
   //----------------------------------------------------------------
   static const String flashCardScreen = "/flash_card_screen";
   static const String wordTypeScreen = "/word_type_screen";

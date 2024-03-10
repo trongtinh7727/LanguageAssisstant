@@ -9,14 +9,14 @@ import 'package:languageassistant/widget/custom_button.dart';
 import 'package:languageassistant/widget/text_field_widget.dart';
 import 'package:provider/provider.dart';
 
-class AccountSettingScreen extends StatefulWidget {
-  const AccountSettingScreen({super.key});
+class ProfileSettingScreen extends StatefulWidget {
+  const ProfileSettingScreen({super.key});
 
   @override
-  State<AccountSettingScreen> createState() => _AccountSettingScreenState();
+  State<ProfileSettingScreen> createState() => _ProfileSettingScreenState();
 }
 
-class _AccountSettingScreenState extends State<AccountSettingScreen> {
+class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
   late AuthenticationProvider authViewModel;
   TextEditingController textNameController = TextEditingController();
   TextEditingController birthdayController = TextEditingController();

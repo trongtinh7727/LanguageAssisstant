@@ -8,6 +8,7 @@ import 'package:languageassistant/view/library/components/lib_folder_widget.dart
 import 'package:languageassistant/view/library/components/lib_topic_widget.dart';
 import 'package:languageassistant/view_model/folder_view_model.dart';
 import 'package:languageassistant/view_model/topic_view_model.dart';
+import 'package:languageassistant/widget/app_search_delegate.dart';
 import 'package:languageassistant/widget/text_field_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -118,15 +119,45 @@ class _LibraryScreenState extends State<LibraryScreen> {
             },
           ),
         ],
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(80.0),
-          child: _buildCustomTabBar(),
-        ),
       ),
       body: Column(
         children: <Widget>[
+          Center(
+            child: SizedBox(
+              width: 390,
+              height: 50,
+              child: TextField(
+                onTap: () {
+                  showSearch(context: context, delegate: AppSearchDelegate());
+                },
+                readOnly: true,
+                decoration: InputDecoration(
+                  hintText: 'Search',
+                  hintStyle: AppStyle.active,
+                  prefixIcon: IconButton(
+                    icon: Icon(Icons.search),
+                    color: AppStyle.activeText,
+                    onPressed: () {
+                      showSearch(
+                          context: context, delegate: AppSearchDelegate());
+                    },
+                  ),
+                  filled: true,
+                  fillColor: AppStyle.tabUnselectedColor,
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(50),
+                    borderSide: const BorderSide(color: Colors.lightBlue),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(50),
+                    borderSide: const BorderSide(color: AppStyle.activeText),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          _buildCustomTabBar(),
           Expanded(
-            // Sử dụng Expanded để cho phép PageView mở rộng đầy đủ theo chiều dọc
             child: PageView.builder(
               itemCount: 2, // Number of pages
               controller: pageController,

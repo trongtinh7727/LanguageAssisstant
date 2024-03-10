@@ -4,13 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:languageassistant/routes/name_routes.dart';
 import 'package:languageassistant/utils/app_icons.dart';
 import 'package:languageassistant/utils/app_style.dart';
-import 'package:languageassistant/view/account/account_screen.dart';
+import 'package:languageassistant/view/profile/profile_screen.dart';
 import 'package:languageassistant/view/discovery/discovery_screen.dart';
 import 'package:languageassistant/view/home/home_screen.dart';
 import 'package:languageassistant/view/library/library_screen.dart';
 import 'package:languageassistant/view_model/auth_provider.dart';
 import 'package:languageassistant/view_model/folder_view_model.dart';
 import 'package:languageassistant/view_model/home_view_model.dart';
+import 'package:languageassistant/view_model/profile_view_model.dart';
 import 'package:languageassistant/view_model/topic_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -60,9 +61,7 @@ class MainLayoutState extends State<MainLayout> {
           HomeScreen(),
           LibraryScreen(),
           DiscoveryScreen(),
-          AccountScreen(
-            userModel: authProvider.userModel,
-          )
+          ProfileScreen()
         ],
       ),
       bottomNavigationBar: Container(
@@ -96,6 +95,8 @@ class MainLayoutState extends State<MainLayout> {
                         Provider.of<FolderViewModel>(context, listen: false);
                     final homeViewModel =
                         Provider.of<HomeViewModel>(context, listen: false);
+                    final profileViewModel =
+                        Provider.of<ProfileViewModel>(context, listen: false);
                     switch (currentIndex) {
                       case 0:
                         homeViewModel.fetchRecentTopics(
@@ -108,6 +109,11 @@ class MainLayoutState extends State<MainLayout> {
                             _auth.currentUser!.uid, 5);
                         folderViewModel.fetchFoldersByUser(
                             _auth.currentUser!.uid, 5);
+                        break;
+                      case 3:
+                        profileViewModel.fetchUser(_auth.currentUser!.uid);
+                        profileViewModel.fetchPersonalTopics(
+                            isPublic: false, authorID: _auth.currentUser!.uid);
                         break;
 
                       default:

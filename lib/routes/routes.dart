@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:languageassistant/model/models/topic_model.dart';
-import 'package:languageassistant/view/account/components/account_setting_screen.dart';
-import 'package:languageassistant/view/account/components/change_password_creen.dart';
+import 'package:languageassistant/view/profile/components/profile_setting_screen.dart';
+import 'package:languageassistant/view/profile/components/change_password_creen.dart';
 import 'package:languageassistant/view/auth/intro_screen.dart';
 import 'package:languageassistant/view/auth/login_screen.dart';
 import 'package:languageassistant/view/auth/register_screen.dart';
@@ -14,6 +14,7 @@ import 'package:languageassistant/view/learning/result_screen.dart';
 import 'package:languageassistant/view/learning/word_type.dart';
 import 'package:languageassistant/view/library/components/add_topic_screen.dart';
 import 'package:languageassistant/view/main_layout.dart';
+import 'package:languageassistant/view/profile/profile_screen.dart';
 import 'package:languageassistant/view/splash_screen.dart';
 import 'package:languageassistant/view/topic_detail/components/add_folders_to_topic.dart';
 import 'package:languageassistant/view/topic_detail/topic_detail_screen.dart';
@@ -47,9 +48,12 @@ class Routes {
       case RouteName.addFolderToTopic:
         return MaterialPageRoute(builder: (context) => AddFoldersToTopic());
       case RouteName.accountSettingScreen:
-        return MaterialPageRoute(builder: (context) => AccountSettingScreen());
+        return MaterialPageRoute(builder: (context) => ProfileSettingScreen());
       case RouteName.changePasswordScreen:
         return MaterialPageRoute(builder: (context) => ChangePasswordScreen());
+
+      case RouteName.profileScreen:
+        return MaterialPageRoute(builder: (context) => ProfileScreen());
 
       case RouteName.mainLayout:
         return MaterialPageRoute(builder: (context) => MainLayout());

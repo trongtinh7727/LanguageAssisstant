@@ -6,6 +6,7 @@ import 'package:languageassistant/utils/app_enum.dart';
 import 'package:languageassistant/utils/app_style.dart';
 import 'package:languageassistant/view_model/home_view_model.dart';
 import 'package:languageassistant/view_model/topic_view_model.dart';
+import 'package:languageassistant/widget/app_search_delegate.dart';
 import 'package:languageassistant/widget/personal_topic_card.dart';
 import 'package:languageassistant/widget/topic_leaderboard_item.dart';
 import 'package:provider/provider.dart';
@@ -36,14 +37,11 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
 
     return Scaffold(
         appBar: AppBar(
-          title: Text('IIEX'),
+          title: Text('Cộng Đồng', style: AppStyle.title),
           actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.search),
-              onPressed: () {
-                // Implement your search action
-              },
-            ),
+            SizedBox(
+              width: 20,
+            )
           ],
         ),
         body: NotificationListener<ScrollNotification>(
@@ -62,6 +60,48 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Center(
+                      child: SizedBox(
+                        width: 390,
+                        height: 50,
+                        child: TextField(
+                          onTap: () {
+                            showSearch(
+                                context: context,
+                                delegate: AppSearchDelegate());
+                          },
+                          readOnly: true,
+                          decoration: InputDecoration(
+                            hintText: 'Search',
+                            hintStyle: AppStyle.active,
+                            prefixIcon: IconButton(
+                              icon: Icon(Icons.search),
+                              color: AppStyle.activeText,
+                              onPressed: () {
+                                showSearch(
+                                    context: context,
+                                    delegate: AppSearchDelegate());
+                              },
+                            ),
+                            filled: true,
+                            fillColor: AppStyle.tabUnselectedColor,
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50),
+                              borderSide:
+                                  const BorderSide(color: Colors.lightBlue),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50),
+                              borderSide:
+                                  const BorderSide(color: AppStyle.activeText),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
                     Text('TOP 10', style: AppStyle.title),
                     if (_homeViewModel.topicLeaderboard.length < 1)
                       Center(

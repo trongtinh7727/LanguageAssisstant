@@ -44,7 +44,10 @@ class TopicViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      _topic = await _topicRepository.getUserTopic(userID, topicID);
+      var _topicModel = await _topicRepository.getUserTopic(userID, topicID);
+      if (_topicModel != null) {
+        _topic = _topicModel;
+      }
       _isLoading = false; // Cập nhật lại trạng thái sau khi tải xong
       notifyListeners();
     } catch (e) {

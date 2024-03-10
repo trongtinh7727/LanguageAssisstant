@@ -9,26 +9,30 @@ import 'package:languageassistant/routes/name_routes.dart';
 import 'package:languageassistant/utils/app_enum.dart';
 import 'package:languageassistant/utils/app_style.dart';
 import 'package:languageassistant/view_model/home_view_model.dart';
+import 'package:languageassistant/view_model/profile_view_model.dart';
 import 'package:languageassistant/view_model/topic_view_model.dart';
 import 'package:languageassistant/widget/personal_topic_card.dart';
 import 'package:provider/provider.dart';
 
-class AccountScreen extends StatefulWidget {
-  final UserModel? userModel;
-  const AccountScreen({super.key, required this.userModel});
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({
+    super.key,
+  });
   @override
-  _AccountScreenState createState() => _AccountScreenState();
+  _ProfileScreenState createState() => _ProfileScreenState();
 }
 
-class _AccountScreenState extends State<AccountScreen> {
-  late HomeViewModel _homeViewModel;
+class _ProfileScreenState extends State<ProfileScreen> {
+  late ProfileViewModel _profileViewModel;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   final ImagePicker _picker = ImagePicker();
   File? _image;
 
   Future<void> showImagePickerOptions() async {
-    // Display options for the user to select from
+    if (_profileViewModel.userModel!.id! != _auth.currentUser!.uid) {
+      return;
+    }
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -70,7 +74,7 @@ class _AccountScreenState extends State<AccountScreen> {
     if (image != null) {
       setState(() {
         _image = File(image.path);
-        _homeViewModel.uploadAvatar(_image!, _auth.currentUser!.uid);
+        _profileViewModel.uploadAvatar(_image!, _auth.currentUser!.uid);
       });
     }
   }
@@ -84,7 +88,7 @@ class _AccountScreenState extends State<AccountScreen> {
     if (image != null) {
       setState(() {
         _image = File(image.path);
-        _homeViewModel.uploadAvatar(_image!, _auth.currentUser!.uid);
+        _profileViewModel.uploadAvatar(_image!, _auth.currentUser!.uid);
       });
     }
   }
@@ -93,53 +97,90 @@ class _AccountScreenState extends State<AccountScreen> {
   void initState() {
     super.initState();
 
-    _homeViewModel = Provider.of<HomeViewModel>(context, listen: false);
+    _profileViewModel = Provider.of<ProfileViewModel>(context, listen: false);
+  }
+
+  bool _isScrollAtBottom(ScrollNotification notification) {
+    return notification.metrics.pixels == notification.metrics.maxScrollExtent;
   }
 
   @override
   Widget build(BuildContext context) {
-    final _homeViewModel = Provider.of<HomeViewModel>(context);
+    final _profileViewModel = Provider.of<ProfileViewModel>(context);
 
     return Scaffold(
       appBar: AppBar(
           title: Text('Cá nhân'),
           actions: [
-            IconButton(
-              onPressed: () => {
-                Navigator.pushNamed(context, RouteName.accountSettingScreen)
-              },
-              icon: Icon(Icons.more_vert_rounded),
-            )
+            if (_profileViewModel.userModel?.id == _auth.currentUser!.uid)
+              IconButton(
+                onPressed: () => {
+                  Navigator.pushNamed(context, RouteName.accountSettingScreen)
+                },
+                icon: Icon(Icons.more_vert_rounded),
+              )
           ],
           bottom: const PreferredSize(
             preferredSize: Size.fromHeight(1),
             child: Divider(height: 1),
           )),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
+      body: NotificationListener<ScrollNotification>(
+        onNotification: (notification) {
+          if (_isScrollAtBottom(notification)) {
+            if (!_profileViewModel.isLoading) {
+              _profileViewModel.fetchPersonalTopicsMore(
+                  authorID: _profileViewModel.userModel?.id ?? '', pageSize: 5);
+            }
+          }
+          return false;
+        },
         child: ListView(
-          physics: BouncingScrollPhysics(),
           children: [
-            Center(
-              child: Stack(
-                children: widget.userModel != null && _auth.currentUser != null
-                    ? [
-                        buildImage(widget.userModel!.avatarUrl!,
-                            showImagePickerOptions),
-                        Positioned(
-                          bottom: 0,
-                          right: 4,
-                          child: buildEditIcon(AppStyle.primaryColor,
-                              widget.userModel!.id! == _auth.currentUser!.uid),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  Center(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Stack(
+                          children: _profileViewModel.userModel != null &&
+                                  _auth.currentUser != null
+                              ? [
+                                  buildImage(
+                                      _profileViewModel.userModel!.avatarUrl!,
+                                      showImagePickerOptions),
+                                  Positioned(
+                                    bottom: 0,
+                                    right: 4,
+                                    child: GestureDetector(
+                                      onTap: showImagePickerOptions,
+                                      child: buildEditIcon(
+                                          AppStyle.primaryColor,
+                                          _profileViewModel.userModel!.id! ==
+                                              _auth.currentUser!.uid),
+                                    ),
+                                  ),
+                                ]
+                              : [],
                         ),
-                      ]
-                    : [],
+                        Text(
+                          _profileViewModel.userModel?.name ?? '',
+                          style: AppStyle.title,
+                        )
+                      ],
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      Text('Bài viết', style: AppStyle.title),
+                    ],
+                  ),
+                  _newTopics(),
+                ],
               ),
             ),
-            Text('Bài viết', style: AppStyle.title),
-            _newTopics(),
-            if (_homeViewModel.isLoading)
-              Text('Đang load', style: AppStyle.title),
           ],
         ),
       ),
@@ -208,34 +249,37 @@ class _AccountScreenState extends State<AccountScreen> {
       );
 
   Widget _newTopics() {
-    final _homeViewModel = Provider.of<HomeViewModel>(context);
+    final _profileViewModel = Provider.of<ProfileViewModel>(context);
     final _topicViewModel = Provider.of<TopicViewModel>(context);
-    return SizedBox(
-      height: 500, // Chiều cao cố định cho ListView.builder
-      width: MediaQuery.of(context).size.width - 20,
-      child: ListView.builder(
-        // scrollDirection: Axis.vertical,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: _homeViewModel.topics.length,
-        itemBuilder: (context, index) {
-          final topic = _homeViewModel.topics[index];
-          return SizedBox(
-            width: 320,
-            height: 125,
+
+    return Column(
+      children: [
+        for (final topic in _profileViewModel.personalTopics)
+          SizedBox(
+            // width: 320,
+            height: 130,
             child: TopicCard(
               topic: topic,
               onContinue: () {
                 // Handle continue action here
+                _topicViewModel.setTopic(topic);
+                _topicViewModel.fetchTopic(_auth.currentUser!.uid, topic.id);
+
                 _topicViewModel.fetchWordsByStatus(
                     _auth.currentUser!.uid, topic.id, WordStatus.ALL);
                 _topicViewModel.fetchLeaderBoard(topic.id);
-                Navigator.pushNamed(context, RouteName.topicDetailScreen,
-                    arguments: topic);
+                Navigator.pushNamed(
+                  context,
+                  RouteName.topicDetailScreen,
+                );
               },
             ),
-          );
-        },
-      ),
+          ),
+        if (_profileViewModel.isLoading)
+          Center(
+            child: CircularProgressIndicator(),
+          )
+      ],
     );
   }
 }
