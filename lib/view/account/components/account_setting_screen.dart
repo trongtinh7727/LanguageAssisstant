@@ -163,7 +163,12 @@ class _AccountSettingScreenState extends State<AccountSettingScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   CustomButton(
-                      onContinue: () {}, word: 'Đổi mật khẩu', width: 145),
+                      onContinue: () {
+                        Navigator.pushNamed(
+                            context, RouteName.changePasswordScreen);
+                      },
+                      word: 'Đổi mật khẩu',
+                      width: 145),
                   CustomButton(
                     onContinue: _signOut,
                     word: 'Đăng xuất',
@@ -177,6 +182,7 @@ class _AccountSettingScreenState extends State<AccountSettingScreen> {
   }
 
   _signOut() {
+    authViewModel.setErrorMessage('');
     authViewModel.signOut();
     Navigator.pop(context);
     Navigator.pushReplacementNamed(context, RouteName.loginScreen);

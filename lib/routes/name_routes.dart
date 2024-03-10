@@ -8,6 +8,7 @@ class RouteName {
   static const String loginScreen = "/auth/login_screen";
   static const String registerScreen = "/auth/register_screen";
   static const String accountSettingScreen = "/auth/account_setting_screen";
+  static const String changePasswordScreen = "/auth/change_password_screen";
   //----------------------------------------------------------------
   static const String topicDetailScreen = "/topic_detail_screen";
   static const String folderDetailScreen = "/folder_detail_screen";

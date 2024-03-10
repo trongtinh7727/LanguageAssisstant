@@ -84,11 +84,12 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
             fillColor: widget.fillColor,
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: Colors.blueAccent),
+              borderSide: const BorderSide(color: Colors.lightBlue),
             ),
+
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: Colors.blueAccent),
+              borderSide: const BorderSide(color: AppStyle.activeText),
             ),
           ),
         ),

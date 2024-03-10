@@ -78,6 +78,38 @@ class Validator {
     return pattern(pattern: regex, value: value, message: message);
   }
 
+  static String? validatePassword(
+      {required String? password, String message = ""}) {
+    if (password == null || password.isEmpty) {
+      return message.isNotEmpty ? message : "Mật khẩu không được để trống";
+    }
+    if (password.length < 6) {
+      return "Mật khẩu phải có ít nhất 6 ký tự";
+    }
+
+    return null;
+  }
+
+  static String? validatePasswordConfirm({
+    required String? password,
+    required String? confirmPassword,
+    String message = "",
+  }) {
+    if (confirmPassword == null || confirmPassword.isEmpty) {
+      return message.isNotEmpty
+          ? message
+          : "Xác nhận mật khẩu không được để trống";
+    }
+
+    if (password != confirmPassword) {
+      return message.isNotEmpty
+          ? message
+          : "Mật khẩu và xác nhận mật khẩu không khớp";
+    }
+
+    return null;
+  }
+
   static String? compose(
       {required List<String Function(dynamic)> validators,
       dynamic value,

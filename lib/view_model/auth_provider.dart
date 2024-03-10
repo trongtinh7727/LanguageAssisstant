@@ -71,6 +71,26 @@ class AuthenticationProvider with ChangeNotifier {
     }
   }
 
+  Future<bool> changePassword(String oldPassword, String newPassword) async {
+    setLoading(true);
+    try {
+      var credential = EmailAuthProvider.credential(
+          email: _userModel!.email, password: oldPassword);
+      UserCredential result =
+          await _auth.currentUser!.reauthenticateWithCredential(credential);
+      await result.user!.updatePassword(newPassword);
+      setErrorMessage('');
+      setLoading(false);
+      return true;
+    } on FirebaseAuthException catch (e) {
+      setErrorMessage('Mật khẩu cũ chưa chính xác!');
+    } catch (e) {
+      setErrorMessage('Có lỗi xảy ra, thử lại sau!');
+    }
+    setLoading(false);
+    return false;
+  }
+
   Future<void> updateUser() async {
     await _userRepository.update(_userModel!.id!, _userModel!);
     successToast('Cập nhật thành công!');

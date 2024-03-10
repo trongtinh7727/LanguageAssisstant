@@ -80,8 +80,6 @@ class LoginScreen extends StatelessWidget {
                         if (result) {
                           Navigator.pushReplacementNamed(
                               context, RouteName.mainLayout);
-                        } else {
-                          // Maybe show an error message
                         }
                       }
                     },
