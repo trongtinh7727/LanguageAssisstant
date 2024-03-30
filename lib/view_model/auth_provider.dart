@@ -114,10 +114,33 @@ class AuthenticationProvider with ChangeNotifier {
         setUserModel();
         return true; // Sign-in successful
       } else {
-        setErrorMessage('Email and password cannot be empty.');
+        setErrorMessage('Email và mật khẩu không được bỏ trống.');
       }
     } on FirebaseAuthException catch (e) {
       setErrorMessage('Tài khoản hoặc mật khẩu không chính xác!');
+    } catch (e) {
+      setErrorMessage('Có lỗi xảy ra vui lòng thử lại sau!');
+    }
+    setLoading(false);
+    return false; // Sign-in failed
+  }
+
+  Future<bool> sendPasswordResetEmail(String email) async {
+    setLoading(true);
+    try {
+      if (email.isNotEmpty) {
+        await _auth.sendPasswordResetEmail(
+          email: email,
+        );
+        setErrorMessage('');
+        setLoading(false);
+        setUserModel();
+        return true;
+      } else {
+        setErrorMessage('Email và mật khẩu không được bỏ trống.');
+      }
+    } on FirebaseAuthException catch (e) {
+      setErrorMessage('Tài khoản không tồn tại!');
     } catch (e) {
       setErrorMessage('Có lỗi xảy ra vui lòng thử lại sau!');
     }

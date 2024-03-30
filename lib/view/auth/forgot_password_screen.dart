@@ -1,6 +1,5 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:languageassistant/routes/name_routes.dart';
-
 import 'package:languageassistant/utils/app_style.dart';
 import 'package:languageassistant/utils/app_toast.dart';
 import 'package:languageassistant/view_model/auth_provider.dart';
@@ -8,17 +7,44 @@ import 'package:languageassistant/widget/text_field_widget.dart';
 import 'package:languageassistant/utils/app_validator.dart';
 import 'package:provider/provider.dart';
 
-class LoginScreen extends StatelessWidget {
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+class ForgotPasswordScreen extends StatefulWidget {
+  const ForgotPasswordScreen({Key? key}) : super(key: key);
 
-  LoginScreen({Key? key}) : super(key: key);
+  @override
+  _ForgotPasswordScreenState createState() => _ForgotPasswordScreenState();
+}
+
+class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
+  final TextEditingController emailController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool _isResendEnabled = true;
+  int _countDownSeconds = 60;
+  Timer? _timer;
+
+  @override
+  void dispose() {
+    _timer?.cancel(); // Hủy timer khi widget bị dispose
+    super.dispose();
+  }
+
+  void startCountDownTimer() {
+    const oneSecond = Duration(seconds: 1);
+    _timer = Timer.periodic(oneSecond, (timer) {
+      setState(() {
+        if (_countDownSeconds <= 0) {
+          _timer!.cancel();
+          _isResendEnabled =
+              true; // Kích hoạt nút gửi lại sau khi kết thúc đếm ngược
+        } else {
+          _countDownSeconds--;
+        }
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthenticationProvider>(context);
-
     return Scaffold(
       body: Form(
         key: _formKey,
@@ -49,45 +75,32 @@ class LoginScreen extends StatelessWidget {
                     icon: Icons.email,
                     textEditingController: emailController,
                   ),
-                  const SizedBox(height: 16),
-                  TextFieldWidget(
-                    hint: 'Nhập mật khẩu',
-                    icon: Icons.lock,
-                    validator: (p0) => Validator.required(value: p0),
-                    isPassword: true,
-                    textEditingController: passwordController,
-                  ),
-                  const SizedBox(height: 8),
-                  Align(
-                    alignment: Alignment.center,
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.pushNamed(
-                            context, RouteName.forgotPasswordScreen);
-                      },
-                      child: const Text(
-                        'Quên mật khẩu',
-                        style: TextStyle(color: Colors.lightBlue),
-                      ),
-                    ),
-                  ),
                   const SizedBox(height: 24),
                   ElevatedButton(
                     onPressed: () async {
+                      if (!_isResendEnabled) {
+                        return;
+                      }
                       if (_validateForm(context)) {
-                        bool result =
-                            await authProvider.signInWithEmailAndPassword(
+                        setState(() {
+                          _isResendEnabled = false;
+                          _countDownSeconds = 60;
+                        });
+
+                        startCountDownTimer(); // Bắt đầu đếm ngược
+                        bool result = await authProvider.sendPasswordResetEmail(
                           emailController.text,
-                          passwordController.text,
                         );
                         if (result) {
-                          Navigator.pushReplacementNamed(
-                              context, RouteName.mainLayout);
+                          successToast(
+                              'Vui lòng kiểm tra email để đặt lại mật khẩu');
                         }
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppStyle.primaryColor,
+                      backgroundColor: _isResendEnabled
+                          ? AppStyle.primaryColor
+                          : AppStyle.greyColor_100,
                       fixedSize: Size(295, 60),
                       padding: const EdgeInsets.symmetric(
                           horizontal: 40, vertical: 5),
@@ -95,7 +108,7 @@ class LoginScreen extends StatelessWidget {
                     child: authProvider.isLoading
                         ? CircularProgressIndicator(color: Colors.white)
                         : Text(
-                            'Đăng nhập',
+                            'Xác nhận',
                             style: TextStyle(color: Colors.white),
                           ),
                   ),
@@ -109,22 +122,26 @@ class LoginScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Text(
-                          'Bạn chưa có tài khoản?',
+                          'Bạn đã có tài khoản?',
                           style: TextStyle(color: Color.fromARGB(179, 0, 0, 0)),
                         ),
                         TextButton(
                           onPressed: () {
-                            Navigator.pushNamed(
-                                context, RouteName.registerScreen);
+                            Navigator.pop(context);
                           },
                           child: Text(
-                            'Đăng ký',
+                            'Đăng nhập',
                             style: TextStyle(color: AppStyle.activeText),
                           ),
                         ),
                       ],
                     ),
-                  )
+                  ),
+                  if (!_isResendEnabled)
+                    Text(
+                      'Đợi ${_countDownSeconds}s để gửi lại',
+                      style: TextStyle(color: Colors.grey),
+                    ),
                 ],
               ),
             ),
@@ -140,9 +157,6 @@ class LoginScreen extends StatelessWidget {
     form!.validate();
     if (Validator.email(value: emailController.text) != null) {
       errorToast("Vui lòng nhập email");
-      return false;
-    } else if (Validator.required(value: passwordController.text) != null) {
-      errorToast("Vui lòng nhập password");
       return false;
     } else {
       return true;

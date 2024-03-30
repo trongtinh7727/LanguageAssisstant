@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:languageassistant/model/models/topic_model.dart';
+import 'package:languageassistant/view/auth/forgot_password_screen.dart';
 import 'package:languageassistant/view/profile/components/profile_setting_screen.dart';
 import 'package:languageassistant/view/profile/components/change_password_creen.dart';
 import 'package:languageassistant/view/auth/intro_screen.dart';
@@ -31,6 +32,8 @@ class Routes {
         return MaterialPageRoute(builder: (context) => IntroScreen());
       case RouteName.registerScreen:
         return MaterialPageRoute(builder: (context) => RegisterScreen());
+      case RouteName.forgotPasswordScreen:
+        return MaterialPageRoute(builder: (context) => ForgotPasswordScreen());
       case RouteName.addTopicScreen:
         return MaterialPageRoute(builder: (context) => AddTopicScreen());
       case RouteName.updateTopicScreen:
