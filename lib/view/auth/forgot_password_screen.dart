@@ -23,7 +23,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   @override
   void dispose() {
-    _timer?.cancel(); // Hủy timer khi widget bị dispose
+    _timer?.cancel();
+
     super.dispose();
   }
 

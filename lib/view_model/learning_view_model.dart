@@ -16,7 +16,7 @@ class LearningViewModel extends ChangeNotifier {
 
   late TopicModel _topic;
   List<WordModel> _words = [];
-  List<WordModel> _currentOptions = [];
+  List<List<WordModel>> _currentOptions = [];
   List<WordModel> _learnedWords = [];
   List<WordModel> _masteredWords = [];
   int _currentIndex = 0;
@@ -32,7 +32,7 @@ class LearningViewModel extends ChangeNotifier {
   TopicModel get topic => _topic;
   LearningMode get learningMode => _learningMode;
   List<WordModel> get words => _words;
-  List<WordModel> get currentOptions => _currentOptions;
+  List<WordModel> get currentOptions => _currentOptions[_currentIndex];
   List<WordModel> get learnedWords => _learnedWords;
   List<WordModel> get masteredWords => _masteredWords;
   WordModel get currentWord => (_words.length > 0)
@@ -229,10 +229,12 @@ class LearningViewModel extends ChangeNotifier {
   }
 
   void setCurrenOption() {
-    _currentOptions = getRandomWords();
+    for (int i = 0; i < _words.length; i++) {
+      _currentOptions.add(getRandomWords(i));
+    }
   }
 
-  List<WordModel> getRandomWords() {
+  List<WordModel> getRandomWords(int index) {
     List<WordModel> randomWords = [];
     Random random = Random();
 
@@ -244,12 +246,11 @@ class LearningViewModel extends ChangeNotifier {
 
     while (randomWords.length < 3) {
       int randomIndex = random.nextInt(_words.length);
-      if (randomIndex != _currentIndex &&
-          !randomWords.contains(_words[randomIndex])) {
+      if (randomIndex != index && !randomWords.contains(_words[randomIndex])) {
         randomWords.add(_words[randomIndex]);
       }
     }
-    randomWords.add(_words[currentIndex]);
+    randomWords.add(_words[index]);
     randomWords.shuffle();
 
     return randomWords;
