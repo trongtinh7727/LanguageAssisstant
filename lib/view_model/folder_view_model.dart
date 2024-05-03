@@ -28,6 +28,14 @@ class FolderViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  Stream<List<FolderModel>> streamFoldersByUser(String userId) {
+    return _folderRepository
+        .streamUserFolders(userId, pageSize: 100, lastDocument: null)
+        .map((querySnapshot) {
+      return querySnapshot.first;
+    });
+  }
+
   Future<void> fetchFoldersByUser(String userId, int pageSize) async {
     _isLoading = true; // Cập nhật trạng thái tải
     notifyListeners();

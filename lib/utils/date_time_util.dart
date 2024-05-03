@@ -4,8 +4,7 @@ class DateTimeUtil {
   static final int _offset = 7 * 3600 * 1000;
   static DateTime timestampToDateTime(int timestamp) {
     // Dart's DateTime uses milliseconds since epoch, so multiply by 1000
-    return DateTime.fromMillisecondsSinceEpoch(timestamp * 1000, isUtc: true)
-        .add(Duration(milliseconds: _offset));
+    return DateTime.fromMillisecondsSinceEpoch(timestamp * 1000, isUtc: true);
   }
 
   static int getCurrentTimestamp() {

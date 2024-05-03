@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:languageassistant/firebase_options.dart';
 import 'package:languageassistant/routes/name_routes.dart';
 import 'package:languageassistant/routes/routes.dart';
@@ -18,6 +19,8 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:window_manager/window_manager.dart';
 import 'package:permission_handler/permission_handler.dart'; // Import permission_handler package
+
+GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   tz.initializeTimeZones();
@@ -72,6 +75,8 @@ class MyApp extends StatelessWidget {
         // Add other providers here
       ],
       child: MaterialApp(
+        builder: FToastBuilder(),
+        navigatorKey: navigatorKey,
         title: 'Flutter Firebase Auth',
         theme: AppStyle.getTheme(),
         debugShowCheckedModeBanner: false,

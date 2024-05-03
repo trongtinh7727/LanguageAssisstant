@@ -52,6 +52,41 @@ class FolderRepository extends BaseRepository<FolderModel> {
     }
   }
 
+  Stream<Pair<List<FolderModel>, Pair<bool, DocumentSnapshot?>>>
+      streamUserFolders(
+    String userId, {
+    DocumentSnapshot? lastDocument,
+    required int pageSize,
+  }) {
+    var query = _firestore
+        .collection('users')
+        .doc(userId)
+        .collection('folders')
+        .orderBy('updateTime', descending: true)
+        .limit(pageSize);
+
+    if (lastDocument != null) {
+      query = query.startAfterDocument(lastDocument);
+    }
+
+    return query.snapshots().map((querySnapshot) {
+      final folders = <FolderModel>[];
+      bool hasNextPage = false;
+
+      for (var folderRef in querySnapshot.docs) {
+        final folder = FolderModel.fromMap(
+            folderRef.data() as Map<String, dynamic>, folderRef.id);
+        folders.add(folder);
+      }
+
+      hasNextPage = querySnapshot.docs.length >= pageSize;
+      final newLastDocument =
+          querySnapshot.docs.isNotEmpty ? querySnapshot.docs.last : null;
+
+      return Pair(folders, Pair(hasNextPage, newLastDocument));
+    });
+  }
+
   Future<void> deleteFolder(String userId, String folderId) async {
     try {
       final DocumentReference folderDocRef = FirebaseFirestore.instance

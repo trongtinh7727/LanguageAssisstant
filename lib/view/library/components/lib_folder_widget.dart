@@ -1,10 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:languageassistant/model/models/folder_model.dart';
 import 'package:languageassistant/routes/name_routes.dart';
 import 'package:languageassistant/view_model/folder_view_model.dart';
 import 'package:languageassistant/widget/folder_card_widget.dart';
 
-class LibFolderWidget extends StatefulWidget {
+class LibFolderWidget extends StatelessWidget {
   const LibFolderWidget({
     Key? key,
     required this.scrollController,
@@ -17,40 +18,44 @@ class LibFolderWidget extends StatefulWidget {
   final FirebaseAuth auth;
 
   @override
-  _LibFolderWidgetState createState() => _LibFolderWidgetState();
-}
-
-class _LibFolderWidgetState extends State<LibFolderWidget> {
-  @override
   Widget build(BuildContext context) {
-    if (widget.folderViewModel.isLoading &&
-        widget.folderViewModel.folders.isEmpty) {
-      return Center(
-        child: CircularProgressIndicator(),
-      );
-    }
+    return StreamBuilder<List<FolderModel>>(
+      stream: folderViewModel.streamFoldersByUser(FirebaseAuth.instance
+          .currentUser!.uid), // Assuming you have a stream in your ViewModel
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        }
 
-    return ListView.builder(
-      controller: widget.scrollController,
-      itemCount: widget.folderViewModel.folders.length,
-      itemBuilder: (context, index) {
-        final folder = widget.folderViewModel.folders[index];
-        return FolderCard(
-          folder: folder,
-          onContinue: () {
-            widget.folderViewModel.setFolder(folder);
-            widget.folderViewModel.fetchUserTopicsByFolder(
-              widget.auth.currentUser!.uid,
-              folder,
-              200,
+        if (!snapshot.hasData) {
+          return Center(child: CircularProgressIndicator());
+        }
+
+        final folders = snapshot.data!;
+
+        return ListView.builder(
+          controller: scrollController,
+          itemCount: folders.length,
+          itemBuilder: (context, index) {
+            final folder = folders[index];
+            return FolderCard(
+              folder: folder,
+              onContinue: () {
+                folderViewModel.setFolder(folder);
+                folderViewModel.fetchUserTopicsByFolder(
+                  auth.currentUser!.uid,
+                  folder,
+                  200,
+                );
+
+                Navigator.pushNamed(
+                  context,
+                  RouteName.folderDetailScreen,
+                ).then((_) {
+                  // No need to setState with StreamBuilder
+                });
+              },
             );
-
-            Navigator.pushNamed(
-              context,
-              RouteName.folderDetailScreen,
-            ).then((_) {
-              setState(() {});
-            });
           },
         );
       },

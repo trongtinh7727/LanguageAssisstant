@@ -59,6 +59,7 @@ class LearningViewModel extends ChangeNotifier {
     _topic = topic;
     _learnedWords.clear();
     _masteredWords.clear();
+    _currentOptions.clear();
     _learningMode = learningMode;
     _currentIndex = 0;
     notifyListeners();

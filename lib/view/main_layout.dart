@@ -83,6 +83,7 @@ class MainLayoutState extends State<MainLayout> {
           child: ListView.builder(
             itemCount: 4,
             scrollDirection: Axis.horizontal,
+            shrinkWrap: true,
             padding: EdgeInsets.symmetric(horizontal: displayWidth * .02),
             itemBuilder: (context, index) => InkWell(
               onTap: () {
