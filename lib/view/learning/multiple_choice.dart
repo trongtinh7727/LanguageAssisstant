@@ -32,7 +32,7 @@ class _MultipleChoiceState extends State<MultipleChoice> {
     return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          title: Text('Điền từ'),
+          title: Text('Trắc nghiệm'),
           actions: [FillterMenu(learningViewModel: learningViewModel)],
         ),
         body: Padding(
