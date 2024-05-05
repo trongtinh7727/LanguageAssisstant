@@ -46,7 +46,7 @@ class _AddTopicsToFolderState extends State<AddTopicsToFolder> {
         body: NotificationListener<ScrollNotification>(
           onNotification: (notification) {
             if (_isScrollAtBottom(notification)) {
-              if (!_topicViewModel.isLoading) {
+              if (!_topicViewModel.isLoading && _topicViewModel.hasNextPage) {
                 _topicViewModel.fetchTopicsByUserMore(
                     _auth.currentUser!.uid, 5);
               }

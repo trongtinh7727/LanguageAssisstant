@@ -116,7 +116,6 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
       onTap: () {
         Navigator.pop(context);
         Navigator.pushNamed(context, RouteName.addTopicToFolder);
-        // Navigator.pop(context);
       },
       text: "Thêm topics",
     );
