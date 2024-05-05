@@ -32,7 +32,8 @@ class LearningViewModel extends ChangeNotifier {
   TopicModel get topic => _topic;
   LearningMode get learningMode => _learningMode;
   List<WordModel> get words => _words;
-  List<WordModel> get currentOptions => _currentOptions[_currentIndex];
+  List<WordModel> get currentOptions =>
+      getOptionsContainingWord(_words[_currentIndex].id!);
   List<WordModel> get learnedWords => _learnedWords;
   List<WordModel> get masteredWords => _masteredWords;
   WordModel get currentWord => (_words.length > 0)
@@ -255,5 +256,20 @@ class LearningViewModel extends ChangeNotifier {
     randomWords.shuffle();
 
     return randomWords;
+  }
+
+  List<WordModel> getOptionsContainingWord(String wordId) {
+    List<WordModel> result = [];
+
+    for (List<WordModel> option in _currentOptions) {
+      for (WordModel word in option) {
+        if (word.id == wordId) {
+          option.shuffle();
+          return option;
+        }
+      }
+    }
+
+    return result;
   }
 }
