@@ -115,18 +115,24 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: Column(
                         children: [
-                          _customButton([yellow_1, yellow_2], () => {},
+                          _customButton(
+                              [yellow_1, yellow_2],
+                              () => _homeViewModel.setCurrentIndex(1),
                               "Luyện tập bài học hằng ngày"),
                           SizedBox(
                             height: 8,
                           ),
                           _customButton(
-                              [blue_1, blue_2], () => {}, "Học theo chủ đề"),
+                              [blue_1, blue_2],
+                              () => _homeViewModel.setCurrentIndex(1),
+                              "Học theo chủ đề"),
                           SizedBox(
                             height: 8,
                           ),
                           _customButton(
-                              [violet_1, violet_2], () => {}, "Khám phá thêm"),
+                              [violet_1, violet_2],
+                              () => _homeViewModel.setCurrentIndex(2),
+                              "Khám phá thêm"),
                         ],
                       ),
                     ),

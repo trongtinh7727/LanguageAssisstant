@@ -21,7 +21,6 @@ class MainLayout extends StatefulWidget {
 }
 
 class MainLayoutState extends State<MainLayout> {
-  var currentIndex = 0;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
@@ -39,6 +38,7 @@ class MainLayoutState extends State<MainLayout> {
           homeViewModel.fetchRecentTopics(_auth.currentUser!.uid, 10);
           homeViewModel.fetchNewTopics(5);
           homeViewModel.fetchTopTopics(10);
+          homeViewModel.setCurrentIndex(0);
         }
       }
     });
@@ -51,12 +51,13 @@ class MainLayoutState extends State<MainLayout> {
       displayWidth = 500;
     }
     final authProvider = Provider.of<AuthenticationProvider>(context);
+    final homeViewModel = Provider.of<HomeViewModel>(context);
     authProvider.setUserModel();
 
     return Scaffold(
       extendBody: true,
       body: IndexedStack(
-        index: currentIndex,
+        index: homeViewModel.currentIndex,
         children: [
           HomeScreen(),
           LibraryScreen(),
@@ -89,7 +90,6 @@ class MainLayoutState extends State<MainLayout> {
               onTap: () {
                 setState(() {
                   if (_auth.currentUser != null) {
-                    currentIndex = index;
                     final topicViewModel =
                         Provider.of<TopicViewModel>(context, listen: false);
                     final folderViewModel =
@@ -98,7 +98,8 @@ class MainLayoutState extends State<MainLayout> {
                         Provider.of<HomeViewModel>(context, listen: false);
                     final profileViewModel =
                         Provider.of<ProfileViewModel>(context, listen: false);
-                    switch (currentIndex) {
+                    homeViewModel.setCurrentIndex(index);
+                    switch (homeViewModel.currentIndex) {
                       case 0:
                         homeViewModel.fetchRecentTopics(
                             _auth.currentUser!.uid, 10);
@@ -132,17 +133,21 @@ class MainLayoutState extends State<MainLayout> {
                   AnimatedContainer(
                     duration: Duration(seconds: 1),
                     curve: Curves.fastLinearToSlowEaseIn,
-                    width: index == currentIndex
+                    width: index == homeViewModel.currentIndex
                         ? displayWidth * .32
                         : displayWidth * .18,
                     alignment: Alignment.center,
                     child: AnimatedContainer(
                       duration: Duration(seconds: 1),
                       curve: Curves.fastLinearToSlowEaseIn,
-                      height: index == currentIndex ? displayWidth * .12 : 0,
-                      width: index == currentIndex ? displayWidth * .32 : 0,
+                      height: index == homeViewModel.currentIndex
+                          ? displayWidth * .12
+                          : 0,
+                      width: index == homeViewModel.currentIndex
+                          ? displayWidth * .32
+                          : 0,
                       decoration: BoxDecoration(
-                        color: index == currentIndex
+                        color: index == homeViewModel.currentIndex
                             ? Colors.blueAccent.withOpacity(.2)
                             : Colors.transparent,
                         borderRadius: BorderRadius.circular(50),
@@ -152,7 +157,7 @@ class MainLayoutState extends State<MainLayout> {
                   AnimatedContainer(
                     duration: Duration(seconds: 1),
                     curve: Curves.fastLinearToSlowEaseIn,
-                    width: index == currentIndex
+                    width: index == homeViewModel.currentIndex
                         ? displayWidth * .31
                         : displayWidth * .18,
                     alignment: Alignment.center,
@@ -163,16 +168,17 @@ class MainLayoutState extends State<MainLayout> {
                             AnimatedContainer(
                               duration: Duration(seconds: 1),
                               curve: Curves.fastLinearToSlowEaseIn,
-                              width: index == currentIndex
+                              width: index == homeViewModel.currentIndex
                                   ? displayWidth * .13
                                   : 0,
                             ),
                             AnimatedOpacity(
-                              opacity: index == currentIndex ? 1 : 0,
+                              opacity:
+                                  index == homeViewModel.currentIndex ? 1 : 0,
                               duration: Duration(seconds: 1),
                               curve: Curves.fastLinearToSlowEaseIn,
                               child: Text(
-                                index == currentIndex
+                                index == homeViewModel.currentIndex
                                     ? '${listOfStrings[index]}'
                                     : '',
                                 style: AppStyle.active,
@@ -185,16 +191,16 @@ class MainLayoutState extends State<MainLayout> {
                             AnimatedContainer(
                               duration: Duration(seconds: 1),
                               curve: Curves.fastLinearToSlowEaseIn,
-                              width: index == currentIndex
+                              width: index == homeViewModel.currentIndex
                                   ? displayWidth * .03
                                   : 20,
                             ),
                             Icon(
-                              index == currentIndex
+                              index == homeViewModel.currentIndex
                                   ? listOfFilledIcons[index]
                                   : listOfIcons[index],
                               size: displayWidth * .076,
-                              color: index == currentIndex
+                              color: index == homeViewModel.currentIndex
                                   ? Colors.blueAccent
                                   : Colors.black,
                             ),

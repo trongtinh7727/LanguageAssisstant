@@ -15,6 +15,9 @@ class HomeViewModel extends ChangeNotifier {
   final UserRepository _userRepository = UserRepository();
 
   bool _isLoading = false; // Thêm biến này
+  int _currentIndex = 0;
+
+  int get currentIndex => _currentIndex;
 
   List<TopicModel> get topics => _topics;
   List<TopicModel> get topicLeaderboard => _topicLearderboard;
@@ -26,6 +29,11 @@ class HomeViewModel extends ChangeNotifier {
   bool get hasNextPage => _hasNextPage;
   DocumentSnapshot? get lastDocument => _lastDocument;
   bool get isLoading => _isLoading; // Thêm getter này
+
+  void setCurrentIndex(int index) {
+    _currentIndex = index;
+    notifyListeners();
+  }
 
   void fetchNewTopics(int pageSize) async {
     _isLoading = true; // Cập nhật trạng thái tải
