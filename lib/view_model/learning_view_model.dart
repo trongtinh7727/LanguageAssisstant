@@ -10,6 +10,7 @@ import 'package:languageassistant/utils/app_enum.dart';
 import 'package:languageassistant/utils/app_toast.dart';
 import 'package:languageassistant/utils/app_tts.dart';
 import 'package:languageassistant/utils/date_time_util.dart';
+import 'package:languageassistant/view_model/topic_view_model.dart';
 
 class LearningViewModel extends ChangeNotifier {
   LearningMode _learningMode = LearningMode.FlashCard;

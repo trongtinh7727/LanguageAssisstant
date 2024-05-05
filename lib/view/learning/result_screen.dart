@@ -6,6 +6,7 @@ import 'package:languageassistant/utils/app_style.dart';
 import 'package:languageassistant/view/learning/component/fillter_menu.dart';
 import 'package:languageassistant/view/learning/component/learning_progress.dart';
 import 'package:languageassistant/view_model/learning_view_model.dart';
+import 'package:languageassistant/view_model/topic_view_model.dart';
 import 'package:languageassistant/widget/word_item.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
@@ -31,6 +32,16 @@ class _ResultScreenState extends State<ResultScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Đánh giá'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            // Thực hiện hành động khi người dùng bấm nút back ở đây
+            TopicViewModel topicViewModel =
+                Provider.of<TopicViewModel>(context, listen: false);
+            topicViewModel.fetchLeaderBoard(learningViewModel.topic.id);
+            Navigator.pop(context);
+          },
+        ),
         actions: [],
       ),
       body: Padding(

@@ -25,17 +25,20 @@ class TopicsLeaderBoard extends StatelessWidget {
         Container(
           padding: EdgeInsets.symmetric(horizontal: 5),
           height: 200, // Adjust height accordingly
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: topicViewModel
-                .ranks.length, // Replace with the actual number of items
-            itemBuilder: (context, index) {
-              final item = topicViewModel.ranks[index];
-              return UserLeaderBoardItem(
-                userRank: item,
-              );
-            },
-          ),
+          child: topicViewModel.ranks.length > 0
+              ? ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: topicViewModel.ranks.length,
+                  itemBuilder: (context, index) {
+                    final item = topicViewModel.ranks[index];
+                    return UserLeaderBoardItem(
+                      userRank: item,
+                    );
+                  },
+                )
+              : Center(
+                  child: Text("Chưa có dữ liệu"),
+                ),
         ),
       ],
     );
