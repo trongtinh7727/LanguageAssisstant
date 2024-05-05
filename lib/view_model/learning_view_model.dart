@@ -21,6 +21,7 @@ class LearningViewModel extends ChangeNotifier {
   List<WordModel> _masteredWords = [];
   int _currentIndex = 0;
   String _currentFillter = "Tất cả";
+  int _startTime = 0;
 
   final TopicRepository _topicRepository = TopicRepository();
   final WordRepository _wordRepository = WordRepository();
@@ -63,6 +64,9 @@ class LearningViewModel extends ChangeNotifier {
     _currentOptions.clear();
     _learningMode = learningMode;
     _currentIndex = 0;
+    if (learningMode != LearningMode.FlashCard) {
+      _startTime = DateTimeUtil.getCurrentTimestamp();
+    }
     notifyListeners();
   }
 
@@ -88,6 +92,23 @@ class LearningViewModel extends ChangeNotifier {
       }
       if (learningMode != LearningMode.FlashCard) {
         updateLearningStatus(FirebaseAuth.instance.currentUser!.uid);
+        int _endTime = DateTimeUtil.getCurrentTimestamp();
+        DateTime timestampDateTime =
+            DateTimeUtil.timestampToDateTime(_startTime);
+        DateTime now = DateTimeUtil.timestampToDateTime(_endTime);
+        Duration difference = now.difference(timestampDateTime);
+        int duration = difference.inSeconds;
+        int score = (_masteredWords.length / _words.length * 100).toInt();
+        RankItem _rankItem = new RankItem(
+            avatarUrl: '',
+            name: '',
+            time: '',
+            date: '',
+            rank: '',
+            score: score,
+            submitted: _endTime,
+            timeDuration: duration);
+        updateLeaderboard(_rankItem, FirebaseAuth.instance.currentUser!.uid);
       }
       Navigator.pushReplacementNamed(context, RouteName.resultScreen);
     }
@@ -264,12 +285,16 @@ class LearningViewModel extends ChangeNotifier {
     for (List<WordModel> option in _currentOptions) {
       for (WordModel word in option) {
         if (word.id == wordId) {
-          option.shuffle();
+          // option.shuffle();
           return option;
         }
       }
     }
 
     return result;
+  }
+
+  Future<void> updateLeaderboard(RankItem rankItem, String uid) async {
+    await _topicRepository.addLeaderBoard(topic.id, rankItem, uid);
   }
 }

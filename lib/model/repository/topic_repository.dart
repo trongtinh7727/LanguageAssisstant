@@ -434,12 +434,12 @@ class TopicRepository extends BaseRepository<TopicModel> {
 
           leaderBoardList.add(
             RankItem(
-              avatarUrl: user.avatarUrl ?? '',
-              name: user.name ?? '',
-              time: time,
-              date: dateFormated,
-              rank: top,
-            ),
+                avatarUrl: user.avatarUrl ?? '',
+                name: user.name ?? '',
+                time: time,
+                date: dateFormated,
+                rank: top,
+                userReference: userRef),
           );
         }
       }
@@ -447,6 +447,25 @@ class TopicRepository extends BaseRepository<TopicModel> {
     } catch (e) {
       print('Error fetching leaderboard: $e');
       return [];
+    }
+  }
+
+  Future<void> addLeaderBoard(
+      String topicID, RankItem rankItem, String uid) async {
+    final leaderBoardCollection = FirebaseFirestore.instance
+        .collection("topics")
+        .doc(topicID)
+        .collection("leaderBoard");
+    final userRef = FirebaseFirestore.instance.collection("users").doc(uid);
+    rankItem.userReference = userRef;
+    try {
+      // Add rank item to the leaderboard collection
+      await leaderBoardCollection
+          .doc(uid)
+          .set(rankItem.toMap(), SetOptions(merge: true));
+      print("Leaderboard entry added successfully!");
+    } catch (e) {
+      print('Error adding leaderboard entry: $e');
     }
   }
 
