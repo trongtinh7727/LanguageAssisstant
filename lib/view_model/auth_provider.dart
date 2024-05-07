@@ -54,6 +54,7 @@ class AuthenticationProvider with ChangeNotifier {
           await _userRepository.addUser(user.uid, newUser);
           setUserModel();
           setErrorMessage(''); // Clear any previous error messages
+          setLoading(false);
           return true;
         }
       } else {
@@ -61,9 +62,11 @@ class AuthenticationProvider with ChangeNotifier {
         return false;
       }
     } on FirebaseAuthException catch (e) {
-      setErrorMessage(e.message ?? 'An unknown error occurred');
+      setLoading(false);
+      setErrorMessage("Email đã được sử dụng!");
     } catch (e) {
-      setErrorMessage('An error occurred. Please try again later.');
+      setLoading(false);
+      setErrorMessage('Có lỗi xảy ra, thử lại sau!');
     }
     setLoading(false);
     return false;

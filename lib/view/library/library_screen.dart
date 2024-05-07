@@ -88,10 +88,10 @@ class _LibraryScreenState extends State<LibraryScreen> {
               folderViewModel.fetchUserTopicsByFolder(
                   _auth.currentUser!.uid, folderModel, 200);
               Navigator.pop(context, 'Xác nhận');
-              Navigator.pushNamed(
-                context,
-                RouteName.folderDetailScreen,
-              );
+              // Navigator.pushNamed(
+              //   context,
+              //   RouteName.folderDetailScreen,
+              // );
             },
             child: const Text('Xác nhận'),
           ),

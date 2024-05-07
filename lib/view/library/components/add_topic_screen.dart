@@ -163,9 +163,13 @@ class _AddTopicScreenState extends State<AddTopicScreen> {
       final topicViewModel =
           Provider.of<TopicViewModel>(context, listen: false);
       if (addedTopic != null) {
+        topicViewModel.fetchTopicsByUser(_auth.currentUser!.uid, 5);
+        topicViewModel.setTopic(addedTopic);
+        topicViewModel.fetchTopic(_auth.currentUser!.uid, addedTopic.id);
         topicViewModel.fetchWordsByStatus(
             _auth.currentUser!.uid, addedTopic.id, WordStatus.ALL);
         topicViewModel.fetchLeaderBoard(addedTopic.id);
+
         // Navigator.pop(context);
         Navigator.pushReplacementNamed(context, RouteName.topicDetailScreen,
             arguments: addedTopic);

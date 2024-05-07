@@ -34,14 +34,7 @@ class _AddFoldersToTopicState extends State<AddFoldersToTopic> {
     return Scaffold(
         appBar: AppBar(
           title: Text('Thêm topic vào folder'),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.save),
-              onPressed: () {
-                // Implement your search action
-              },
-            ),
-          ],
+          actions: <Widget>[],
         ),
         body: NotificationListener<ScrollNotification>(
           onNotification: (notification) {

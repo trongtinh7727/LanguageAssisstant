@@ -10,9 +10,8 @@ import 'package:languageassistant/model/repository/word_repository.dart';
 import 'package:languageassistant/utils/app_enum.dart';
 import 'package:languageassistant/utils/app_toast.dart';
 import 'package:languageassistant/utils/app_validator.dart';
+import 'package:languageassistant/utils/date_time_util.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:timezone/data/latest.dart' as tz;
-import 'package:timezone/timezone.dart' as tz;
 
 class AddTopicViewModel extends ChangeNotifier {
   List<TopicModel> _topics = [];
@@ -35,10 +34,7 @@ class AddTopicViewModel extends ChangeNotifier {
   }
 
   void addEmptyTermField() {
-    tz.TZDateTime nowInTimeZone =
-        tz.TZDateTime.now(tz.getLocation('Asia/Ho_Chi_Minh'));
-    int currentTimestamp =
-        (nowInTimeZone.millisecondsSinceEpoch / 1000).toInt();
+    int currentTimestamp = DateTimeUtil.getCurrentTimestamp();
     _words.add(WordModel(
         id: _generateUniqueId(),
         vietnamese: "",
@@ -49,10 +45,7 @@ class AddTopicViewModel extends ChangeNotifier {
   }
 
   void addTermField(String eng, String vi) {
-    tz.TZDateTime nowInTimeZone =
-        tz.TZDateTime.now(tz.getLocation('Asia/Ho_Chi_Minh'));
-    int currentTimestamp =
-        (nowInTimeZone.millisecondsSinceEpoch / 1000).toInt();
+    int currentTimestamp = DateTimeUtil.getCurrentTimestamp();
     _words.add(WordModel(
         id: _generateUniqueId(),
         vietnamese: vi,
@@ -187,9 +180,7 @@ class AddTopicViewModel extends ChangeNotifier {
       return null;
     }
 
-    tz.TZDateTime nowInTimeZone =
-        tz.TZDateTime.now(tz.getLocation('Asia/Ho_Chi_Minh'));
-    int currentTimesnap = nowInTimeZone.millisecondsSinceEpoch ~/ 1000;
+    int currentTimesnap = DateTimeUtil.getCurrentTimestamp();
 
     try {
       if (editTopic != null) {

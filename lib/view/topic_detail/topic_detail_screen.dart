@@ -4,10 +4,12 @@ import 'package:languageassistant/model/models/topic_model.dart';
 import 'package:languageassistant/routes/name_routes.dart';
 import 'package:languageassistant/utils/app_icons.dart';
 import 'package:languageassistant/utils/app_style.dart';
+import 'package:languageassistant/utils/app_toast.dart';
 import 'package:languageassistant/view/topic_detail/components/topic_information.dart';
 import 'package:languageassistant/view/topic_detail/components/topics_words.dart';
 import 'package:languageassistant/view/topic_detail/components/toppic_leader_board.dart';
 import 'package:languageassistant/view_model/add_topic_view_model.dart';
+import 'package:languageassistant/view_model/folder_view_model.dart';
 import 'package:languageassistant/view_model/topic_view_model.dart';
 import 'package:languageassistant/widget/bottomsheet_widget.dart';
 import 'package:provider/provider.dart';
@@ -75,6 +77,41 @@ class _TopicDetailScreenState extends State<TopicDetailScreen> {
       },
     );
 
+    void _showDeleteConfirmation(BuildContext context) {
+      showDialog<String>(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          title: const Text('Xóa topic này?'),
+          content: const Text('Sau khi xóa sẽ không thể khôi phục được'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.pop(context, 'Hủy'),
+              child: const Text('Hủy'),
+            ),
+            TextButton(
+              onPressed: () {
+                topicViewModel.setLoading(true);
+                topicViewModel
+                    .delete(topicViewModel.topic!.id)
+                    .then((value) => () {
+                          topicViewModel.setLoading(false);
+                          topicViewModel.fetchTopicsByUser(
+                              _auth.currentUser!.uid, 5);
+                        });
+                Navigator.pop(context, 'Xác nhận');
+                Navigator.pop(context);
+                Navigator.pop(context);
+                successToast("Đã xóa thành công!");
+              },
+              child: topicViewModel.isLoading
+                  ? CircularProgressIndicator()
+                  : const Text('Xác nhận'),
+            ),
+          ],
+        ),
+      );
+    }
+
     void _showModalBottomSheet(BuildContext context) {
       BottomSheetItem _editTopic = BottomSheetItem(
         icon: Icon(Icons.edit_note_rounded, color: Colors.black),
@@ -91,35 +128,17 @@ class _TopicDetailScreenState extends State<TopicDetailScreen> {
       BottomSheetItem _deleteTopic = BottomSheetItem(
         icon: Icon(Icons.delete_outline_rounded, color: Colors.black),
         onTap: () {
-          showDialog<String>(
-            context: context,
-            builder: (BuildContext context) => AlertDialog(
-              title: const Text('Xóa topic này?'),
-              content: const Text('Sau khi xóa sẽ không thể khôi phục được'),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () => Navigator.pop(context, 'Hủy'),
-                  child: const Text('Cancel'),
-                ),
-                TextButton(
-                  onPressed: () {
-                    topicViewModel.delete(topicViewModel.topic!.id);
-                    Navigator.pop(context, 'Xác nhận');
-                    Navigator.pop(context);
-                  },
-                  child: const Text('OK'),
-                ),
-              ],
-            ),
-          );
+          _showDeleteConfirmation(context);
         },
         text: "Xóa",
       );
       BottomSheetItem _addToFolder = BottomSheetItem(
         icon: Icon(Icons.add_to_photos_outlined, color: Colors.black),
         onTap: () {
+          final folderViewModel =
+              Provider.of<FolderViewModel>(context, listen: false);
+          folderViewModel.fetchFoldersByUser(_auth.currentUser!.uid, 100);
           Navigator.pop(context);
-
           Navigator.pushNamed(context, RouteName.addFolderToTopic);
         },
         text: "Thêm vào folder",

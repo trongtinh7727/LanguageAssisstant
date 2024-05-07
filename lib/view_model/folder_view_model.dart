@@ -12,16 +12,16 @@ class FolderViewModel extends ChangeNotifier {
 
   final TopicRepository _topicRepository = TopicRepository();
   final FolderRepository _folderRepository = FolderRepository();
-  bool _isLoading = false; // Thêm biến này
-  List<FolderModel> get folders => _folders; // Getter for words
-  List<TopicModel> get topics => _topics; // Getter for words
+  bool _isLoading = false;
+  List<FolderModel> get folders => _folders;
+  List<TopicModel> get topics => _topics;
   bool _hasNextPage = false;
   DocumentSnapshot? _lastDocument;
   FolderModel? get folder => _folder;
 
   bool get hasNextPage => _hasNextPage;
   DocumentSnapshot? get lastDocument => _lastDocument;
-  bool get isLoading => _isLoading; // Thêm getter này
+  bool get isLoading => _isLoading;
 
   void setFolder(FolderModel model) {
     _folder = model;

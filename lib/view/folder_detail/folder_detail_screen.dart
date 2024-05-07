@@ -114,6 +114,9 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
     BottomSheetItem _addToFolder = BottomSheetItem(
       icon: Icon(Icons.add_to_photos_outlined, color: Colors.black),
       onTap: () {
+        final topicViewModel =
+            Provider.of<TopicViewModel>(context, listen: false);
+        topicViewModel.fetchTopicsByUser(_auth.currentUser!.uid, 100);
         Navigator.pop(context);
         Navigator.pushNamed(context, RouteName.addTopicToFolder);
       },

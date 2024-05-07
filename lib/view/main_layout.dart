@@ -108,9 +108,9 @@ class MainLayoutState extends State<MainLayout> {
                         break;
                       case 1:
                         topicViewModel.fetchTopicsByUser(
-                            _auth.currentUser!.uid, 5);
+                            _auth.currentUser!.uid, 100);
                         folderViewModel.fetchFoldersByUser(
-                            _auth.currentUser!.uid, 5);
+                            _auth.currentUser!.uid, 100);
                         break;
                       case 3:
                         profileViewModel.fetchUser(_auth.currentUser!.uid);

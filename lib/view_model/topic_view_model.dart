@@ -39,6 +39,10 @@ class TopicViewModel extends ChangeNotifier {
     _topic = model;
   }
 
+  void setLoading(bool isLoading) {
+    _isLoading = isLoading;
+  }
+
   void fetchTopic(String userID, String topicID) async {
     _isLoading = true; // Cập nhật trạng thái tải
     notifyListeners();
@@ -58,7 +62,7 @@ class TopicViewModel extends ChangeNotifier {
   }
 
   void fetchLeaderBoard(String topicID) async {
-    _isLoading = true; //
+    _isLoading = true;
     notifyListeners();
     _ranks = await _topicRepository.getLeaderBoard(topicID);
     _isLoading = false;
@@ -118,6 +122,7 @@ class TopicViewModel extends ChangeNotifier {
     _isLoading = true;
     notifyListeners();
     try {
+      _topics.removeWhere((element) => element.id == topicID);
       final result = await _topicRepository.deleteTopic(topicID);
       _isLoading = false; // Cập nhật lại trạng thái sau khi tải xong
       notifyListeners();
