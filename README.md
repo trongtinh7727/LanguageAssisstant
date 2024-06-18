@@ -94,12 +94,6 @@ This project serves as a comprehensive exploration of developing a vocabulary le
 - [MVVM Architecture in Android Development (English)](https://blog.devgenius.io/a-guide-on-mvvm-architecture-in-android-development-3906a6c9bfc8)
 - [Mô hình MVVM và cách triển khai trong ứng dụng Android (Vietnamese)](https://viblo.asia/p/mo-hinh-mvvm-va-cach-trien-khai-trong-ung-dung-android-LzD5dREOZjY)
 
-**ViewModel:**
-- [ViewModel - Android Developers (Vietnamese)](https://developer.android.com/topic/libraries/architecture/viewmodel?hl=vi)
-
-**LiveData:**
-- [LiveData - Android Developers (Vietnamese)](https://developer.android.com/topic/libraries/architecture/livedata?hl=vi)
-
 **Firebase:**
 - [Firebase Firestore Documentation](https://firebase.google.com/docs/firestore)
 - [Firebase Authentication Documentation](https://firebase.google.com/docs/auth)
@@ -109,8 +103,5 @@ This project serves as a comprehensive exploration of developing a vocabulary le
 - [Firebase Admin SDK Setup](https://firebase.google.com/docs/admin/setup)
 - [Firebase Admin SDK User Management](https://firebase.google.com/docs/auth/admin/manage-users)
 - [Firebase Admin SDK User Management Example](https://github.com/padejar/firebase-admin-sdk-user-management)
-
-**Glide:**
-- [Glide Documentation](https://bumptech.github.io/glide/)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
