@@ -3,9 +3,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/yourusername/LanguageAssistant/">
-    <img src="./logo.png" alt="Logo" width="" height="">
-  </a>
+
 
   <h3 align="center">LanguageAssistant</h3>
 
@@ -98,10 +96,5 @@ This project serves as a comprehensive exploration of developing a vocabulary le
 - [Firebase Firestore Documentation](https://firebase.google.com/docs/firestore)
 - [Firebase Authentication Documentation](https://firebase.google.com/docs/auth)
 - [Firebase Storage Documentation](https://firebase.google.com/docs/storage)
-
-**Firebase Admin SDK:**
-- [Firebase Admin SDK Setup](https://firebase.google.com/docs/admin/setup)
-- [Firebase Admin SDK User Management](https://firebase.google.com/docs/auth/admin/manage-users)
-- [Firebase Admin SDK User Management Example](https://github.com/padejar/firebase-admin-sdk-user-management)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
